@@ -1,0 +1,1178 @@
+<!doctype html>
+<!--
+  Bokito's Dealer — homepage redesign prototype.
+  Static, self-contained mockup: product names, prices, MOQs and volume tiers
+  come from the live catalogue (snapshot 2026-10-03). Forms do not submit.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chubby Gorilla Wholesale Europe | Bokito's Dealer</title>
+<meta name="description" content="Official Chubby Gorilla reseller for Europe. Child-resistant bottles, jars, tubes and pouches in stock in the Netherlands, with transparent volume pricing and same or next business day dispatch.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://bokitosdealer.com/">
+<meta name="theme-color" content="#0B0B0B">
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="preload" as="image" href="assets/hero-unicorn.jpg">
+<style>
+:root{
+  --bg:#0B0B0B; --bg-2:#111110; --surface:#161615; --surface-2:#1E1E1C; --line:#2A2A28; --line-2:#3B3B38;
+  --text:#F5F5F2; --muted:#B4B4AE; --dim:#8E8E88;
+  --yellow:#FFD21F; --yellow-2:#FFE066; --ink:#0B0B0B; --ok:#62D38E;
+  --r:16px; --r-sm:10px; --r-lg:24px;
+  --container:1280px; --gutter:clamp(16px,4vw,40px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block;height:auto}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3{margin:0;line-height:1.08;letter-spacing:-.025em;font-weight:800;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--yellow);outline-offset:3px;border-radius:8px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--yellow);color:var(--ink);padding:10px 14px;border-radius:8px;z-index:200;font-weight:700}
+.skip:focus{left:8px}
+.container{max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.icon{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.y{color:var(--yellow)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;font-weight:700;font-size:15px;border:1px solid transparent;transition:background .2s,border-color .2s,color .2s,transform .15s;white-space:nowrap;text-align:center}
+.btn:active{transform:translateY(1px)}
+.btn .icon{width:18px;height:18px}
+.btn-primary{background:var(--yellow);color:var(--ink)}
+.btn-primary:hover{background:var(--yellow-2)}
+.btn-ghost{border-color:var(--line-2);background:rgba(255,255,255,.02)}
+.btn-ghost:hover{border-color:var(--text)}
+.btn-light{background:var(--text);color:var(--ink)}
+.btn-light:hover{background:#fff}
+.btn-dark{background:var(--ink);color:var(--text)}
+.btn-dark:hover{background:#222}
+.btn-sm{min-height:40px;padding:0 16px;font-size:14px}
+.link-arrow{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--text);border-bottom:1px solid var(--line-2);padding-bottom:2px;transition:border-color .2s,gap .2s}
+.link-arrow:hover{border-color:var(--yellow);gap:12px}
+.link-arrow .icon{width:16px;height:16px}
+
+/* Section scaffolding */
+.section{padding:clamp(64px,9vw,120px) 0}
+.section.tight{padding-top:0}
+.kicker{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--yellow);margin-bottom:14px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:36px;flex-wrap:wrap}
+.section-head h2{font-size:clamp(30px,4vw,48px);max-width:22ch}
+.section-head>div{max-width:760px}
+.section-head>.sub{max-width:440px;margin:0}
+.section-head .sub{color:var(--muted);max-width:56ch;margin-top:14px;font-size:17px}
+.section-head.center{flex-direction:column;align-items:center;text-align:center}
+.section-head.center h2{max-width:22ch}
+
+/* Top bar */
+.topbar{background:var(--yellow);color:var(--ink);font-size:13.5px;font-weight:600}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:38px}
+.topbar p{display:flex;align-items:center;gap:8px}
+.topbar .icon{width:16px;height:16px}
+.topbar a{text-decoration:underline;text-underline-offset:2px}
+.show-sm{display:none}
+
+/* Header */
+.site-header{position:sticky;top:0;z-index:50;background:rgba(11,11,11,.86);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+.header-in{display:flex;align-items:center;gap:28px;min-height:72px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.02em;flex:none}
+.brand img{width:38px;height:38px}
+.main-nav{display:flex;gap:4px}
+.main-nav a{padding:8px 12px;border-radius:999px;font-size:15px;font-weight:500;color:var(--muted);white-space:nowrap;transition:color .2s,background .2s}
+.main-nav a:hover{color:var(--text);background:var(--surface)}
+.search{flex:1 1 200px;min-width:0;max-width:380px;margin-left:auto;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--surface);transition:border-color .2s}
+.search:focus-within{border-color:var(--line-2)}
+.search .icon{color:var(--dim);width:18px;height:18px}
+.search input{flex:1;min-width:0;background:none;border:0;outline:0;font-size:15px}
+.search input::placeholder{color:var(--dim)}
+.header-actions{display:flex;align-items:center;gap:6px}
+.icon-btn{position:relative;display:inline-grid;place-items:center;width:44px;height:44px;border-radius:999px;border:0;background:none;color:var(--text);transition:background .2s}
+.icon-btn:hover{background:var(--surface)}
+.count{position:absolute;top:4px;right:2px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--yellow);color:var(--ink);font-size:11px;font-weight:800;display:grid;place-items:center}
+.count[hidden]{display:none}
+.menu-btn,.search-ico{display:none}
+.mobile-search{display:none}
+
+/* Mobile drawer */
+.drawer{position:fixed;inset:0;z-index:90;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+.drawer-panel{position:absolute;right:0;top:0;bottom:0;width:min(360px,88vw);background:var(--bg-2);border-left:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:6px;overflow:auto}
+.drawer-panel .close{align-self:flex-end}
+.drawer-panel a.nav{padding:14px 4px;font-size:18px;font-weight:600;border-bottom:1px solid var(--line)}
+.drawer-panel .btn{margin-top:16px}
+
+/* Hero */
+.hero{padding:clamp(40px,6vw,80px) 0 clamp(40px,5vw,64px);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:60vw;height:60vw;background:radial-gradient(closest-side,rgba(255,210,31,.10),transparent 70%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(32px,5vw,72px);align-items:center;position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;padding:7px 14px 7px 10px;border:1px solid var(--line-2);border-radius:999px;font-size:14px;font-weight:600;color:var(--text);background:var(--surface)}
+.eyebrow .badge{display:grid;place-items:center;width:22px;height:22px;border-radius:999px;background:var(--yellow);color:var(--ink)}
+.eyebrow .badge .icon{width:14px;height:14px;stroke-width:2.6}
+.hero h1{font-size:clamp(40px,6.2vw,76px);margin:22px 0 22px;letter-spacing:-.035em;line-height:1.02}
+.hero h1 .hl{color:var(--yellow)}
+.lead{font-size:clamp(17px,1.5vw,19px);color:var(--muted);max-width:52ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.popular{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:28px;font-size:14px;color:var(--dim)}
+.popular a{padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-weight:500;transition:color .2s,border-color .2s}
+.popular a:hover{color:var(--text);border-color:var(--line-2)}
+.hero-media{position:relative;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:1/1;background:#222;box-shadow:0 40px 80px -30px rgba(0,0,0,.8)}
+.hero-media>img{width:100%;height:100%;object-fit:cover;object-position:62% 50%}
+.hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.55))}
+.stock-pill{position:absolute;top:18px;left:18px;z-index:2;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(11,11,11,.78);backdrop-filter:blur(8px);font-size:13px;font-weight:600}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(98,211,142,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(98,211,142,0)}100%{box-shadow:0 0 0 0 rgba(98,211,142,0)}}
+.price-card{position:absolute;left:18px;right:18px;bottom:18px;z-index:2;display:flex;align-items:center;gap:16px;padding:14px 18px 14px 14px;border-radius:var(--r);background:rgba(18,18,17,.9);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08)}
+.price-card .thumb{width:64px;height:64px;border-radius:12px;background:radial-gradient(circle at 50% 40%,#333,#1a1a1a);flex:none;display:grid;place-items:center}
+.price-card .thumb img{width:56px;height:56px;object-fit:contain}
+.pc-title{font-weight:700;font-size:15px}
+.pc-meta{font-size:13px;color:var(--dim)}
+.pc-price{margin-left:auto;text-align:right;font-size:13px;color:var(--dim);white-space:nowrap}
+.pc-price strong{display:block;font-size:22px;color:var(--text);letter-spacing:-.02em}
+.pc-price strong s{color:var(--dim);font-weight:500;font-size:15px;text-decoration:none;margin-right:6px}
+
+/* Trust strip */
+.trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2)}
+.trust-grid{display:grid;grid-template-columns:repeat(5,1fr)}
+.trust-item{display:flex;gap:14px;align-items:flex-start;padding:26px 20px}
+.trust-item+.trust-item{border-left:1px solid var(--line)}
+.trust-item .icon{width:26px;height:26px;color:var(--yellow);margin-top:2px}
+.trust-item strong{display:block;font-size:15px;line-height:1.3}
+.trust-item span{display:block;font-size:13.5px;color:var(--dim);line-height:1.45;margin-top:3px}
+
+/* Category tiles */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.cat-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px;display:flex;flex-direction:column;transition:border-color .25s,transform .25s}
+.cat-card:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.cat-imgs{height:200px;border-radius:var(--r);background:radial-gradient(ellipse at 50% 60%,#2b2b29 0%,#161615 70%);display:flex;align-items:flex-end;justify-content:center;margin-bottom:20px;overflow:hidden}
+.cat-imgs img{height:88%;width:auto;max-width:62%;object-fit:contain;filter:drop-shadow(0 14px 18px rgba(0,0,0,.55));transition:transform .4s}
+.cat-imgs img+img{margin-left:-24%}
+.cat-card:hover .cat-imgs img{transform:translateY(-6px)}
+.cat-card h3{font-size:22px}
+.cat-card h3 .n{display:block;font-size:13.5px;font-weight:600;color:var(--dim);letter-spacing:0;margin-top:4px}
+.cat-card p{color:var(--muted);font-size:14.5px;margin-top:6px}
+.chips{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:18px}
+.chips a{display:inline-block;padding:6px 12px;border-radius:999px;border:1px solid var(--line-2);font-size:13px;font-weight:500;color:var(--muted);transition:all .2s}
+.chips a:hover{color:var(--ink);background:var(--yellow);border-color:var(--yellow)}
+
+/* Product grid */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+.tab{padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:none;font-weight:600;font-size:14.5px;color:var(--muted);transition:all .2s}
+.tab:hover{color:var(--text);border-color:var(--line-2)}
+.tab[aria-selected="true"]{background:var(--text);color:var(--ink);border-color:var(--text)}
+.p-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.p-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;transition:border-color .25s}
+.p-card:hover{border-color:var(--line-2)}
+.p-media{position:relative;display:block;aspect-ratio:1/1;background:radial-gradient(ellipse at 50% 58%,#2a2a28 0%,#171716 68%)}
+.p-media img{position:absolute;left:13%;top:17%;width:74%;height:74%;object-fit:contain;filter:drop-shadow(0 16px 20px rgba(0,0,0,.5));transition:transform .4s}
+.p-card:hover .p-media img{transform:scale(1.05)}
+.p-save{position:absolute;top:14px;left:14px;z-index:1;padding:5px 10px;border-radius:999px;background:var(--yellow);color:var(--ink);font-size:12px;font-weight:800;letter-spacing:.01em}
+.p-stock{position:absolute;top:14px;right:14px;z-index:1;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
+.p-stock i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.p-body{padding:18px 18px 20px;display:flex;flex-direction:column;flex:1}
+.p-meta{font-size:12.5px;font-weight:600;color:var(--dim);letter-spacing:.02em}
+.p-name{font-size:16.5px;font-weight:700;letter-spacing:-.01em;line-height:1.3;margin-top:6px}
+.p-name a:hover{text-decoration:underline;text-underline-offset:3px}
+.p-price{display:flex;align-items:baseline;gap:6px;margin-top:14px}
+.p-price strong{font-size:24px;letter-spacing:-.02em}
+.p-price span{color:var(--dim);font-size:14px}
+.p-tier{font-size:13.5px;color:var(--muted);margin-top:2px}
+.p-tier b{color:var(--yellow);font-weight:700}
+.p-add{margin-top:16px;width:100%}
+.p-add.added{background:var(--text);color:var(--ink);border-color:var(--text)}
+.grid-foot{display:flex;justify-content:center;margin-top:36px}
+
+/* Pricing calculator */
+.pricing{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pricing-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(32px,6vw,88px);align-items:center}
+.hero-grid>*,.pricing-grid>*,.samples-grid>*,.faq-grid>*,.calc-row>*{min-width:0}
+.select{max-width:100%;text-overflow:ellipsis}
+.pricing-copy h2{font-size:clamp(30px,4vw,48px)}
+.pricing-copy p:not(.kicker){color:var(--muted);font-size:17px;margin-top:18px;max-width:46ch}
+.ticks{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:12px}
+.ticks li{display:flex;gap:12px;align-items:flex-start;color:var(--text)}
+.ticks .icon{width:20px;height:20px;color:var(--yellow);margin-top:3px;stroke-width:2.4}
+.ticks a{text-decoration:underline;text-underline-offset:3px}
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(20px,3vw,32px)}
+.field-label{display:block;font-size:13px;font-weight:600;color:var(--dim);margin-bottom:8px;letter-spacing:.02em}
+.select{width:100%;height:52px;padding:0 44px 0 16px;border-radius:12px;border:1px solid var(--line-2);background:var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23B4B4AE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 8 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center;appearance:none;font-weight:600;font-size:16px}
+.calc-row{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;margin-top:22px}
+.stepper{display:flex;align-items:center;border:1px solid var(--line-2);border-radius:12px;background:var(--surface-2);height:52px;overflow:hidden}
+.stepper button{width:48px;height:100%;border:0;background:none;font-size:20px;color:var(--muted)}
+.stepper button:hover{color:var(--text);background:var(--line)}
+.stepper input{width:120px;height:100%;border:0;background:none;text-align:center;font-weight:700;font-size:17px;outline:0;-moz-appearance:textfield}
+.stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
+.case-note{font-size:13px;color:var(--dim);padding-bottom:4px}
+input[type=range]{width:100%;margin:20px 0 6px;accent-color:var(--yellow);height:24px}
+.calc-out{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.calc-out div{background:var(--surface-2);border-radius:12px;padding:14px 16px}
+.calc-out span{display:block;font-size:12.5px;font-weight:600;color:var(--dim)}
+.calc-out strong{display:block;font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.nudge{margin-top:14px;padding:12px 14px;border-radius:12px;border:1px dashed rgba(255,210,31,.45);color:var(--text);font-size:14.5px;display:flex;gap:10px;align-items:center}
+.nudge .icon{color:var(--yellow);width:18px;height:18px}
+.tiers{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:6px}
+.tiers li{display:grid;grid-template-columns:96px 1fr 64px;gap:12px;align-items:center;font-size:13.5px;color:var(--dim);font-variant-numeric:tabular-nums;padding:3px 0}
+.tiers .bar{height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.tiers .bar i{display:block;height:100%;border-radius:inherit;background:var(--line-2);transition:background .2s}
+.tiers li span:last-child{text-align:right;font-weight:600}
+.tiers li.on{color:var(--text)}
+.tiers li.on .bar i{background:var(--yellow)}
+.calc-actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.calc-actions .btn{flex:1}
+.calc-fine{font-size:12.5px;color:var(--dim);margin-top:12px}
+
+/* Industries */
+.ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.ind-card{position:relative;display:flex;flex-direction:column;gap:10px;padding:26px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);transition:border-color .25s,background .25s}
+.ind-card:hover{border-color:var(--yellow);background:var(--surface-2)}
+.ind-ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:rgba(255,210,31,.1);color:var(--yellow);margin-bottom:6px}
+.ind-ico .icon{width:24px;height:24px}
+.ind-card h3{font-size:20px}
+.ind-card p{color:var(--muted);font-size:15px}
+.ind-card .go{margin-top:auto;padding-top:8px;display:flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px}
+.ind-card .go .icon{width:16px;height:16px;transition:transform .2s}
+.ind-card:hover .go .icon{transform:translateX(4px)}
+
+/* Samples */
+.samples{background:var(--yellow);color:var(--ink)}
+.samples-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);align-items:center;padding:clamp(56px,8vw,104px) 0}
+.samples-media{border-radius:var(--r-lg);overflow:hidden;box-shadow:0 40px 70px -30px rgba(60,45,0,.55)}
+.samples .kicker{color:var(--ink);opacity:.75}
+.samples h2{font-size:clamp(32px,4.4vw,54px)}
+.samples-copy>p:not(.kicker){font-size:17px;margin-top:16px;max-width:48ch;color:#2A2610}
+.sample-form{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box-pick{grid-column:1/-1;min-width:0;border:0;padding:0;margin:0 0 4px;display:flex;flex-wrap:wrap;gap:8px}
+.box-pick legend{font-size:13px;font-weight:700;margin-bottom:8px}
+.box-pick label{position:relative}
+.box-pick input{position:absolute;opacity:0}
+.box-pick span{display:inline-block;padding:9px 16px;border-radius:999px;border:1.5px solid rgba(11,11,11,.35);font-weight:600;font-size:14px;cursor:pointer;transition:all .2s}
+.box-pick input:checked+span{background:var(--ink);color:var(--yellow);border-color:var(--ink)}
+.box-pick input:focus-visible+span{outline:2px solid var(--ink);outline-offset:2px}
+.sample-form .in{width:100%;min-width:0;height:50px;border-radius:12px;border:1.5px solid rgba(11,11,11,.18);background:rgba(255,255,255,.55);padding:0 14px;font-size:15px;color:var(--ink);outline:0;transition:border-color .2s,background .2s}
+.sample-form .in::placeholder{color:#5a5434}
+.sample-form .in:focus{border-color:var(--ink);background:#fff}
+.sample-form .btn{grid-column:1/-1;margin-top:4px}
+.fine{grid-column:1/-1;font-size:13px;color:#3d3815}
+.form-ok{grid-column:1/-1;display:none;padding:14px 16px;border-radius:12px;background:var(--ink);color:var(--text);font-weight:600}
+.form-ok.show{display:block}
+
+/* Why EU + steps */
+.compare{max-width:980px;margin:0 auto;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.compare table{width:100%;border-collapse:collapse;font-size:15.5px}
+.compare th,.compare td{padding:18px 22px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.compare tr:last-child td,.compare tr:last-child th{border-bottom:0}
+.compare thead th{font-size:14px;font-weight:700;color:var(--dim);background:var(--bg-2)}
+.compare thead th.us{color:var(--ink);background:var(--yellow)}
+.compare tbody th{font-weight:600;color:var(--muted);width:24%}
+.compare td.us{background:rgba(255,210,31,.06);color:var(--text);font-weight:600}
+.compare td.us .icon{color:var(--yellow);width:18px;height:18px;vertical-align:-3px;margin-right:8px;stroke-width:2.6}
+.compare td.them{color:var(--dim)}
+.steps{list-style:none;padding:0;margin:56px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
+.steps li{position:relative;padding:24px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);counter-increment:s}
+.steps li::before{content:counter(s,decimal-leading-zero);display:block;font-size:13px;font-weight:800;color:var(--yellow);letter-spacing:.1em;margin-bottom:14px}
+.steps h3{font-size:18px}
+.steps p{color:var(--muted);font-size:14.5px;margin-top:8px}
+
+/* Custom */
+.custom-grid{display:grid;grid-template-columns:1fr 1fr;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.custom-media{background:var(--yellow);display:grid;place-items:center;min-height:100%}
+.custom-media img{width:100%;height:100%;object-fit:cover}
+.custom-copy{padding:clamp(28px,5vw,64px);display:flex;flex-direction:column;justify-content:center}
+.custom-copy h2{font-size:clamp(30px,4vw,48px)}
+.custom-copy>p:not(.kicker){color:var(--muted);font-size:17px;margin-top:16px}
+.custom-copy .btn{align-self:flex-start;margin-top:30px}
+
+/* Compliance */
+.comp-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px}
+.comp-card{border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);padding:26px;display:flex;flex-direction:column;gap:10px}
+.comp-card.feature{padding:0;overflow:hidden;background:#0f0f0f}
+.comp-card.feature img{width:100%;aspect-ratio:16/8;object-fit:cover}
+.comp-card.feature .inner{padding:24px 26px 26px;display:flex;flex-direction:column;gap:10px;flex:1}
+.comp-card .tag{align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px;background:rgba(98,211,142,.12);color:var(--ok)}
+.comp-card h3{font-size:21px}
+.comp-card p{color:var(--muted);font-size:15px}
+.comp-card .link-arrow{margin-top:auto;align-self:flex-start}
+.comp-card .ind-ico{margin-bottom:4px}
+
+/* FAQ */
+.faq-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(32px,6vw,88px);align-items:start}
+.faq-grid h2{font-size:clamp(30px,4vw,48px)}
+.faq-grid .aside p:not(.kicker){color:var(--muted);margin-top:16px;font-size:17px}
+.faq-grid .aside .btn{margin-top:24px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:1px solid var(--line)}
+.faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;font-weight:700;font-size:17.5px;cursor:pointer}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .icon{transition:transform .25s;color:var(--dim)}
+.faq details[open] summary .icon{transform:rotate(45deg);color:var(--yellow)}
+.faq details p{color:var(--muted);padding:0 40px 22px 0;font-size:16px}
+
+/* Final CTA */
+.final{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#141414 url("assets/cta-dark.webp") no-repeat right center/auto 100%;border:1px solid var(--line);padding:clamp(36px,6vw,72px)}
+.final::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#141414 38%,rgba(20,20,20,.75) 60%,rgba(20,20,20,.1))}
+.final>*{position:relative}
+.final h2{font-size:clamp(30px,4.4vw,54px);max-width:16ch}
+.final h2 span{color:var(--dim)}
+.final .cta-row{margin-top:28px}
+.contact-line{display:flex;flex-wrap:wrap;gap:22px;margin-top:26px;color:var(--muted);font-size:15px}
+.contact-line a{display:flex;align-items:center;gap:8px}
+.contact-line a:hover{color:var(--text)}
+.contact-line .icon{width:18px;height:18px;color:var(--yellow)}
+
+/* Footer */
+.site-footer{border-top:1px solid var(--line);margin-top:clamp(64px,9vw,120px);padding:64px 0 36px;background:var(--bg-2)}
+.foot-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr) 1.5fr;gap:32px}
+.foot-brand p{color:var(--dim);font-size:14.5px;margin-top:14px;max-width:32ch}
+.foot-col h4{font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 16px;color:var(--text)}
+.foot-col ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.foot-col a{color:var(--muted);font-size:14.5px}
+.foot-col a:hover{color:var(--text)}
+.news{display:flex;border:1px solid var(--line-2);border-radius:999px;overflow:hidden;background:var(--surface);margin-top:4px}
+.news input{flex:1;min-width:0;background:none;border:0;outline:0;padding:0 18px;height:48px;font-size:15px}
+.news input::placeholder{color:var(--dim)}
+.news button{border:0;background:var(--text);color:var(--ink);font-weight:700;padding:0 20px;font-size:14px}
+.news-note{font-size:12.5px;color:var(--dim);margin-top:10px}
+.news-note a{text-decoration:underline}
+.pay{display:flex;flex-wrap:wrap;gap:8px;margin-top:48px;padding-top:28px;border-top:1px solid var(--line)}
+.pay span{font-size:12.5px;font-weight:700;padding:6px 10px;border:1px solid var(--line-2);border-radius:8px;color:var(--muted)}
+.legal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:22px;font-size:13px;color:var(--dim)}
+.legal nav{display:flex;flex-wrap:wrap;gap:18px}
+.legal a:hover{color:var(--text)}
+
+/* Cookie + toast + mobile bar */
+.cookie{position:fixed;left:16px;bottom:16px;z-index:80;max-width:380px;padding:18px;border-radius:var(--r);background:#1A1A19;border:1px solid var(--line-2);box-shadow:0 20px 50px -10px rgba(0,0,0,.7);font-size:14px;color:var(--muted)}
+.cookie a{text-decoration:underline;color:var(--text)}
+.cookie .row{display:flex;gap:8px;margin-top:14px}
+.cookie .btn{flex:1;min-height:40px;font-size:14px;padding:0 12px}
+.cookie[hidden]{display:none}
+.toast{position:fixed;left:50%;bottom:24px;z-index:95;transform:translate(-50%,16px);opacity:0;visibility:hidden;display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;background:var(--text);color:var(--ink);font-weight:700;font-size:14.5px;box-shadow:0 20px 40px -10px rgba(0,0,0,.6);transition:transform .35s cubic-bezier(.2,.9,.3,1.2),opacity .25s,visibility .25s}
+.toast.show{transform:translate(-50%,0);opacity:1;visibility:visible}
+.toast .icon{width:18px;height:18px;stroke-width:2.6}
+.mbar{display:none}
+
+/* Responsive */
+@media (max-width:1180px){
+  .main-nav a{padding:8px 9px;font-size:14.5px}
+  .header-in>.search{display:none}
+  .search-ico{display:inline-grid}
+  .header-actions{margin-left:auto}
+  .trust-grid{grid-template-columns:repeat(3,1fr)}
+  .trust-item:nth-child(4){border-left:0}
+  .trust-item:nth-child(n+4){border-top:1px solid var(--line)}
+  .foot-grid{grid-template-columns:repeat(3,1fr)}
+  .foot-brand{grid-column:1/-1}
+  .foot-news{grid-column:span 2}
+}
+@media (max-width:1100px){
+  .main-nav,.header-actions .hide-md{display:none}
+  .menu-btn{display:inline-grid}
+}
+@media (max-width:1020px){
+  .hero-grid,.pricing-grid,.samples-grid,.faq-grid{grid-template-columns:1fr}
+  .hero-media{aspect-ratio:4/3}
+  .cat-grid,.p-grid{grid-template-columns:repeat(2,1fr)}
+  .ind-grid{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .custom-grid{grid-template-columns:1fr}
+  .custom-media{aspect-ratio:16/10}
+  .comp-grid{grid-template-columns:1fr 1fr}
+  .comp-card.feature{grid-column:1/-1}
+}
+@media (max-width:720px){
+  .search{display:none}
+  .header-in{gap:12px;min-height:64px}
+  .header-actions{margin-left:auto}
+  .brand{font-size:17px}
+  .brand img{width:34px;height:34px}
+  .mobile-search{display:flex;max-width:none;margin:12px 0 0;height:48px}
+  .topbar .hide-sm{display:none}
+  .topbar .show-sm{display:inline}
+  .topbar-in{justify-content:center}
+  .hero{padding-top:20px}
+  .hero h1{margin:18px 0 16px}
+  .cta-row .btn{flex:1 1 100%}
+  .hero-media{aspect-ratio:1/1}
+  .price-card{gap:12px;padding:12px}
+  .price-card .thumb{width:52px;height:52px}
+  .price-card .thumb img{width:44px;height:44px}
+  .pc-price strong{font-size:19px}
+  .pc-title{font-size:14px}
+  .pc-meta{font-size:12px;white-space:nowrap}
+  .pc-price{font-size:11.5px}
+  .trust-grid{grid-template-columns:1fr 1fr}
+  .trust-item{padding:18px 12px;gap:10px}
+  .trust-item .icon{width:22px;height:22px}
+  .trust-item:nth-child(n){border-left:0;border-top:1px solid var(--line)}
+  .trust-item:nth-child(even){border-left:1px solid var(--line)}
+  .trust-item:nth-child(-n+2){border-top:0}
+  .trust-item:last-child{grid-column:1/-1;border-left:0}
+  .section-head{margin-bottom:24px}
+  .cat-grid{gap:12px}
+  .cat-card{padding:14px}
+  .cat-imgs{height:130px;margin-bottom:14px}
+  .cat-card h3{font-size:18px;flex-wrap:wrap;gap:2px 8px}
+  .cat-card p{font-size:13.5px}
+  .chips{gap:6px}
+  .chips a{padding:5px 10px;font-size:12.5px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(var(--gutter)*-1) 20px;padding:0 var(--gutter);scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none}
+  .p-grid{gap:10px}
+  .p-body{padding:14px 14px 16px}
+  .p-save{top:10px;left:10px;font-size:11px;padding:4px 8px}
+  .p-stock{display:none}
+  .p-name{font-size:15px}
+  .p-price strong{font-size:20px}
+  .p-tier{font-size:12.5px}
+  .p-add{min-height:40px;font-size:13.5px;padding:0 10px}
+  .calc-row{grid-template-columns:1fr}
+  .stepper input{flex:1;width:auto}
+  .calc-out{grid-template-columns:1fr 1fr}
+  .calc-out div:last-child{grid-column:1/-1}
+  .tiers li{grid-template-columns:84px 1fr 56px}
+  .ind-grid,.steps,.comp-grid{grid-template-columns:1fr}
+  .sample-form{grid-template-columns:1fr}
+  .compare th,.compare td{padding:14px 12px;font-size:14px}
+  .compare tbody th{width:28%}
+  .final{background-size:auto 46%;background-position:right bottom;padding-bottom:180px}
+  .final::before{background:linear-gradient(180deg,#141414 55%,rgba(20,20,20,.2))}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .foot-news{grid-column:1/-1}
+  .legal{flex-direction:column}
+  .cookie{left:12px;right:12px;bottom:12px;max-width:none}
+  .mbar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(11,11,11,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .3s}
+  .mbar.show{transform:none}
+  .mbar .btn{flex:1;min-height:48px;padding:0 12px}
+  .toast{bottom:84px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-badge" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></symbol>
+  <symbol id="i-pill" viewBox="0 0 24 24"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></symbol>
+  <symbol id="i-glass" viewBox="0 0 24 24"><path d="M5.116 4.104A1 1 0 0 1 6.11 3h11.78a1 1 0 0 1 .994 1.105L17.19 20.21A2 2 0 0 1 15.2 22H8.8a2 2 0 0 1-2-1.79z"/><path d="M6 12a5 5 0 0 1 6 0 5 5 0 0 0 6 0"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+</svg>
+
+<div class="topbar">
+  <div class="container topbar-in">
+    <p><svg class="icon"><use href="#i-truck"/></svg><span class="hide-sm">Ships from the Netherlands, same or next business day</span><span class="show-sm">Ships from NL · same or next business day</span></p>
+    <p class="hide-sm">B2B only · all prices excl. VAT</p>
+    <p class="hide-sm"><a href="tel:+31648360469">+31 6 48360469</a> · English / Nederlands</p>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container header-in">
+    <a class="brand" href="#main" aria-label="Bokito's Dealer home"><img src="assets/logo.png" width="38" height="38" alt="">Bokito's Dealer</a>
+    <nav class="main-nav" aria-label="Main">
+      <a href="#shop">Products</a>
+      <a href="#industries">Industries</a>
+      <a href="#custom">Custom packaging</a>
+      <a href="#compliance">Compliance</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <form class="search" role="search" action="https://bokitosdealer.com/products">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input type="search" name="search" placeholder="Search by size, SKU or type…" aria-label="Search products">
+    </form>
+    <div class="header-actions">
+      <a class="icon-btn search-ico" href="https://bokitosdealer.com/products" aria-label="Search products"><svg class="icon"><use href="#i-search"/></svg></a>
+      <a class="icon-btn hide-md" href="https://bokitosdealer.com/login" aria-label="Sign in"><svg class="icon"><use href="#i-user"/></svg></a>
+      <a class="icon-btn" href="https://bokitosdealer.com/cart" aria-label="Quote list" id="quoteBtn"><svg class="icon"><use href="#i-list"/></svg><span class="count" id="quoteCount" hidden>0</span></a>
+      <a class="btn btn-primary btn-sm hide-md" href="#quote">Get a quote</a>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><svg class="icon"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-backdrop" data-close></div>
+  <nav class="drawer-panel" aria-label="Mobile">
+    <button class="icon-btn close" data-close aria-label="Close menu"><svg class="icon"><use href="#i-x"/></svg></button>
+    <a class="nav" href="#shop" data-close>Products</a>
+    <a class="nav" href="#industries" data-close>Industries</a>
+    <a class="nav" href="#pricing" data-close>Volume pricing</a>
+    <a class="nav" href="#samples" data-close>Free sample box</a>
+    <a class="nav" href="#custom" data-close>Custom packaging</a>
+    <a class="nav" href="#compliance" data-close>Compliance</a>
+    <a class="nav" href="#faq" data-close>FAQ</a>
+    <a class="nav" href="https://bokitosdealer.com/login">Sign in</a>
+    <a class="btn btn-primary" href="#quote" data-close>Get a quote</a>
+  </nav>
+</div>
+
+<main id="main">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="badge"><svg class="icon"><use href="#i-check"/></svg></span>Official Chubby Gorilla® reseller for Europe</p>
+      <h1>Child-resistant packaging, <span class="hl">in stock in Europe.</span></h1>
+      <p class="lead">Chubby Gorilla bottles, jars, tubes and pouches for cannabis, CBD, vape, pharma and cosmetics brands. Shipped from the Netherlands, with no customs, no import duty and no six-week wait.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#shop">Shop 105 products <svg class="icon"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-ghost" href="#samples">Get a free sample box</a>
+      </div>
+      <form class="search mobile-search" role="search" action="https://bokitosdealer.com/products">
+        <svg class="icon"><use href="#i-search"/></svg>
+        <input type="search" name="search" placeholder="Search by size, SKU or type…" aria-label="Search products">
+      </form>
+      <p class="popular"><span>Popular:</span>
+        <a href="https://bokitosdealer.com/products/cgub1-10mlv3">10 ml Unicorn</a>
+        <a href="https://bokitosdealer.com/products/cgat6-120mm">120 mm tube</a>
+        <a href="https://bokitosdealer.com/products/cgpc5-50gl">50 g pouch</a>
+        <a href="https://bokitosdealer.com/products/cgac1-8oz">8 oz jar</a>
+      </p>
+    </div>
+    <div class="hero-media">
+      <img src="assets/hero-unicorn.jpg" width="1376" height="768" alt="Chubby Gorilla Unicorn bottles in clear, black and white with child-resistant caps">
+      <p class="stock-pill"><span class="pulse"></span>In stock · Netherlands warehouse</p>
+      <a class="price-card" href="#pricing">
+        <span class="thumb"><img src="assets/products/CGUB1-10MLV3-BK.webp" alt="" width="56" height="56"></span>
+        <span>
+          <span class="pc-title" style="display:block">10 ml Unicorn V3 bottle</span>
+          <span class="pc-meta" style="display:block">MOQ 2,000 · 6 colours</span>
+        </span>
+        <span class="pc-price"><strong><s>€0.12</s>€0.07</strong>per unit at volume</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust" aria-label="Why buy from Bokito's Dealer">
+  <div class="container trust-grid">
+    <div class="trust-item"><svg class="icon"><use href="#i-badge"/></svg><div><strong>Genuine Chubby Gorilla</strong><span>Sourced directly from the manufacturer</span></div></div>
+    <div class="trust-item"><svg class="icon"><use href="#i-shield"/></svg><div><strong>EN ISO 8317 certified</strong><span>Child-resistant, tamper-evident closures</span></div></div>
+    <div class="trust-item"><svg class="icon"><use href="#i-truck"/></svg><div><strong>Same or next-day dispatch</strong><span>From our warehouse in the Netherlands</span></div></div>
+    <div class="trust-item"><svg class="icon"><use href="#i-receipt"/></svg><div><strong>No customs, no import duty</strong><span>Dutch VAT invoice you can reclaim</span></div></div>
+    <div class="trust-item"><svg class="icon"><use href="#i-file"/></svg><div><strong>Compliance documents</strong><span>DoC and food-contact statements on request</span></div></div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" id="shop">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="kicker">Shop by product type</p>
+        <h2>Every Chubby Gorilla format, one EU warehouse.</h2>
+      </div>
+      <a class="link-arrow" href="https://bokitosdealer.com/products">Browse all 105 products <svg class="icon"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="cat-grid">
+      <article class="cat-card">
+        <a href="https://bokitosdealer.com/products?category=bottles">
+          <div class="cat-imgs"><img src="assets/products/CGUB1-60MLV3-BK.webp" alt="" loading="lazy" width="582" height="582"><img src="assets/products/CGASB1-60ML-CNL-OBK.webp" alt="" loading="lazy" width="582" height="582"></div>
+          <h3>Bottles <span class="n">54 products</span></h3>
+          <p>Dropper, dispensing and shot bottles, 10 ml to 1 L</p>
+        </a>
+        <ul class="chips">
+          <li><a href="https://bokitosdealer.com/products/range/unicorn">Unicorn</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=bottles&amp;range=aviator">Aviator</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=bottles&amp;range=spiral">Spiral</a></li>
+          <li><a href="https://bokitosdealer.com/shot-bottles">Shot bottles</a></li>
+        </ul>
+      </article>
+      <article class="cat-card">
+        <a href="https://bokitosdealer.com/products?category=containers">
+          <div class="cat-imgs"><img src="assets/products/CGAC1-8OZ-CNL-OBK.webp" alt="" loading="lazy" width="582" height="582"><img src="assets/products/CGAC1-1OZ-CNL-OBK.webp" alt="" loading="lazy" width="582" height="582"></div>
+          <h3>Containers <span class="n">33 products</span></h3>
+          <p>Screw-top CR jars from 30 cc to 625 cc</p>
+        </a>
+        <ul class="chips">
+          <li><a href="https://bokitosdealer.com/products?category=containers&amp;q=thick">Thick wall</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=containers&amp;q=xl">XL</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=containers&amp;q=cartridge">510 cartridge</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=containers&amp;q=dosing">Dosing cups</a></li>
+        </ul>
+      </article>
+      <article class="cat-card">
+        <a href="https://bokitosdealer.com/products?category=tubes">
+          <div class="cat-imgs"><img src="assets/products/CGAT6-120MM-CNL-OBK.webp" alt="" loading="lazy" width="582" height="582"><img src="assets/products/CGAPT5-116MM-CNL-CNL.webp" alt="" loading="lazy" width="582" height="582"></div>
+          <h3>Tubes <span class="n">14 products</span></h3>
+          <p>Pre-roll and cartridge tubes, 65 mm to 120 mm</p>
+        </a>
+        <ul class="chips">
+          <li><a href="https://bokitosdealer.com/products?category=tubes&amp;q=straight">Straight</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=tubes&amp;q=tapered">Tapered</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=tubes&amp;q=popcap">PopCap</a></li>
+        </ul>
+      </article>
+      <article class="cat-card">
+        <a href="https://bokitosdealer.com/products/range/pouch">
+          <div class="cat-imgs"><img src="assets/products/CGPC5-50GL-CNL-OBK.webp" alt="" loading="lazy" width="582" height="582"><img src="assets/products/CGPC5-40G-CNL-OBK.webp" alt="" loading="lazy" width="582" height="582"></div>
+          <h3>Pouch containers <span class="n">4 products</span></h3>
+          <p>Flat child-resistant pouches, 40 g to 100 g</p>
+        </a>
+        <ul class="chips">
+          <li><a href="https://bokitosdealer.com/products?category=pouch-containers&amp;q=50g">Up to 50 g</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=pouch-containers&amp;q=80g">80 g</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=pouch-containers&amp;q=100g">100 g+</a></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- BESTSELLERS -->
+<section class="section tight" id="bestsellers">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="kicker">Bestsellers</p>
+        <h2>What European brands order most.</h2>
+      </div>
+      <a class="link-arrow" href="https://bokitosdealer.com/products?bestsellers=1">All bestsellers <svg class="icon"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Filter bestsellers">
+      <button class="tab" role="tab" aria-selected="true" aria-controls="pgrid" data-filter="best">Bestsellers</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="pgrid" data-filter="bottles" tabindex="-1">Bottles</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="pgrid" data-filter="containers" tabindex="-1">Containers</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="pgrid" data-filter="tubes" tabindex="-1">Tubes</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="pgrid" data-filter="pouch-containers" tabindex="-1">Pouches</button>
+    </div>
+    <div class="p-grid" id="pgrid" role="tabpanel" aria-live="polite"></div>
+    <div class="grid-foot"><a class="btn btn-ghost" href="https://bokitosdealer.com/products">View the full catalogue <svg class="icon"><use href="#i-arrow"/></svg></a></div>
+  </div>
+</section>
+
+<!-- VOLUME PRICING -->
+<section class="section pricing" id="pricing">
+  <div class="container pricing-grid">
+    <div class="pricing-copy">
+      <p class="kicker">Volume pricing</p>
+      <h2>See your unit price before you ask for a quote.</h2>
+      <p>Every product has published tier pricing. Pick a product, set a quantity and see exactly what you'll pay per unit and in total.</p>
+      <ul class="ticks">
+        <li><svg class="icon"><use href="#i-check"/></svg>Order from a single case, scale when you're ready</li>
+        <li><svg class="icon"><use href="#i-check"/></svg>The unit price drops automatically at every tier</li>
+        <li><svg class="icon"><use href="#i-check"/></svg><span>Recurring or container-size volumes? <a href="#quote">Ask for a custom quote</a></span></li>
+      </ul>
+    </div>
+    <div class="calc" aria-labelledby="calcTitle">
+      <h3 id="calcTitle" class="sr-only">Price calculator</h3>
+      <label class="field-label" for="calcProduct">Product</label>
+      <select class="select" id="calcProduct"></select>
+      <div class="calc-row">
+        <div>
+          <label class="field-label" for="calcQty">Quantity (units)</label>
+          <div class="stepper">
+            <button type="button" id="qtyMinus" aria-label="One case less">−</button>
+            <input id="calcQty" type="text" inputmode="numeric" autocomplete="off">
+            <button type="button" id="qtyPlus" aria-label="One case more">+</button>
+          </div>
+        </div>
+        <p class="case-note" id="caseNote"></p>
+      </div>
+      <input type="range" id="calcRange" min="0" max="1000" value="0" aria-label="Quantity slider">
+      <div class="calc-out" aria-live="polite">
+        <div><span>Unit price</span><strong id="outUnit">€0.00</strong></div>
+        <div><span>Order total</span><strong id="outTotal">€0</strong></div>
+        <div><span>You save</span><strong id="outSave" class="y">€0</strong></div>
+      </div>
+      <p class="nudge" id="nudge"><svg class="icon"><use href="#i-trend"/></svg><span></span></p>
+      <ol class="tiers" id="tierList" aria-label="Price tiers"></ol>
+      <div class="calc-actions">
+        <button class="btn btn-primary" id="calcAdd" type="button">Add to quote list</button>
+        <a class="btn btn-ghost" id="calcView" href="#">View product</a>
+      </div>
+      <p class="calc-fine">Prices in EUR, excl. VAT and shipping. Live prices on each product page.</p>
+    </div>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section class="section" id="industries">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="kicker">Industries</p>
+        <h2>Packaging for what you make.</h2>
+      </div>
+      <p class="sub">Not sure which format fits? Start with your industry. We'll point you to the containers other brands in your space use.</p>
+    </div>
+    <div class="ind-grid">
+      <a class="ind-card" href="https://bokitosdealer.com/industries/cannabis-cbd-packaging">
+        <span class="ind-ico"><svg class="icon"><use href="#i-leaf"/></svg></span>
+        <h3>Cannabis &amp; CBD</h3>
+        <p>CR jars, pre-roll tubes and pouch containers for flower, pre-rolls, oils and edibles.</p>
+        <span class="go">Cannabis packaging <svg class="icon"><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="ind-card" href="https://bokitosdealer.com/industries/vape-e-liquid-packaging">
+        <span class="ind-ico"><svg class="icon"><use href="#i-drop"/></svg></span>
+        <h3>Vape &amp; e-liquid</h3>
+        <p>Unicorn dispensing bottles with CR caps and tamper-evident bands, 10 ml to 120 ml.</p>
+        <span class="go">E-liquid bottles <svg class="icon"><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="ind-card" href="https://bokitosdealer.com/industries/pharmaceutical-packaging">
+        <span class="ind-ico"><svg class="icon"><use href="#i-pill"/></svg></span>
+        <h3>Pharma &amp; supplements</h3>
+        <p>CR bottles, jars and dosing cups for capsules, tablets and liquid doses.</p>
+        <span class="go">Pharmaceutical packaging <svg class="icon"><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="ind-card" href="https://bokitosdealer.com/products?category=containers">
+        <span class="ind-ico"><svg class="icon"><use href="#i-sparkle"/></svg></span>
+        <h3>Cosmetics &amp; skincare</h3>
+        <p>Clear and opaque jars and bottles for balms, oils and serums that need to stay out of reach.</p>
+        <span class="go">Jars &amp; containers <svg class="icon"><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="ind-card" href="https://bokitosdealer.com/shot-bottles">
+        <span class="ind-ico"><svg class="icon"><use href="#i-glass"/></svg></span>
+        <h3>Food &amp; beverage</h3>
+        <p>Food-grade, BPA-free PET shot bottles from 30 ml to 1 L for shots, syrups and tinctures.</p>
+        <span class="go">Shot bottles <svg class="icon"><use href="#i-arrow"/></svg></span>
+      </a>
+      <a class="ind-card" href="https://bokitosdealer.com/products?category=bottles">
+        <span class="ind-ico"><svg class="icon"><use href="#i-flask"/></svg></span>
+        <h3>Chemicals &amp; household</h3>
+        <p>Child-resistant, tamper-evident bottles for liquids that must stay away from children.</p>
+        <span class="go">CR bottles <svg class="icon"><use href="#i-arrow"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLES -->
+<section class="samples" id="samples">
+  <div class="container samples-grid">
+    <div class="samples-media">
+      <img src="assets/sample-boxes.jpg" width="1200" height="896" loading="lazy" alt="Chubby Gorilla sample boxes: Assortment, Unicorn Bottle and Aviator">
+    </div>
+    <div class="samples-copy">
+      <p class="kicker">Free for businesses</p>
+      <h2>Touch and test before you order.</h2>
+      <p>Get a free Chubby Gorilla sample box and try the closures, sizes and finishes with your own product. We'll get back to you within one business day.</p>
+      <form class="sample-form" id="sampleForm">
+        <fieldset class="box-pick">
+          <legend>Choose a box</legend>
+          <label><input type="radio" name="box" value="assortment" checked><span>Assortment</span></label>
+          <label><input type="radio" name="box" value="unicorn"><span>Unicorn bottles</span></label>
+          <label><input type="radio" name="box" value="aviator"><span>Aviator range</span></label>
+        </fieldset>
+        <input class="in" name="company" placeholder="Company name" aria-label="Company name" autocomplete="organization" required>
+        <input class="in" name="name" placeholder="Your name" aria-label="Your name" autocomplete="name" required>
+        <input class="in" name="email" type="email" placeholder="Work email" aria-label="Work email" autocomplete="email" required>
+        <select class="in" name="country" aria-label="Country" required>
+          <option value="">Country</option>
+          <option>Netherlands</option><option>Belgium</option><option>Germany</option><option>France</option><option>Spain</option><option>Italy</option><option>Austria</option><option>Poland</option><option>Czechia</option><option>Ireland</option><option>Portugal</option><option>Denmark</option><option>Sweden</option><option>Finland</option><option>Other</option>
+        </select>
+        <button class="btn btn-dark" type="submit">Request my sample box <svg class="icon"><use href="#i-arrow"/></svg></button>
+        <p class="fine">For registered businesses. No obligation, no spam.</p>
+        <p class="form-ok" id="sampleOk" role="status">Thanks! In the live site this sends your request to the team. You'd hear back within one business day.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- WHY EU -->
+<section class="section" id="why">
+  <div class="container">
+    <div class="section-head center">
+      <p class="kicker">Why EU stock matters</p>
+      <h2>Faster and usually cheaper than importing it yourself.</h2>
+      <p class="sub">Unless you're filling a full container, buying from an EU distributor typically lands cheaper than a direct US import once duty, freight and VAT pre-financing are added up.</p>
+    </div>
+    <div class="compare">
+      <table>
+        <thead><tr><th scope="col"><span class="sr-only">Topic</span></th><th scope="col" class="us">Bokito's Dealer (EU stock)</th><th scope="col">Importing from the US yourself</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Delivery</th><td class="us"><svg class="icon"><use href="#i-check"/></svg>Dispatched same or next business day</td><td class="them">Weeks in transit by sea freight</td></tr>
+          <tr><th scope="row">Duty &amp; customs</th><td class="us"><svg class="icon"><use href="#i-check"/></svg>Already paid and cleared</td><td class="them">You pre-finance duty and brokerage fees</td></tr>
+          <tr><th scope="row">VAT</th><td class="us"><svg class="icon"><use href="#i-check"/></svg>Dutch VAT invoice you can reclaim</td><td class="them">Import VAT paid up front at the border</td></tr>
+          <tr><th scope="row">Order size</th><td class="us"><svg class="icon"><use href="#i-check"/></svg>From a single case</td><td class="them">Only worth it at container scale</td></tr>
+          <tr><th scope="row">Support</th><td class="us"><svg class="icon"><use href="#i-check"/></svg>Real people in English or Dutch, in your time zone</td><td class="them">Overseas, different time zone</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ol class="steps">
+      <li><h3>Compare products</h3><p>Browse by format or industry and see every volume tier upfront.</p></li>
+      <li><h3>Test with samples</h3><p>Order a free sample box and check fit, feel and closures.</p></li>
+      <li><h3>Order or get a quote</h3><p>Check out online, or request a quote for large or recurring volumes.</p></li>
+      <li><h3>Ships from the Netherlands</h3><p>Same or next business day, tracked and insured to your door.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- CUSTOM -->
+<section class="section tight" id="custom">
+  <div class="container">
+    <div class="custom-grid">
+      <div class="custom-media"><img src="assets/custom-lineup.webp" width="890" height="838" loading="lazy" alt="Custom-branded Chubby Gorilla jars, tubes and bottles in different colours"></div>
+      <div class="custom-copy">
+        <p class="kicker">Custom packaging</p>
+        <h2>Your brand, their first impression.</h2>
+        <p>Pick any bottle, container, tube or pouch from our catalogue and we'll make it yours, handled directly with our production partner and usually cheaper than arranging it yourself.</p>
+        <ul class="ticks">
+          <li><svg class="icon"><use href="#i-check"/></svg>Custom container and cap colours</li>
+          <li><svg class="icon"><use href="#i-check"/></svg>Printing, labelling and special finishes</li>
+          <li><svg class="icon"><use href="#i-check"/></svg>Guided from artwork to samples to delivery</li>
+        </ul>
+        <a class="btn btn-light" href="https://bokitosdealer.com/custom-packaging">Start a custom project <svg class="icon"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPLIANCE -->
+<section class="section" id="compliance">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="kicker">Compliance</p>
+        <h2>Stay on the right side of EU rules.</h2>
+      </div>
+    </div>
+    <div class="comp-grid">
+      <article class="comp-card feature">
+        <img src="assets/hero-ppwr-poster.jpg" width="1280" height="726" loading="lazy" alt="White Chubby Gorilla bottle with child-resistant cap">
+        <div class="inner">
+          <span class="tag">PPWR · in force since Aug 2026</span>
+          <h3>Ready for the EU Packaging Regulation.</h3>
+          <p>PPWR now applies across the EU. Our recyclable mono-material PET range and per-SKU documentation help you keep your packaging compliant.</p>
+          <a class="link-arrow" href="https://bokitosdealer.com/ppwr-compliance">Read the PPWR guide <svg class="icon"><use href="#i-arrow"/></svg></a>
+        </div>
+      </article>
+      <article class="comp-card">
+        <span class="ind-ico"><svg class="icon"><use href="#i-shield"/></svg></span>
+        <h3>EN ISO 8317 child resistance</h3>
+        <p>Closures are tested to the European standard for reclosable child-resistant packaging, with tamper-evident bands on most formats.</p>
+        <a class="link-arrow" href="https://bokitosdealer.com/child-resistant-packaging-guide">CR packaging guide <svg class="icon"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="comp-card">
+        <span class="ind-ico"><svg class="icon"><use href="#i-file"/></svg></span>
+        <h3>Documents on request</h3>
+        <p>Declaration of Conformity, EN ISO 8317 certificates and food-contact statements for the SKUs you order.</p>
+        <a class="link-arrow" href="https://bokitosdealer.com/contact">Request documents <svg class="icon"><use href="#i-arrow"/></svg></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section tight" id="faq">
+  <div class="container faq-grid">
+    <div class="aside">
+      <p class="kicker">FAQ</p>
+      <h2>Questions buyers ask first.</h2>
+      <p>Can't find your answer? We reply in English or Dutch, usually the same day.</p>
+      <a class="btn btn-ghost" href="https://bokitosdealer.com/faq">All FAQs <svg class="icon"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>What is the minimum order quantity?<svg class="icon"><use href="#i-plus"/></svg></summary>
+        <p>It depends on the product and is shown on every product page, from 30 units for 1 L bottles up to 3,000 for the smallest dosing cups. You order in full cases, and the unit price drops at every volume tier.</p>
+      </details>
+      <details>
+        <summary>How fast do you ship?<svg class="icon"><use href="#i-plus"/></svg></summary>
+        <p>Orders leave our Netherlands warehouse the same or next business day. Orders placed before mid-afternoon usually go out the same day. Every shipment is tracked and insured.</p>
+      </details>
+      <details>
+        <summary>Do I pay import duty or customs fees?<svg class="icon"><use href="#i-plus"/></svg></summary>
+        <p>No. Our stock is already in the EU: import duty and import VAT are paid and customs is closed. You get a Dutch VAT invoice.</p>
+      </details>
+      <details>
+        <summary>Can you provide compliance documentation?<svg class="icon"><use href="#i-plus"/></svg></summary>
+        <p>Yes. Because we work directly with the manufacturer, we can supply the Declaration of Conformity, EN ISO 8317 certification and food-contact statements for the SKUs you order.</p>
+      </details>
+      <details>
+        <summary>Do you ship outside the EU?<svg class="icon"><use href="#i-plus"/></svg></summary>
+        <p>Yes. For the UK we handle the export paperwork. For other countries, send us the destination and we'll quote shipping and lead time.</p>
+      </details>
+      <details>
+        <summary>Is your stock genuine Chubby Gorilla?<svg class="icon"><use href="#i-plus"/></svg></summary>
+        <p>Always. Every unit is sourced directly from the manufacturer, with no counterfeits and no grey-market stock.</p>
+      </details>
+      <details>
+        <summary>Do you sell to consumers?<svg class="icon"><use href="#i-plus"/></svg></summary>
+        <p>No, we sell to businesses only. All prices exclude VAT.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="container" id="quote">
+  <div class="final">
+    <h2>See a product you like? <span>We'll send back real pricing.</span></h2>
+    <div class="cta-row">
+      <a class="btn btn-light" href="https://bokitosdealer.com/get-quote">Get a quote <svg class="icon"><use href="#i-arrow"/></svg></a>
+      <a class="btn btn-ghost" href="https://bokitosdealer.com/book-a-call"><svg class="icon"><use href="#i-cal"/></svg> Book a call</a>
+    </div>
+    <div class="contact-line">
+      <a href="tel:+31648360469"><svg class="icon"><use href="#i-phone"/></svg>+31 6 48360469</a>
+      <a href="mailto:contact@bokitosdealer.com"><svg class="icon"><use href="#i-mail"/></svg>contact@bokitosdealer.com</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#main"><img src="assets/logo.png" width="38" height="38" alt="">Bokito's Dealer</a>
+        <p>Official Chubby Gorilla® reseller for Europe. Child-resistant packaging in stock in Amersfoort, the Netherlands.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="https://bokitosdealer.com/products?category=bottles">Bottles</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=containers">Containers</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=pouch-containers">Pouch containers</a></li>
+          <li><a href="https://bokitosdealer.com/products?category=tubes">Tubes</a></li>
+          <li><a href="https://bokitosdealer.com/custom-packaging">Custom packaging</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="https://bokitosdealer.com/guides">Guides</a></li>
+          <li><a href="https://bokitosdealer.com/ppwr-compliance">PPWR compliance</a></li>
+          <li><a href="https://bokitosdealer.com/child-resistant-packaging-guide">CR packaging guide</a></li>
+          <li><a href="https://bokitosdealer.com/chubby-gorilla-europe">Chubby Gorilla Europe</a></li>
+          <li><a href="https://bokitosdealer.com/faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="https://bokitosdealer.com/about">About us</a></li>
+          <li><a href="https://bokitosdealer.com/contact">Contact</a></li>
+          <li><a href="https://bokitosdealer.com/track-order">Track order</a></li>
+          <li><a href="https://www.linkedin.com/company/bokitosdealer">LinkedIn</a></li>
+          <li><a href="https://www.instagram.com/bokitosdealer/">Instagram</a></li>
+        </ul>
+      </div>
+      <div class="foot-col foot-news">
+        <h4>Restock &amp; new product alerts</h4>
+        <form class="news" id="newsForm">
+          <input type="email" placeholder="Work email" aria-label="Work email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+        <p class="news-note" id="newsNote">Occasional emails only. See our <a href="https://bokitosdealer.com/privacy">privacy policy</a>.</p>
+      </div>
+    </div>
+    <div class="pay" aria-label="Accepted payment methods">
+      <span>Visa</span><span>Mastercard</span><span>Maestro</span><span>American Express</span><span>iDEAL | Wero</span><span>Bancontact</span><span>Klarna</span><span>SEPA transfer</span>
+    </div>
+    <div class="legal">
+      <p>© 2026 Bokito's Dealer VOF · KvK 42114272 · VAT NL869794334B01 · Prices excl. VAT · B2B sales only</p>
+      <nav aria-label="Legal">
+        <a href="https://bokitosdealer.com/privacy">Privacy</a>
+        <a href="https://bokitosdealer.com/cookies">Cookies</a>
+        <a href="https://bokitosdealer.com/terms">Terms</a>
+        <a href="https://bokitosdealer.com/disclaimer">Disclaimer</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie" id="cookie" role="region" aria-label="Cookie consent">
+  We only use analytics cookies if you allow them. <a href="https://bokitosdealer.com/cookies">Cookie policy</a>
+  <div class="row">
+    <button class="btn btn-ghost" type="button" data-cookie="decline">Decline</button>
+    <button class="btn btn-light" type="button" data-cookie="accept">Accept</button>
+  </div>
+</div>
+
+<div class="mbar" id="mbar">
+  <a class="btn btn-ghost" href="#samples">Free samples</a>
+  <a class="btn btn-primary" href="#quote">Get a quote</a>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="icon"><use href="#i-check"/></svg><span></span></div>
+
+<script>
+const PRODUCTS = [{"id":"CGUB1-10MLV3","slug":"cgub1-10mlv3","name":"10 ml Unicorn V3 bottle","range":"Unicorn","cat":"bottles","vol":"10mL","moq":2000,"colours":6,"best":true,"img":"assets/products/CGUB1-10MLV3-BK.webp","tiers":[[2000,0.12],[8000,0.11],[40000,0.1],[80000,0.09],[250000,0.08],[400000,0.07]],"stock":true},{"id":"CGUB1-30MLV3","slug":"cgub1-30mlv3","name":"30 ml Unicorn V3 bottle","range":"Unicorn","cat":"bottles","vol":"30mL","moq":1000,"colours":6,"best":true,"img":"assets/products/CGUB1-30MLV3-BK.webp","tiers":[[1000,0.22],[10000,0.21],[20000,0.2],[30000,0.19],[50000,0.18]],"stock":true},{"id":"CGUB1-60MLV3","slug":"cgub1-60mlv3","name":"60 ml Unicorn V3 bottle","range":"Unicorn","cat":"bottles","vol":"60mL","moq":500,"colours":6,"best":true,"img":"assets/products/CGUB1-60MLV3-BK.webp","tiers":[[500,0.4],[1000,0.3],[4000,0.28],[8000,0.26],[25000,0.24],[45000,0.22]],"stock":true},{"id":"CGUB1-120MLV3","slug":"cgub1-120mlv3","name":"120 ml Unicorn V3 bottle","range":"Unicorn","cat":"bottles","vol":"120mL","moq":400,"colours":6,"best":true,"img":"assets/products/CGUB1-120MLV3-BK.webp","tiers":[[400,0.54],[800,0.42],[6000,0.39],[12000,0.38],[20000,0.36],[30000,0.34],[40000,0.32],[100000,0.29]],"stock":true},{"id":"CGUB1-60MLM","slug":"cgub1-60mlm","name":"60 ml Mini Unicorn bottle","range":"Unicorn","cat":"bottles","vol":"60mL","moq":500,"colours":3,"best":false,"img":"assets/products/CGUB1-60MLM-BK.webp","tiers":[[500,0.38],[3000,0.34],[10000,0.3],[60000,0.27],[125000,0.26],[200000,0.24]],"stock":true},{"id":"CGAB1-30ML","slug":"cgab1-30ml","name":"30 ml Aviator bottle","range":"Aviator","cat":"bottles","vol":"30mL","moq":1000,"colours":4,"best":false,"img":"assets/products/CGAB1-30ML-CNL-OBK.webp","tiers":[[1000,0.25],[4000,0.22],[8000,0.21],[25000,0.2],[40000,0.19],[80000,0.18]],"stock":true},{"id":"CGABB1-1LTR","slug":"cgabb1-1ltr","name":"1 L Aviator base bottle + dosing cup","range":"Aviator","cat":"bottles","vol":"1L","moq":30,"colours":2,"best":false,"img":"assets/products/CGABB1-1LTR-OBK-OBK.webp","tiers":[[30,2.1],[450,1.96],[900,1.92],[3000,1.88],[6000,1.79]],"stock":true},{"id":"CGAC1-8OZ","slug":"cgac1-8oz","name":"8 oz (240 cc) Aviator container","range":"Aviator","cat":"containers","vol":"240cc","moq":200,"colours":5,"best":true,"img":"assets/products/CGAC1-8OZ-CNL-OBK.webp","tiers":[[200,0.95],[1000,0.73],[4000,0.7],[8000,0.67],[25000,0.63],[40000,0.61]],"stock":true},{"id":"CGAC1-18.5OZXL","slug":"cgac1-18-5ozxl","name":"18.5 oz (550 cc) Aviator XL container","range":"Aviator","cat":"containers","vol":"550cc","moq":60,"colours":5,"best":true,"img":"assets/products/CGAC1-18.5OZXL-CNL-OBK.webp","tiers":[[60,3.2],[480,1.95],[900,1.71],[9000,1.56],[24000,1.52],[45000,1.4]],"stock":true},{"id":"CGAC1-1OZ","slug":"cgac1-1oz","name":"1 oz (30 cc) Aviator container","range":"Aviator","cat":"containers","vol":"30cc","moq":500,"colours":5,"best":true,"img":"assets/products/CGAC1-1OZ-CNL-OBK.webp","tiers":[[500,0.55],[1000,0.45],[4000,0.43],[8000,0.39],[18000,0.37],[25000,0.36],[30000,0.34],[40000,0.33]],"stock":true},{"id":"CGSC1-3OZ","slug":"cgsc1-3oz","name":"3 oz (90 cc) Spiral container","range":"Spiral","cat":"containers","vol":"90cc","moq":400,"colours":4,"best":false,"img":"assets/products/CGSC1-3OZ-CNL-OBK.webp","tiers":[[400,0.6],[800,0.54],[4000,0.53],[8000,0.5],[24000,0.47],[40000,0.44]],"stock":true},{"id":"CGAT6-120MM","slug":"cgat6-120mm","name":"120 mm Aviator tube","range":"Aviator","cat":"tubes","vol":"120mm","moq":500,"colours":5,"best":true,"img":"assets/products/CGAT6-120MM-CNL-OBK.webp","tiers":[[500,0.51],[1000,0.39],[4000,0.37],[8000,0.35],[18000,0.32],[25000,0.29],[30000,0.28],[40000,0.27]],"stock":true},{"id":"CGST1-95MM","slug":"cgst1-95mm","name":"95 mm Spiral tube","range":"Spiral","cat":"tubes","vol":"95mm","moq":300,"colours":4,"best":true,"img":"assets/products/CGST1-95MM-CNL-OBK.webp","tiers":[[300,0.55],[900,0.43],[6000,0.41],[12000,0.39],[15000,0.37],[30000,0.35],[48000,0.33]],"stock":true},{"id":"CGAPT5-116MM","slug":"cgapt5-116mm","name":"116 mm Aviator PopCap tube","range":"Aviator","cat":"tubes","vol":"116mm","moq":1500,"colours":3,"best":true,"img":"assets/products/CGAPT5-116MM-CNL-CNL.webp","tiers":[[1500,0.19],[24000,0.17],[90000,0.16],[540000,0.15],[750000,0.14]],"stock":true},{"id":"CGPC5-50GL","slug":"cgpc5-50gl","name":"50 g pouch container","range":"Pouch","cat":"pouch-containers","vol":"50g","moq":500,"colours":5,"best":true,"img":"assets/products/CGPC5-50GL-CNL-OBK.webp","tiers":[[500,0.29],[5000,0.24],[20000,0.22],[50000,0.21],[250000,0.19]],"stock":true},{"id":"CGASB1-60ML","slug":"cgasb1-60ml","name":"60 ml Aviator shot bottle","range":"Aviator","cat":"bottles","vol":"60mL","moq":500,"colours":5,"best":true,"img":"assets/products/CGASB1-60ML-CNL-OBK.webp","tiers":[[500,0.36],[8000,0.34],[25000,0.32],[40000,0.29],[80000,0.25],[175000,0.24],[250000,0.22]],"stock":true},{"id":"CGAC1-10OZXL","slug":"cgac1-10ozxl","name":"10 oz (300 cc) Aviator XL container","range":"Aviator","cat":"containers","vol":"300cc","moq":80,"colours":4,"best":false,"img":"assets/products/CGAC1-10OZXL-CNL-OBK.webp","tiers":[[80,2.15],[480,1.6],[800,1.45],[8000,1.35],[16000,1.25],[24000,1.15],[40000,1.07]],"stock":true},{"id":"CGSB1-30ML","slug":"cgsb1-30ml","name":"30 ml Spiral bottle","range":"Spiral","cat":"bottles","vol":"30mL","moq":1000,"colours":4,"best":false,"img":"assets/products/CGSB1-30ML-CNL-OBK.webp","tiers":[[1000,0.34],[5000,0.32],[10000,0.3],[20000,0.28],[50000,0.26],[100000,0.24]],"stock":true},{"id":"CGASB1-30MLSC","slug":"cgasb1-30mlsc","name":"30 ml Stubby Aviator shot bottle","range":"Aviator","cat":"bottles","vol":"30mL","moq":800,"colours":5,"best":false,"img":"assets/products/CGASB1-30MLSC-CNL-OBK.webp","tiers":[[800,0.31],[4000,0.3],[16000,0.29],[40000,0.28],[80000,0.27],[160000,0.26]],"stock":true},{"id":"CGPC5-40G","slug":"cgpc5-40g","name":"40 g dual-compartment pouch","range":"Pouch","cat":"pouch-containers","vol":"40g","moq":600,"colours":5,"best":false,"img":"assets/products/CGPC5-40G-CNL-OBK.webp","tiers":[[600,0.28],[3000,0.23],[12000,0.21],[48000,0.2],[96000,0.19]],"stock":true}];
+const BASE = 'https://bokitosdealer.com';
+const $ = (s, el = document) => el.querySelector(s);
+const eur = n => '€' + n.toFixed(2);
+const eur0 = n => '€' + n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const num = n => n.toLocaleString('en-GB');
+const short = n => n >= 1e6 ? (n / 1e6).toLocaleString('en-GB', { maximumFractionDigits: 1 }) + 'M' : n >= 1e4 ? Math.round(n / 1e3) + 'k' : num(n);
+const lastTier = p => p.tiers[p.tiers.length - 1];
+const maxSave = p => Math.round(100 * (1 - lastTier(p)[1] / p.tiers[0][1]));
+const RANGE_LABEL = { Unicorn: 'Unicorn', Aviator: 'Aviator', Spiral: 'Spiral', Pouch: 'Pouch' };
+
+/* Quote list */
+let quoteCount = 0;
+function addToQuote(name) {
+  quoteCount++;
+  const c = $('#quoteCount');
+  c.textContent = quoteCount; c.hidden = false;
+  $('#quoteBtn').setAttribute('aria-label', `Quote list, ${quoteCount} item${quoteCount > 1 ? 's' : ''}`);
+  toast(`${name} added to your quote list`);
+}
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast');
+  $('span', t).textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* Product grid */
+function card(p) {
+  const save = maxSave(p);
+  const [topQty, topPrice] = lastTier(p);
+  return `<article class="p-card">
+    <a class="p-media" href="${BASE}/products/${p.slug}" tabindex="-1" aria-hidden="true">
+      ${save >= 10 ? `<span class="p-save">Up to −${save}% at volume</span>` : ''}
+      <span class="p-stock"><i></i>In stock</span>
+      <img src="${p.img}" alt="" loading="lazy" width="582" height="582">
+    </a>
+    <div class="p-body">
+      <p class="p-meta">${RANGE_LABEL[p.range] || p.range} · ${p.colours} colour${p.colours > 1 ? 's' : ''}</p>
+      <h3 class="p-name"><a href="${BASE}/products/${p.slug}">${p.name}</a></h3>
+      <div class="p-price"><strong>${eur(p.tiers[0][1])}</strong><span>/unit</span></div>
+      <p class="p-tier">MOQ ${num(p.moq)} · down to <b>${eur(topPrice)}</b> at ${short(topQty)}+</p>
+      <button class="btn btn-ghost btn-sm p-add" type="button" data-id="${p.id}">Add to quote</button>
+    </div>
+  </article>`;
+}
+function renderGrid(filter) {
+  const list = PRODUCTS.filter(p => p.stock && (filter === 'best' ? p.best : p.cat === filter)).slice(0, 8);
+  $('#pgrid').innerHTML = list.map(card).join('');
+}
+document.querySelector('.tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.tab'); if (!tab) return;
+  selectTab(tab);
+});
+document.querySelector('.tabs').addEventListener('keydown', e => {
+  const tabs = [...document.querySelectorAll('.tab')];
+  const i = tabs.indexOf(document.activeElement);
+  if (i < 0) return;
+  const next = e.key === 'ArrowRight' ? tabs[(i + 1) % tabs.length] : e.key === 'ArrowLeft' ? tabs[(i - 1 + tabs.length) % tabs.length] : null;
+  if (next) { e.preventDefault(); selectTab(next); next.focus(); }
+});
+function selectTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+  renderGrid(tab.dataset.filter);
+}
+$('#pgrid').addEventListener('click', e => {
+  const b = e.target.closest('.p-add'); if (!b) return;
+  const p = PRODUCTS.find(x => x.id === b.dataset.id);
+  addToQuote(p.name);
+  b.classList.add('added'); b.textContent = 'Added ✓';
+});
+renderGrid('best');
+
+/* Volume pricing calculator */
+const sel = $('#calcProduct'), qtyIn = $('#calcQty'), range = $('#calcRange');
+let cur;
+const order = ['bottles', 'containers', 'tubes', 'pouch-containers'];
+const groups = { bottles: 'Bottles', containers: 'Containers', tubes: 'Tubes', 'pouch-containers': 'Pouch containers' };
+sel.innerHTML = order.map(c => `<optgroup label="${groups[c]}">` +
+  PRODUCTS.filter(p => p.cat === c && p.stock).map(p => `<option value="${p.id}">${p.name}</option>`).join('') + '</optgroup>').join('');
+sel.value = 'CGUB1-10MLV3';
+const caseSize = p => p.moq;
+const parseQty = v => +String(v).replace(/[^0-9]/g, '');
+const maxQty = p => Math.round(lastTier(p)[0] * 1.25 / caseSize(p)) * caseSize(p);
+// slider is logarithmic so small and huge orders are both reachable
+const toSlider = (p, q) => Math.round(1000 * Math.log(q / caseSize(p)) / Math.log(maxQty(p) / caseSize(p)));
+const fromSlider = (p, v) => Math.max(1, Math.round(caseSize(p) * Math.pow(maxQty(p) / caseSize(p), v / 1000) / caseSize(p))) * caseSize(p);
+function tierFor(p, q) { let t = 0; p.tiers.forEach((x, i) => { if (q >= x[0]) t = i; }); return t; }
+function setProduct(id) {
+  cur = PRODUCTS.find(p => p.id === id);
+  $('#caseNote').textContent = `Sold in cases of ${num(caseSize(cur))}`;
+  $('#calcView').href = `${BASE}/products/${cur.slug}`;
+  const top = cur.tiers[0][1];
+  $('#tierList').innerHTML = cur.tiers.map(([q, pr], i) =>
+    `<li data-i="${i}"><span>${short(q)}+</span><span class="bar"><i style="width:${Math.max(8, 100 * pr / top)}%"></i></span><span>${eur(pr)}</span></li>`).join('');
+  setQty(cur.tiers[Math.min(1, cur.tiers.length - 1)][0]);
+}
+function setQty(q, fromRange) {
+  const cs = caseSize(cur);
+  q = Math.max(cs, Math.round((+q || cs) / cs) * cs);
+  qtyIn.value = num(q);
+  if (!fromRange) range.value = toSlider(cur, Math.min(q, maxQty(cur)));
+  const t = tierFor(cur, q), price = cur.tiers[t][1], base = cur.tiers[0][1];
+  $('#outUnit').textContent = eur(price);
+  $('#outTotal').textContent = eur0(q * price);
+  $('#outSave').textContent = t ? eur0(q * (base - price)) : '—';
+  document.querySelectorAll('#tierList li').forEach(li => li.classList.toggle('on', +li.dataset.i === t));
+  const n = $('#nudge span'), next = cur.tiers[t + 1];
+  n.parentElement.style.display = 'flex';
+  if (next) {
+    const more = next[0] - q;
+    n.innerHTML = `Add <b>${num(more)}</b> units to reach <b>${eur(next[1])}</b>/unit (−${Math.round(100 * (1 - next[1] / base))}% vs. MOQ price).`;
+  } else {
+    n.innerHTML = `You're at the best published tier. For larger or recurring volumes, <a href="#quote" style="text-decoration:underline">ask for a custom quote</a>.`;
+  }
+}
+sel.addEventListener('change', () => setProduct(sel.value));
+qtyIn.addEventListener('change', () => setQty(parseQty(qtyIn.value)));
+range.addEventListener('input', () => setQty(fromSlider(cur, +range.value), true));
+$('#qtyMinus').addEventListener('click', () => setQty(parseQty(qtyIn.value) - caseSize(cur)));
+$('#qtyPlus').addEventListener('click', () => setQty(parseQty(qtyIn.value) + caseSize(cur)));
+$('#calcAdd').addEventListener('click', () => addToQuote(`${qtyIn.value} × ${cur.name}`));
+setProduct(sel.value);
+
+/* Forms (prototype only) */
+$('#sampleForm').addEventListener('submit', e => { e.preventDefault(); $('#sampleOk').classList.add('show'); });
+$('#newsForm').addEventListener('submit', e => { e.preventDefault(); $('#newsNote').textContent = 'Thanks, you’re on the list.'; e.target.reset(); });
+
+/* Cookie banner: equal-weight choices, never covers the hero CTAs */
+document.querySelectorAll('[data-cookie]').forEach(b => b.addEventListener('click', () => {
+  $('#cookie').hidden = true;
+}));
+
+/* Mobile drawer */
+const drawer = $('#drawer'), menuBtn = $('#menuBtn');
+function setDrawer(open) {
+  drawer.classList.toggle('open', open);
+  drawer.setAttribute('aria-hidden', !open);
+  menuBtn.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) $('.close', drawer).focus();
+}
+menuBtn.addEventListener('click', () => setDrawer(true));
+drawer.addEventListener('click', e => { if (e.target.closest('[data-close]')) setDrawer(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) { setDrawer(false); menuBtn.focus(); } });
+
+/* Sticky mobile CTA after the hero */
+const mbar = $('#mbar');
+let pastHero = false;
+const syncBar = () => mbar.classList.toggle('show', pastHero && $('#cookie').hidden);
+new IntersectionObserver(([en]) => { pastHero = !en.isIntersecting; syncBar(); }).observe($('.hero'));
+$('#cookie').addEventListener('click', e => { if (e.target.closest('[data-cookie]')) syncBar(); });
+</script>
+</body>
+</html>
