@@ -1,84 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bokito's Dealer - Chubby Gorilla Reseller</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        header {
-            background: #1a3d7c;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        nav {
-            display: flex;
-            justify-content: center;
-            background: #254ea1;
-            padding: 10px;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            font-weight: bold;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-        }
-        .product {
-            display: flex;
-            justify-content: space-between;
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        .cta {
-            background: #1a3d7c;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bokito's Dealer — Chubby Gorilla bottles by the case</title>
+  <meta name="description" content="Chubby Gorilla Unicorn and Aviator bottles by the case. Mix and match bottle and cap colours, see volume pricing live, and build a quote in minutes.">
+  <meta name="theme-color" content="#1f3fae">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f3fae'/%3E%3Crect x='12' y='4' width='8' height='8' rx='2' fill='%23c8f53a'/%3E%3Cpath d='M10 15c0-2 2-3 3-3h6c1 0 3 1 3 3v11a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    try {
+      var savedTheme = localStorage.getItem('bd-theme');
+      if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+    } catch (e) {}
+  </script>
 </head>
 <body>
-    <header>
-        <h1>Bokito's Dealer</h1>
-        <p>Your Trusted Chubby Gorilla Reseller</p>
-    </header>
-    <nav>
-        <a href="#home">Home</a>
-        <a href="#shop">Shop</a>
-        <a href="#quote">Request a Quote</a>
-        <a href="#contact">Contact</a>
-    </nav>
-    <div class="container">
-        <h2>Featured Products</h2>
-        <div class="product">
-            <p>Chubby Gorilla Bottle - 120ml</p>
-            <div class="cta">Buy Now</div>
-        </div>
-        <div class="product">
-            <p>Chubby Gorilla Aviator Container</p>
-            <div class="cta">Buy Now</div>
-        </div>
-        <div class="product">
-            <p>Chubby Gorilla Unicorn Bottle - 60ml</p>
-            <div class="cta">Buy Now</div>
-        </div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <a class="logo" href="#top" aria-label="Bokito's Dealer, back to top">
+        <span class="logo__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="currentColor"/><rect x="12" y="4" width="8" height="8" rx="2" fill="#c8f53a"/><path d="M10 15c0-2 2-3 3-3h6c1 0 3 1 3 3v11a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z" fill="#fff"/></svg>
+        </span>
+        <span class="logo__word">Bokito's<span>Dealer</span></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#catalog">Shop</a>
+        <a href="#pricing">Volume pricing</a>
+        <a href="#how">How it works</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M1.5 12h3M19.5 12h3M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
+        </button>
+        <a class="btn btn--brand btn--sm quote-link" href="#quote">
+          <span class="quote-link__your">Your </span><span class="quote-link__q">quote</span> <span class="count" id="cart-count" aria-live="polite">0</span>
+        </a>
+      </div>
     </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="wrap hero__grid">
+        <div class="hero__copy">
+          <p class="eyebrow">Chubby Gorilla reseller</p>
+          <h1>Child-resistant bottles,<br><span class="hl">by the case.</span></h1>
+          <p class="lede">Mix and match bottle and cap colours, watch your unit price drop as your order grows, and leave with a quote you can send in under two minutes.</p>
+          <div class="hero__cta">
+            <a class="btn btn--brand" href="#catalog">Browse the range</a>
+            <a class="btn btn--ghost" href="#pricing">See volume pricing</a>
+          </div>
+          <ul class="chips" aria-label="Highlights">
+            <li>Child-resistant caps</li>
+            <li>9 cap colours</li>
+            <li>Tiers pool across colours</li>
+            <li>Up to 38% off at volume</li>
+          </ul>
+        </div>
+        <div class="hero__art" aria-hidden="false">
+          <div class="hero__blob" aria-hidden="true"></div>
+          <div class="hero__bottles" id="hero-bottles"></div>
+          <div class="price-tag" id="hero-tag" aria-live="off"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalog -->
+    <section class="section" id="catalog" aria-labelledby="catalog-title">
+      <div class="wrap">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">The range</p>
+            <h2 id="catalog-title">Pick a bottle, make it yours</h2>
+          </div>
+          <p class="section__note">Every bottle is configurable — choose a body and cap colour, then add it to your quote.</p>
+        </div>
+
+        <div class="toolbar" role="search">
+          <label class="search">
+            <span class="sr-only">Search bottles</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="search" type="search" placeholder="Search — try “60ml” or “PET”" autocomplete="off">
+          </label>
+          <div class="segmented" id="line-filter" role="radiogroup" aria-label="Product line"></div>
+          <label class="select">
+            <span class="sr-only">Sort by</span>
+            <select id="sort">
+              <option value="featured">Featured</option>
+              <option value="size-asc">Size: small to large</option>
+              <option value="size-desc">Size: large to small</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+            </select>
+          </label>
+        </div>
+
+        <p class="result-count" id="result-count" aria-live="polite"></p>
+        <ul class="grid" id="product-grid"></ul>
+      </div>
+    </section>
+
+    <!-- Volume pricing -->
+    <section class="section section--alt" id="pricing" aria-labelledby="pricing-title">
+      <div class="wrap">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Volume pricing</p>
+            <h2 id="pricing-title">The more you stock, the less you pay</h2>
+          </div>
+          <p class="section__note">Tiers count the total of each product across every colour combination in your quote — so 300 red and 300 blue caps count as 600.</p>
+        </div>
+
+        <div class="calc">
+          <div class="calc__controls">
+            <label class="field">
+              <span class="field__label">Product</span>
+              <select id="calc-product"></select>
+            </label>
+            <div class="field">
+              <label class="field__label" for="calc-range">Quantity</label>
+              <div class="calc__qty"><output id="calc-qty" for="calc-range">0</output> <span>units</span></div>
+              <input id="calc-range" type="range" min="0" max="1000" step="1" value="400" aria-describedby="calc-qty">
+              <div class="range-scale" aria-hidden="true"><span>100</span><span>1k</span><span>5k</span><span>20k</span></div>
+            </div>
+            <dl class="calc__stats">
+              <div><dt>Unit price</dt><dd id="calc-unit">—</dd></div>
+              <div><dt>Order value</dt><dd id="calc-total">—</dd></div>
+              <div class="is-good"><dt>You save</dt><dd id="calc-save">—</dd></div>
+            </dl>
+            <p class="calc__hint" id="calc-hint" aria-live="polite"></p>
+          </div>
+          <div class="calc__chart" id="calc-chart" role="list" aria-label="Unit price per tier"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">How it works</p>
+            <h2 id="how-title">From idea to pallet in three steps</h2>
+          </div>
+        </div>
+        <ol class="steps">
+          <li>
+            <span class="steps__n">1</span>
+            <h3>Configure</h3>
+            <p>Choose a bottle, then a body and cap colour. The preview updates live, so you can see the combination before you commit.</p>
+          </li>
+          <li>
+            <span class="steps__n">2</span>
+            <h3>Stack up</h3>
+            <p>Add as many combinations as you like. Quantities round to whole cases and every colour of a product counts towards its tier.</p>
+          </li>
+          <li>
+            <span class="steps__n">3</span>
+            <h3>Send your quote</h3>
+            <p>Fill in your details to get a numbered quote you can email straight to us, print, or save as a PDF for your records.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Quote -->
+    <section class="section section--alt" id="quote" aria-labelledby="quote-title">
+      <div class="wrap">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Your quote</p>
+            <h2 id="quote-title">Review and request</h2>
+          </div>
+          <p class="section__note">Your selection is saved in this browser, so you can come back to it later.</p>
+        </div>
+
+        <div class="quote">
+          <div class="quote__cart card" id="cart"></div>
+
+          <form class="quote__form card" id="quote-form" novalidate>
+            <h3>Your details</h3>
+            <div class="form-grid">
+              <label class="field">
+                <span class="field__label">Full name <abbr title="required">*</abbr></span>
+                <input name="name" autocomplete="name" required>
+                <span class="field__error" aria-live="polite"></span>
+              </label>
+              <label class="field">
+                <span class="field__label">Company</span>
+                <input name="company" autocomplete="organization">
+              </label>
+              <label class="field">
+                <span class="field__label">Email <abbr title="required">*</abbr></span>
+                <input name="email" type="email" autocomplete="email" required>
+                <span class="field__error" aria-live="polite"></span>
+              </label>
+              <label class="field">
+                <span class="field__label">Phone</span>
+                <input name="phone" type="tel" autocomplete="tel">
+              </label>
+              <label class="field">
+                <span class="field__label">Country <abbr title="required">*</abbr></span>
+                <select name="country" autocomplete="country-name" required>
+                  <option value="">Select…</option>
+                  <option>Netherlands</option>
+                  <option>Belgium</option>
+                  <option>Luxembourg</option>
+                  <option>Germany</option>
+                  <option>France</option>
+                  <option>Other EU country</option>
+                  <option>United Kingdom</option>
+                  <option>Other</option>
+                </select>
+                <span class="field__error" aria-live="polite"></span>
+              </label>
+              <label class="field">
+                <span class="field__label">VAT number</span>
+                <input name="vat" autocomplete="off" placeholder="Optional">
+              </label>
+              <label class="field field--full">
+                <span class="field__label">Notes</span>
+                <textarea name="notes" rows="3" placeholder="Delivery timing, custom labels, anything else we should know"></textarea>
+              </label>
+              <label class="check field--full">
+                <input type="checkbox" name="labels">
+                <span>I'm interested in custom printed labels</span>
+              </label>
+            </div>
+            <button class="btn btn--brand btn--block" type="submit">Create my quote</button>
+            <p class="fineprint">Prices exclude VAT and shipping. Colour availability is confirmed when we reply to your quote.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap wrap--narrow">
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-title">Good questions</h2>
+        <div class="faq">
+          <details>
+            <summary>What's the minimum order?</summary>
+            <p>One case of any product. Case sizes are shown on each bottle, and quantities always round up to whole cases.</p>
+          </details>
+          <details>
+            <summary>How do the volume tiers work?</summary>
+            <p>Your tier is set by the total quantity of a product in your quote, across all colour combinations. Order 300 natural bottles with red caps and 300 black bottles with blue caps, and both lines are priced at the 600-unit tier.</p>
+          </details>
+          <details>
+            <summary>Are these real-time prices?</summary>
+            <p>The prices you see are our current list prices. Your quote is confirmed by email, together with colour availability, shipping and delivery timing.</p>
+          </details>
+          <details>
+            <summary>Can I get bottles with my own branding?</summary>
+            <p>Tick the custom labels box when you request your quote, tell us what you have in mind in the notes, and we'll come back with options.</p>
+          </details>
+          <details>
+            <summary>Is my information stored anywhere?</summary>
+            <p>Your selection is kept only in this browser. Nothing is sent until you choose to email your quote.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <div>
+        <span class="logo__word">Bokito's<span>Dealer</span></span>
+        <p>Your trusted Chubby Gorilla reseller.</p>
+      </div>
+      <p class="fineprint">Chubby Gorilla is a trademark of its respective owner. Bokito's Dealer is an independent reseller.</p>
+    </div>
+  </footer>
+
+  <!-- Configurator -->
+  <dialog class="modal" id="configurator" aria-labelledby="cfg-title">
+    <form method="dialog" class="modal__close-form">
+      <button class="icon-btn modal__close" value="cancel" aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </form>
+    <div class="cfg">
+      <div class="cfg__preview">
+        <div class="cfg__stage" id="cfg-preview"></div>
+        <p class="cfg__meta" id="cfg-meta"></p>
+      </div>
+      <div class="cfg__panel">
+        <p class="eyebrow" id="cfg-line"></p>
+        <h2 id="cfg-title"></h2>
+        <p class="cfg__blurb" id="cfg-blurb"></p>
+
+        <fieldset class="swatches">
+          <legend>Body <span id="cfg-body-name"></span></legend>
+          <div class="swatches__list" id="cfg-bodies"></div>
+        </fieldset>
+        <fieldset class="swatches">
+          <legend>Cap <span id="cfg-cap-name"></span></legend>
+          <div class="swatches__list" id="cfg-caps"></div>
+        </fieldset>
+
+        <div class="field">
+          <label class="field__label" for="cfg-qty">Quantity <span class="muted" id="cfg-case"></span></label>
+          <div class="stepper">
+            <button type="button" class="stepper__btn" id="cfg-minus" aria-label="One case fewer">−</button>
+            <input id="cfg-qty" type="number" inputmode="numeric" min="0">
+            <button type="button" class="stepper__btn" id="cfg-plus" aria-label="One case more">+</button>
+          </div>
+        </div>
+
+        <div class="pricebox" aria-live="polite">
+          <div class="pricebox__row">
+            <div>
+              <span class="pricebox__unit" id="cfg-unit"></span>
+              <span class="muted">/ unit</span>
+              <s class="muted" id="cfg-list"></s>
+            </div>
+            <span class="tier-badge" id="cfg-tier"></span>
+          </div>
+          <div class="tierbar" id="cfg-tierbar" aria-hidden="true"></div>
+          <p class="pricebox__pool muted" id="cfg-pool"></p>
+          <div class="pricebox__next" id="cfg-next"></div>
+        </div>
+
+        <button class="btn btn--brand btn--block" id="cfg-add" type="button"></button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Quote document -->
+  <dialog class="modal modal--doc" id="quote-dialog" aria-labelledby="doc-title">
+    <div class="doc" id="quote-doc" tabindex="-1" autofocus></div>
+    <div class="doc__actions">
+      <a class="btn btn--brand" id="doc-email" href="#">Email this quote</a>
+      <button class="btn btn--ghost" id="doc-print" type="button">Print / save PDF</button>
+      <button class="btn btn--ghost" id="doc-copy" type="button">Copy as text</button>
+      <form method="dialog"><button class="btn btn--quiet">Close</button></form>
+    </div>
+  </dialog>
+
+  <div id="print-area" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/catalog.js"></script>
+  <script src="js/pricing.js"></script>
+  <script src="js/bottle.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

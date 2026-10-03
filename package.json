@@ -1,0 +1,9 @@
+{
+  "name": "bokitos-dealer",
+  "private": true,
+  "description": "Static storefront and quote builder for Bokito's Dealer.",
+  "scripts": {
+    "start": "npx --yes http-server -p 8080 -c-1 .",
+    "test": "node --test"
+  }
+}
