@@ -1,0 +1,126 @@
+{
+ "voice": "af_heart",
+ "duration": 77.64,
+ "lines": [
+  {
+   "id": "L1",
+   "text": "What if the Moon...",
+   "start": 0.12,
+   "end": 1.039
+  },
+  {
+   "id": "L1b",
+   "text": "suddenly disappeared?",
+   "start": 1.089,
+   "end": 2.228
+  },
+  {
+   "id": "L2",
+   "text": "No explosion. No sound. It's just... gone.",
+   "start": 2.778,
+   "end": 5.629
+  },
+  {
+   "id": "L3",
+   "text": "The first thing you'd notice is the dark.",
+   "start": 6.329,
+   "end": 8.29
+  },
+  {
+   "id": "L4",
+   "text": "A full moon is about a hundred times brighter than a moonless sky.",
+   "start": 8.64,
+   "end": 12.147
+  },
+  {
+   "id": "L5",
+   "text": "From now on, every night is as dark as a new moon.",
+   "start": 12.497,
+   "end": 15.371
+  },
+  {
+   "id": "L6",
+   "text": "But the biggest change...",
+   "start": 16.121,
+   "end": 17.22
+  },
+  {
+   "id": "L6b",
+   "text": "is in the ocean.",
+   "start": 17.47,
+   "end": 18.442
+  },
+  {
+   "id": "L7",
+   "text": "The Moon's gravity drives Earth's tides. Without it, only the Sun's pull remains.",
+   "start": 18.892,
+   "end": 23.758
+  },
+  {
+   "id": "L8",
+   "text": "Tides would shrink to less than half their size.",
+   "start": 24.108,
+   "end": 26.279
+  },
+  {
+   "id": "L9",
+   "text": "Shores that flood twice a day are home to crabs, mussels and sea stars. Their world would shrink to a thin strip.",
+   "start": 26.829,
+   "end": 33.218
+  },
+  {
+   "id": "L10",
+   "text": "On coral reefs, the Moon is a clock. Many corals time their spawning by its light.",
+   "start": 33.768,
+   "end": 38.56
+  },
+  {
+   "id": "L11",
+   "text": "Without it, they could lose their timing.",
+   "start": 38.86,
+   "end": 40.762
+  },
+  {
+   "id": "L12",
+   "text": "Baby sea turtles head for the brightest horizon to find the sea. Without moonlight on the water, more could crawl toward city lights instead.",
+   "start": 41.312,
+   "end": 49.47
+  },
+  {
+   "id": "L13",
+   "text": "And that isn't even the strangest part.",
+   "start": 50.27,
+   "end": 52.186
+  },
+  {
+   "id": "L14",
+   "text": "The Moon steadies Earth's tilt. The twenty-three and a half degrees that give us our seasons.",
+   "start": 52.786,
+   "end": 57.721
+  },
+  {
+   "id": "L15",
+   "text": "Without it, the tilt would wobble more. How much, scientists still debate. But small changes in tilt already help trigger ice ages.",
+   "start": 58.071,
+   "end": 66.355
+  },
+  {
+   "id": "L16",
+   "text": "Some scientists even think the Moon's tides helped the first fish crawl onto land.",
+   "start": 67.055,
+   "end": 71.755
+  },
+  {
+   "id": "L17",
+   "text": "So the Moon is gone. And Earth keeps spinning...",
+   "start": 72.655,
+   "end": 75.065
+  },
+  {
+   "id": "L17b",
+   "text": "but it would never be the same planet again.",
+   "start": 75.665,
+   "end": 77.64
+  }
+ ]
+}

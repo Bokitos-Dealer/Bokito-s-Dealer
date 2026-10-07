@@ -1,2 +1,10 @@
 node_modules/
 output/
+models/
+moon/frames/
+moon/preview/
+moon/audio/*.wav
+moon/*.jpg
+moon/render.log
+moon/shots/
+__pycache__/

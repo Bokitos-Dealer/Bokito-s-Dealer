@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Moon compositor</title>
+<style>
+@font-face { font-family: 'Mont'; font-weight: 700; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Mont'; font-weight: 800; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-800-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Mont'; font-weight: 900; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2) format('woff2'); }
+html, body { margin: 0; background: #000; overflow: hidden; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#gl, #fx { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+#cap { position: absolute; left: 60px; right: 60px; top: 1215px; text-align: center; font-family: 'Mont', sans-serif; font-weight: 800;
+  font-size: 76px; line-height: 1.08; color: #fff; text-transform: uppercase; letter-spacing: -0.5px; }
+#cap span { display: inline-block; margin: 0 9px; transform-origin: 50% 70%;
+  text-shadow: 0 0 2px #000, 4px 4px 0 #000, -4px 4px 0 #000, 4px -4px 0 #000, -4px -4px 0 #000, 0 5px 0 #000, 0 -5px 0 #000, 5px 0 0 #000, -5px 0 0 #000, 0 10px 24px rgba(0,0,0,0.75); }
+#cap span.hot { color: #ffd84a; }
+#call { position: absolute; left: 0; right: 0; top: 600px; text-align: center; font-family: 'Mont', sans-serif; color: #fff; opacity: 0; }
+#call .big { font-weight: 900; font-size: 230px; line-height: 1; letter-spacing: -6px;
+  text-shadow: 0 0 40px rgba(0,0,0,0.6), 0 8px 0 rgba(0,0,0,0.35); }
+#call .lab { font-weight: 800; font-size: 44px; letter-spacing: 6px; margin-top: 10px; text-transform: uppercase; color: #ffd84a;
+  text-shadow: 0 0 2px #000, 3px 3px 0 #000, -3px 3px 0 #000, 3px -3px 0 #000, -3px -3px 0 #000, 0 6px 18px rgba(0,0,0,0.7); }
+#fade { position: absolute; inset: 0; background: #000; opacity: 0; }
+</style>
+<script type="importmap">{"imports":{}}</script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl" width="1080" height="1920"></canvas>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+  <div id="call"><div class="big"></div><div class="lab"></div></div>
+  <div id="cap"></div>
+  <div id="fade"></div>
+</div>
+<script type="module" src="/moon/comp.js"></script>
+</body>
+</html>

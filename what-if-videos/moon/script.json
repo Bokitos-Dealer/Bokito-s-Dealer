@@ -1,0 +1,107 @@
+{
+ "title": "What if the Moon suddenly disappeared?",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "lines": [
+  {
+   "id": "L1",
+   "text": "What if the Moon...",
+   "gap": 0.05
+  },
+  {
+   "id": "L1b",
+   "text": "suddenly disappeared?",
+   "gap": 0.55
+  },
+  {
+   "id": "L2",
+   "text": "No explosion. No sound. It's just... gone.",
+   "gap": 0.7
+  },
+  {
+   "id": "L3",
+   "text": "The first thing you'd notice is the dark.",
+   "gap": 0.35
+  },
+  {
+   "id": "L4",
+   "text": "A full moon is about a hundred times brighter than a moonless sky.",
+   "gap": 0.35
+  },
+  {
+   "id": "L5",
+   "text": "From now on, every night is as dark as a new moon.",
+   "gap": 0.75
+  },
+  {
+   "id": "L6",
+   "text": "But the biggest change...",
+   "gap": 0.25
+  },
+  {
+   "id": "L6b",
+   "text": "is in the ocean.",
+   "gap": 0.45
+  },
+  {
+   "id": "L7",
+   "text": "The Moon's gravity drives Earth's tides. Without it, only the Sun's pull remains.",
+   "gap": 0.35
+  },
+  {
+   "id": "L8",
+   "text": "Tides would shrink to less than half their size.",
+   "gap": 0.55
+  },
+  {
+   "id": "L9",
+   "text": "Shores that flood twice a day are home to crabs, mussels and sea stars. Their world would shrink to a thin strip.",
+   "gap": 0.55
+  },
+  {
+   "id": "L10",
+   "text": "On coral reefs, the Moon is a clock. Many corals time their spawning by its light.",
+   "gap": 0.3
+  },
+  {
+   "id": "L11",
+   "text": "Without it, they could lose their timing.",
+   "gap": 0.55
+  },
+  {
+   "id": "L12",
+   "text": "Baby sea turtles head for the brightest horizon to find the sea. Without moonlight on the water, more could crawl toward city lights instead.",
+   "gap": 0.8
+  },
+  {
+   "id": "L13",
+   "text": "And that isn't even the strangest part.",
+   "gap": 0.6
+  },
+  {
+   "id": "L14",
+   "text": "The Moon steadies Earth's tilt. The twenty-three and a half degrees that give us our seasons.",
+   "gap": 0.35
+  },
+  {
+   "id": "L15",
+   "text": "Without it, the tilt would wobble more. How much, scientists still debate. But small changes in tilt already help trigger ice ages.",
+   "gap": 0.7
+  },
+  {
+   "id": "L16",
+   "text": "Some scientists even think the Moon's tides helped the first fish crawl onto land.",
+   "gap": 0.9
+  },
+  {
+   "id": "L17",
+   "text": "So the Moon is gone. And Earth keeps spinning...",
+   "gap": 0.6
+  },
+  {
+   "id": "L17b",
+   "text": "but it would never be the same planet again.",
+   "gap": 0.0
+  }
+ ]
+}
