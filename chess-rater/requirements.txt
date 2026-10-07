@@ -1,0 +1,6 @@
+pillow>=10
+numpy>=1.24
+kokoro-onnx>=0.4   # local AI voice-over (model files download on first run, ~340 MB)
+soundfile>=0.12
+# optional, for scout.py transcripts:
+# faster-whisper>=1.0
