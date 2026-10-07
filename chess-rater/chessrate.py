@@ -379,8 +379,8 @@ def speakable(text):
 
 class Voice:
     def __init__(self, cfg, models_dir, enabled, cache_dir):
-        self.voice = cfg.get("voice", "am_michael")
-        self.speed = float(cfg.get("speed", 1.1))
+        self.voice = cfg.get("voice", "am_fenrir")
+        self.speed = float(cfg.get("speed", 1.12))
         self.lang = cfg.get("lang", "en-us")
         self.cache_dir = cache_dir
         self.kokoro = None

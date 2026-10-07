@@ -75,8 +75,8 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 {
   "source": "../clips/suits-mike-rachel.mp4",
   "title": {"text": "I rated Mike and Rachel's late-night kiss", "accent": "like a chess game"},
-  "voice": "am_michael",          // Kokoro voice: am_michael, am_puck, am_fenrir, bm_george, af_heart, ...
-  "speed": 1.1,
+  "voice": "am_fenrir",           // Kokoro voice: am_fenrir (most expressive), am_michael, bm_george, af_heart, ...
+  "speed": 1.12,
   "coach_intro": true,            // voice-over opens like the chess.com coach: "In Here is a great move!"
   "sfx_volume": 0.7,              // chess.com sounds: move/capture on badges, check on bad cards, game start/end
   "crop": "auto",                 // trims letterbox bars; or [w, h, x, y]; or false
@@ -131,10 +131,12 @@ Rate lines the way chess.com rates moves, and don't inflate the ratings:
 | Book 📖 | standard openers ("Hi, nice to meet you") | opening only |
 | Inaccuracy `?!` / Mistake `?` / Blunder `??` | weak, bad and game-losing lines | as deserved |
 
-Write card comments the way the Game Review coach talks: one short line on what the move does,
-then where the game stands. For example: *"She cuts him off mid-sentence and kisses him. White
-is winning."* The voice-over opens with the move and its rating, the way the coach does
-("In Here is a great move!"), so the comment shouldn't repeat it.
+The voice-over opens with the move and its rating, the way the chess.com coach does ("In Here
+is a great move!"), so the comment shouldn't repeat it. After that, make it funny: one or two
+short lines with a clear attitude, Gen Z slang and a bit of swearing. For example: *"She said his
+mind is amazing, and he hit her with thanks? Bro, that's dry as hell."* or *"Two seconds ago he
+was defending Jenny. Now he's kissing back. Bro is cooked."* Mild words (damn, hell) are fine.
+Heavy swearing can get a video's reach limited on TikTok.
 Check every quote and speaker against the clip. The scout transcript and contact sheet are
 there for that.
 

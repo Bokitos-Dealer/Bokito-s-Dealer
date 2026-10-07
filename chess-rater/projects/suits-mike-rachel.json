@@ -4,8 +4,8 @@
     "text": "I rated Mike and Rachel's late-night kiss",
     "accent": "like a chess game"
   },
-  "voice": "am_michael",
-  "speed": 1.1,
+  "voice": "am_fenrir",
+  "speed": 1.12,
   "players": {
     "white": {
       "name": "Rachel Zane",
@@ -21,7 +21,7 @@
   "hook": {
     "from": 187.45,
     "move": "The Kiss",
-    "vo": "The Kiss is brilliant! But how did Rachel get here? Let's review the game."
+    "vo": "The Kiss is brilliant! Bro was literally mid-sentence about his girlfriend. How the hell did we get here? Let's review the game."
   },
   "segments": [
     [44.6, 113.85],
@@ -31,8 +31,8 @@
   ],
   "review": {
     "at": 226.0,
-    "result": "1-0 · Rachel wins",
-    "vo": "Good game! White wins."
+    "result": "1-0 · Rachel wins, Mike is cooked",
+    "vo": "Good game! Rachel wins, Louis caught it in 4K, and Mike? Mike is absolutely cooked."
   },
   "labels": [
     [44.6, 47.13, "Rachel", 0.5, 0.14],
@@ -106,34 +106,34 @@
     [229.56, 231.3, "Louis", 0.36, 0.15]
   ],
   "moves": [
-    {"t": 46.74, "side": "white", "class": "book", "name": "What Is It This Time", "note": "A standard opening.", "eval": 0.2, "badge": [0.82, 0.22]},
-    {"t": 48.2, "side": "black", "class": "good", "name": "Want to Know?", "note": "Builds suspense.", "eval": 0.1, "badge": [0.75, 0.3]},
-    {"t": 55.8, "side": "black", "class": "good", "name": "The Files", "note": "Shares what he found.", "eval": 0.0, "badge": [0.82, 0.22]},
-    {"t": 57.62, "side": "white", "class": "good", "name": "Accounting Firm", "note": "Asks the right question.", "eval": 0.1, "badge": [0.82, 0.22]},
-    {"t": 59.44, "side": "black", "class": "excellent", "name": "Stealing From Us", "note": "Straight to the point.", "eval": -0.3, "badge": [0.84, 0.22]},
-    {"t": 70.66, "side": "black", "class": "good", "name": "Phone Bill", "note": "Explains it simply.", "eval": -0.4, "badge": [0.84, 0.2]},
-    {"t": 72.86, "side": "white", "class": "excellent", "name": "Also a Scam", "note": "Wins the joke.", "eval": 0.1, "badge": [0.35, 0.3]},
-    {"t": 75.48, "side": "white", "class": "good", "name": "What Do You Need", "note": "Gets to work.", "eval": 0.1, "badge": [0.82, 0.22]},
-    {"t": 81.42, "side": "black", "class": "good", "name": "Legal Reason", "note": "States the real problem.", "eval": 0.0, "badge": [0.84, 0.25]},
-    {"t": 84.1, "side": "white", "class": "excellent", "name": "Court or Just Need", "note": "Asks the key question.", "eval": 0.4, "badge": [0.4, 0.3]},
-    {"t": 93.0, "side": "white", "class": "great", "name": "In Here", "comment": "Mike read the files once, so he already has them. White is better.", "eval": 1.2, "badge": [0.75, 0.24], "card": "right"},
-    {"t": 95.56, "side": "black", "class": "good", "name": "You're Right", "note": "Accepts the idea.", "eval": 1.1, "badge": [0.55, 0.2]},
-    {"t": 97.98, "side": "white", "class": "best", "name": "You Dictate", "note": "Offers to type for him.", "eval": 1.6, "badge": [0.55, 0.2]},
-    {"t": 101.36, "side": "black", "class": "good", "name": "For Me?", "note": "Didn't see it coming.", "eval": 1.3, "badge": [0.45, 0.22]},
-    {"t": 104.64, "side": "white", "class": "excellent", "name": "My Firm Too", "note": "Makes it about the firm.", "eval": 1.6, "badge": [0.7, 0.22]},
-    {"t": 125.44, "side": "black", "class": "best", "name": "Total Recall", "comment": "He recites the whole file from memory. Black equalizes.", "eval": 0.3, "badge": [0.83, 0.2], "card": "left"},
-    {"t": 135.84, "side": "white", "class": "good", "name": "Done", "note": "Saved.", "eval": 0.4, "badge": [0.82, 0.3]},
-    {"t": 147.8, "side": "white", "class": "excellent", "name": "Your Mind", "note": "A bold compliment.", "eval": 1.0, "badge": [0.3, 0.3]},
-    {"t": 150.0, "side": "black", "class": "inaccuracy", "name": "Thanks", "comment": "She calls his mind amazing, and he says one word. White takes the lead.", "eval": 1.6, "badge": [0.84, 0.2], "card": "left"},
-    {"t": 155.02, "side": "black", "class": "good", "name": "Mirror Move", "note": "Copies her compliment.", "eval": 1.3, "badge": [0.82, 0.22]},
-    {"t": 161.26, "side": "white", "class": "good", "name": "Calling Who?", "note": "Checks who he's calling.", "eval": 1.5, "badge": [0.82, 0.22]},
-    {"t": 168.84, "side": "black", "class": "inaccuracy", "name": "I'll Text Her", "note": "Backs off calling Jenny.", "eval": 2.0, "badge": [0.84, 0.18]},
-    {"t": 174.52, "side": "white", "class": "excellent", "name": "No Life", "note": "Plants doubt.", "eval": 2.4, "badge": [0.45, 0.22]},
-    {"t": 176.2, "side": "black", "class": "mistake", "name": "How'd You Make It Work", "note": "Opens the door.", "eval": 3.1, "badge": [0.84, 0.18]},
-    {"t": 187.2, "side": "white", "class": "best", "name": "Who Said I Did", "note": "Admits it didn't work for her.", "eval": 3.5, "badge": [0.15, 0.32]},
-    {"t": 190.5, "side": "white", "class": "brilliant", "name": "The Kiss", "comment": "She cuts him off mid-sentence and kisses him. White is winning.", "eval": 5.2, "badge": [0.15, 0.32], "card": "right"},
-    {"t": 195.5, "side": "black", "class": "blunder", "name": "Kissing Back", "comment": "Seconds after defending his relationship, he kisses back.", "eval": 8.5, "badge": [0.84, 0.2], "card": "left"},
-    {"t": 206.12, "side": "black", "class": "good", "name": "For Harvey", "note": "Technically true.", "eval": 8.0, "badge": [0.82, 0.22]},
-    {"t": 208.36, "side": "white", "class": "excellent", "name": "Good Night", "note": "A clean exit.", "eval": 8.3, "badge": [0.5, 0.25]}
+    {"t": 46.74, "side": "white", "class": "book", "name": "What Is It This Time", "note": "Standard opener. Nothing crazy.", "eval": 0.2, "badge": [0.82, 0.22]},
+    {"t": 48.2, "side": "black", "class": "good", "name": "Want to Know?", "note": "Bro's building suspense.", "eval": 0.1, "badge": [0.75, 0.3]},
+    {"t": 55.8, "side": "black", "class": "good", "name": "The Files", "note": "Spilling the tea.", "eval": 0.0, "badge": [0.82, 0.22]},
+    {"t": 57.62, "side": "white", "class": "good", "name": "Accounting Firm", "note": "She's locked in.", "eval": 0.1, "badge": [0.82, 0.22]},
+    {"t": 59.44, "side": "black", "class": "excellent", "name": "Stealing From Us", "note": "No cap, straight to it.", "eval": -0.3, "badge": [0.84, 0.22]},
+    {"t": 70.66, "side": "black", "class": "good", "name": "Phone Bill", "note": "Explained it like a TED talk.", "eval": -0.4, "badge": [0.84, 0.2]},
+    {"t": 72.86, "side": "white", "class": "excellent", "name": "Also a Scam", "note": "She's not wrong tho.", "eval": 0.1, "badge": [0.35, 0.3]},
+    {"t": 75.48, "side": "white", "class": "good", "name": "What Do You Need", "note": "Okay, let's work.", "eval": 0.1, "badge": [0.82, 0.22]},
+    {"t": 81.42, "side": "black", "class": "good", "name": "Legal Reason", "note": "The real problem.", "eval": 0.0, "badge": [0.84, 0.25]},
+    {"t": 84.1, "side": "white", "class": "excellent", "name": "Court or Just Need", "note": "Big brain question.", "eval": 0.4, "badge": [0.4, 0.3]},
+    {"t": 93.0, "side": "white", "class": "great", "name": "In Here", "comment": "Bro forgot he has a photographic memory. She solved his whole damn problem in two seconds.", "eval": 1.2, "badge": [0.75, 0.24], "card": "right"},
+    {"t": 95.56, "side": "black", "class": "good", "name": "You're Right", "note": "He knows she's right.", "eval": 1.1, "badge": [0.55, 0.2]},
+    {"t": 97.98, "side": "white", "class": "best", "name": "You Dictate", "note": "Ride or die behavior.", "eval": 1.6, "badge": [0.55, 0.2]},
+    {"t": 101.36, "side": "black", "class": "good", "name": "For Me?", "note": "Bro is shook.", "eval": 1.3, "badge": [0.45, 0.22]},
+    {"t": 104.64, "side": "white", "class": "excellent", "name": "My Firm Too", "note": "Loyal as hell.", "eval": 1.6, "badge": [0.7, 0.22]},
+    {"t": 125.44, "side": "black", "class": "best", "name": "Total Recall", "comment": "He just recited a whole contract from memory. That's not a brain, that's a damn hard drive.", "eval": 0.3, "badge": [0.83, 0.2], "card": "left"},
+    {"t": 135.84, "side": "white", "class": "good", "name": "Done", "note": "Saved. Thank God.", "eval": 0.4, "badge": [0.82, 0.3]},
+    {"t": 147.8, "side": "white", "class": "excellent", "name": "Your Mind", "note": "That's flirting, bro.", "eval": 1.0, "badge": [0.3, 0.3]},
+    {"t": 150.0, "side": "black", "class": "inaccuracy", "name": "Thanks", "comment": "She said his mind is amazing, and he hit her with thanks? Bro, that's dry as hell.", "eval": 1.6, "badge": [0.84, 0.2], "card": "left"},
+    {"t": 155.02, "side": "black", "class": "good", "name": "Mirror Move", "note": "Copy-paste compliment.", "eval": 1.3, "badge": [0.82, 0.22]},
+    {"t": 161.26, "side": "white", "class": "good", "name": "Calling Who?", "note": "Checking the competition.", "eval": 1.5, "badge": [0.82, 0.22]},
+    {"t": 168.84, "side": "black", "class": "inaccuracy", "name": "I'll Text Her", "note": "Fumbled the call to his girl.", "eval": 2.0, "badge": [0.84, 0.18]},
+    {"t": 174.52, "side": "white", "class": "excellent", "name": "No Life", "note": "Planting seeds of doubt.", "eval": 2.4, "badge": [0.45, 0.22]},
+    {"t": 176.2, "side": "black", "class": "mistake", "name": "How'd You Make It Work", "note": "Why'd you ask that, bro?", "eval": 3.1, "badge": [0.84, 0.18]},
+    {"t": 187.2, "side": "white", "class": "best", "name": "Who Said I Did", "note": "Translation: I'm single.", "eval": 3.5, "badge": [0.15, 0.32]},
+    {"t": 190.5, "side": "white", "class": "brilliant", "name": "The Kiss", "comment": "She grabbed his tie and shut him up mid-sentence. While he was talking about his girlfriend. Diabolical.", "eval": 5.2, "badge": [0.15, 0.32], "card": "right"},
+    {"t": 195.5, "side": "black", "class": "blunder", "name": "Kissing Back", "comment": "Two seconds ago he was defending Jenny. Now he's kissing back. Bro is cooked.", "eval": 8.5, "badge": [0.84, 0.2], "card": "left"},
+    {"t": 206.12, "side": "black", "class": "good", "name": "For Harvey", "note": "Technically not a lie.", "eval": 8.0, "badge": [0.82, 0.22]},
+    {"t": 208.36, "side": "white", "class": "excellent", "name": "Good Night", "note": "Rachel exits like a boss.", "eval": 8.3, "badge": [0.5, 0.25]}
   ]
 }
