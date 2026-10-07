@@ -1,0 +1,16 @@
+{
+  "name": "what-if-videos",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@fontsource/eb-garamond": "5.1.0",
+    "@fontsource/inter": "5.1.0",
+    "three": "0.169.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}

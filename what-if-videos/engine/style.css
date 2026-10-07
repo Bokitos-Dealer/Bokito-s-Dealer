@@ -1,0 +1,62 @@
+@font-face { font-family: 'Garamond'; font-weight: 400; font-style: normal; src: url(/node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Garamond'; font-weight: 500; font-style: normal; src: url(/node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Garamond'; font-weight: 400; font-style: italic; src: url(/node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-italic.woff2) format('woff2'); }
+@font-face { font-family: 'Garamond'; font-weight: 500; font-style: italic; src: url(/node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-500-italic.woff2) format('woff2'); }
+@font-face { font-family: 'InterW'; font-weight: 500; src: url(/node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'InterW'; font-weight: 600; src: url(/node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: 'InterW'; font-weight: 700; src: url(/node_modules/@fontsource/inter/files/inter-latin-700-normal.woff2) format('woff2'); }
+
+html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#gl { position: absolute; inset: 0; width: 1080px; height: 1920px; display: block; }
+#tint { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+#vignette { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 75% 62% at 50% 48%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.42) 100%); }
+#rain { position: absolute; inset: 0; width: 1080px; height: 1920px; pointer-events: none; }
+#grain { position: absolute; inset: 0; width: 1080px; height: 1920px; opacity: 0.075; mix-blend-mode: overlay; pointer-events: none; }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+
+#ui { position: absolute; inset: 0; color: #fff; pointer-events: none; }
+
+#title { position: absolute; left: 90px; right: 90px; top: 470px; text-align: center; z-index: 0; }
+#title .t { font-family: 'Garamond', serif; font-weight: 400; font-size: 64px; line-height: 1.16; letter-spacing: -0.2px; text-wrap: balance;
+  text-shadow: 0 0 22px rgba(0,0,0,0.45), 0 0 60px rgba(0,0,0,0.35); }
+#title::before, #hud::before, #caption::before { content: ''; position: absolute; z-index: -1; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.16) 45%, rgba(0,0,0,0) 72%); }
+#title::before { left: -40px; right: -40px; top: -70px; bottom: -70px; }
+
+#hud { position: absolute; left: 64px; top: 892px; min-width: 420px; z-index: 0; }
+#hud::before { left: -90px; right: -60px; top: -60px; bottom: -60px; }
+#hud .label { font-family: 'InterW', sans-serif; font-weight: 600; font-size: 21px; letter-spacing: 0.2em; text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0,0,0,0.55); }
+#hud .value { font-family: 'Garamond', serif; font-weight: 500; font-size: 62px; line-height: 1.02; margin-top: 2px; white-space: nowrap;
+  font-variant-numeric: lining-nums tabular-nums; text-shadow: 0 0 16px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3); }
+#hud .sub { font-family: 'InterW', sans-serif; font-weight: 600; font-size: 15px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(255,255,255,0.62); margin-top: 12px; text-shadow: 0 0 8px rgba(0,0,0,0.6); white-space: nowrap; }
+
+#caption { position: absolute; left: 50px; right: 50px; top: 1262px; text-align: center; z-index: 0; }
+#caption::before { left: 40px; right: 40px; top: -40px; bottom: -40px; }
+#caption span { font-family: 'Garamond', serif; font-style: italic; font-weight: 400; font-size: 49px; line-height: 1.18;
+  text-shadow: 0 0 14px rgba(0,0,0,0.6), 0 0 36px rgba(0,0,0,0.35); display: inline-block; text-wrap: balance; }
+
+#crack { position: absolute; inset: 0; width: 1080px; height: 1920px; pointer-events: none; opacity: 0; }
+#crack path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+#fade { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+
+#end { position: absolute; inset: 0; opacity: 0; color: #fff; text-align: center;
+  background: radial-gradient(ellipse 90% 70% at 50% 45%, #18245a 0%, #0f1840 45%, #080d26 100%); }
+#end .stars { position: absolute; inset: 0; }
+#end .stars i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #c8d2ff; }
+#end .orbit { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+#end .orbit ellipse { fill: none; stroke: rgba(130,150,230,0.35); stroke-width: 2; }
+#end .e-title { position: absolute; left: 110px; right: 110px; top: 560px; font-family: 'Garamond', serif; font-weight: 400; font-size: 66px; line-height: 1.14; text-wrap: balance; }
+#end .e-fact { position: absolute; left: 120px; right: 120px; top: 800px; font-family: 'InterW', sans-serif; font-weight: 600; font-size: 22px; line-height: 1.95;
+  letter-spacing: 0.2em; color: #a9b4ef; text-transform: uppercase; text-wrap: balance; }
+#end .e-div { position: absolute; left: 0; right: 0; top: 1010px; display: flex; align-items: center; justify-content: center; gap: 22px; color: #f1d9a0; font-size: 26px; }
+#end .e-div span { display: block; width: 110px; height: 2px; background: rgba(150,165,235,0.55); }
+#end .e-div i { font-style: normal; }
+#end .e-brand { position: absolute; left: 0; right: 0; top: 1090px; font-family: 'Garamond', serif; font-weight: 500; font-size: 58px; letter-spacing: 0.08em; color: #e9ecff; }
+#end .e-handle { position: absolute; left: 0; right: 0; top: 1300px; font-family: 'InterW', sans-serif; font-weight: 700; font-size: 38px; color: #f3d9a2; }
+#end .e-follow { position: absolute; left: 0; right: 0; top: 1385px; font-family: 'InterW', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.24em; color: #fff; }
+#end .e-ask { position: absolute; left: 0; right: 0; top: 1430px; font-family: 'InterW', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 0.24em; color: rgba(170,180,230,0.55); }
