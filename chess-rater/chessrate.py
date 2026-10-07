@@ -53,8 +53,12 @@ CLASSES = {
 }
 
 LEAD_IN = "Right."  # spoken first and cut off; the model reliably pauses after it
-# the series narrator: a blend of two Kokoro voices, raised two semitones to suit the pawn coach
-SERIES_VOICE = "am_puck:0.5+am_fenrir:0.5"
+# the series narrator: a blend of two Kokoro voices, lowered 1.5 semitones (formants kept)
+SERIES_VOICE = "am_michael:0.5+am_fenrir:0.5"
+SERIES_PITCH = -1.5
+# background music under the commentary: "Be Chillin" by Alexander Nakarada (FreePD, CC0 public domain)
+MUSIC_URL = ("https://archive.org/download/allfreepdmusicbykuronekony4n/content/drive/My%20Drive/Download/"
+             "all%20freepd%20music%20%28by%20kuronekony4n%29/Be%20Chillin.mp3")
 COACH_DIR = os.path.join(HERE, "assets", "coach")
 
 POSITIVE = {"brilliant", "great", "best", "excellent", "good", "book"}
@@ -386,8 +390,8 @@ def speakable(text):
 class Voice:
     def __init__(self, cfg, models_dir, enabled, cache_dir):
         self.voice = cfg.get("voice", SERIES_VOICE)
-        self.speed = float(cfg.get("speed", 1.12))
-        self.pitch = float(cfg.get("pitch", 2.0 if self.voice == SERIES_VOICE else 0.0))
+        self.speed = float(cfg.get("speed", 1.1))
+        self.pitch = float(cfg.get("pitch", SERIES_PITCH if self.voice == SERIES_VOICE else 0.0))
         self.lang = cfg.get("lang", "en-us")
         self.cache_dir = cache_dir
         self.kokoro = None
@@ -540,7 +544,7 @@ def load_sound(name, folder):
 
 @dataclass
 class Span:
-    kind: str  # play | hold | rewind
+    kind: str  # play | hold
     t0: float
     t1: float
     s0: float
@@ -550,9 +554,6 @@ class Span:
     def src(self, t):
         if self.kind == "play":
             return self.s0 + (t - self.t0)
-        if self.kind == "rewind":
-            u = math.floor(clamp((t - self.t0) / (self.t1 - self.t0), 0, 1) * 14) / 14
-            return self.s0 + (self.s1 - self.s0) * ease_in_out(u)
         return self.s0
 
 
@@ -640,11 +641,12 @@ class Project:
             show = Show(len(self.shows), move, sp.t0, sp.t1, True, blur, words)
             self.shows.append(show)
             self.sfx.append((sp.t0, self.move_sound(move)))
+            if move["class"] in ("brilliant", "great") and not blur:
+                self.sfx.append((sp.t0 + lead + len(audio) / SR + 0.05, "correct"))  # chime as the line lands
             if "eval" in move:
                 self.evals.append((sp.t0, move["eval"], True))
             return sp
 
-        main_start = self.segments[0][0]
         hook = cfg.get("hook")
         if hook:
             hook_move = self.find_move(hook["move"])
@@ -652,10 +654,7 @@ class Project:
             self.evals.append((0.0, prior[-1] if prior else 0.0, False))
             play(hook["from"], hook_move["t"], "hook")
             card_hold(hook_move, "hook", hook.get("vo", ""), blur=True)
-            self.spans.append(Span("rewind", t, t + 0.8, hook_move["t"], main_start, "hook"))
-            self.evals.append((t, 0.0, True))
-            self.sfx.append((t, "premove"))
-            t += 0.8
+            self.evals.append((t, 0.0, False))  # hard cut back to the start, like the example edits
         else:
             self.evals.append((0.0, 0.0, False))
 
@@ -703,11 +702,7 @@ class Project:
             if sp.t0 >= self.review_t - 1e-6 and sp.phase == "main":
                 sp.phase = "review"
         self.duration = t
-        self.sfx.append((0.0, "game-start"))
-        if not any(name == "game-end" and self.review_t - 4 <= at <= self.review_t for at, name in self.sfx):
-            self.sfx.append((self.review_t, "game-end"))
-        else:
-            self.sfx.append((self.review_t, "notify"))
+        self.sfx.append((self.review_t, "game-start"))
         # each move stays on screen until the next one appears
         self.shows.sort(key=lambda s: s.t0)
         for a, b in zip(self.shows, self.shows[1:]):
@@ -723,12 +718,17 @@ class Project:
 
     @staticmethod
     def move_sound(move):
+        """chess.com sound for a move, used the way the example edits do: a plain move for ordinary
+        moves, a capture for the big ones, castling for openers and check for a miss."""
+        cls = move["class"]
         if isinstance(move.get("eval"), str) and move["eval"] in ("1-0", "0-1"):
             return "game-end"
-        if move.get("comment"):
-            return "capture" if move["class"] in POSITIVE else "move-check"
-        if move["class"] not in POSITIVE:
-            return "move-check" if move["class"] in ("mistake", "blunder") else "move-opponent"
+        if cls == "book":
+            return "castle"
+        if cls == "miss":
+            return "move-check"
+        if cls in ("best", "great", "brilliant", "mistake", "blunder"):
+            return "capture"
         return "move-self" if move["side"] == "white" else "move-opponent"
 
     def find_move(self, name):
@@ -989,17 +989,6 @@ class Renderer:
         self.cache[key] = out
         return out
 
-    def rewind_icon(self):
-        if "rewind" not in self.cache:
-            img = Image.new("RGBA", (220, 140), (0, 0, 0, 0))
-            m = Image.new("L", (220 * 3, 140 * 3), 0)
-            d = ImageDraw.Draw(m)
-            for x0 in (30, 110):
-                d.polygon([((x0 + 80) * 3, 20 * 3), ((x0 + 80) * 3, 120 * 3), (x0 * 3, 70 * 3)], fill=255)
-            paint(img, m.resize((220, 140), Image.LANCZOS), (0, 0), (255, 255, 255, 235))
-            self.cache["rewind"] = with_shadow(img, 10, 170)
-        return self.cache["rewind"]
-
     # ---- per-frame
     def eval_at(self, t):
         prev, cur, kt, animate = 0.0, 0.0, 0.0, False
@@ -1133,8 +1122,6 @@ class Renderer:
             k = ease_out((t - sp.t0) / 0.35)
             bright = 1 - 0.16 * k
             zoom = 1 + 0.045 * ease_in_out((t - sp.t0) / max(0.01, sp.t1 - sp.t0))
-        elif sp.kind == "rewind":
-            bright = 0.72
         if in_review:
             k = ease_out((t - p.review_t) / 0.45)
             bright, blur = 1 - 0.42 * k, 9 * k
@@ -1149,7 +1136,7 @@ class Renderer:
             img = img.filter(ImageFilter.GaussianBlur(blur))
         clip = img.convert("RGBA")
 
-        if not in_review and sp.kind != "rewind":
+        if not in_review:
             for lb in p.labels:
                 if lb["from"] <= src_t < lb["to"]:
                     li = self.label(lb["text"])
@@ -1163,9 +1150,6 @@ class Renderer:
         for show in p.shows:
             if show.t0 <= t < show.t1:
                 self.draw_show(clip, show, t)
-        if sp.kind == "rewind":
-            ri = self.rewind_icon()
-            alpha_paste(clip, ri, ((self.cw - ri.width) / 2, (self.ch - ri.height) / 2))
         if in_review:
             age = t - p.review_t
             rows = int(clamp((age - 0.35) / 0.08, 0, len(CLASSES) + 1))
@@ -1231,7 +1215,54 @@ def build_audio(p, t_from, t_to):
                 cache[name] = load_sound(name, folder)
             place(fx, at, cache[name], gain)
     mix = scene * duck[:, None] + (vo * 1.0 + fx)[:, None]
+    bed = music_bed(p, n, t_from, vo)
+    if bed is not None:
+        mix += bed[:, None]
     return np.clip(mix, -1, 1)
+
+
+def music_bed(p, n, t_from, vo):
+    """Background music under the commentary: it plays during every freeze and the outro, picking up
+    where it left off each time, about 16 dB under the voice-over."""
+    cfg = p.cfg.get("music", {})
+    if cfg is False or (isinstance(cfg, dict) and not cfg.get("enabled", True)):
+        return None
+    cfg = cfg if isinstance(cfg, dict) else {}
+    path = os.path.join(p.base, cfg["file"]) if cfg.get("file") else os.path.join(HERE, "music", "be-chillin.mp3")
+    if not os.path.exists(path):
+        if cfg.get("file"):
+            sys.exit(f"music file not found: {path}")
+        print("downloading background music (one time)...")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        urllib.request.urlretrieve(MUSIC_URL, path + ".part")
+        os.replace(path + ".part", path)
+    raw = run(["ffmpeg", "-v", "error", "-i", path, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
+              capture_output=True).stdout
+    track = np.frombuffer(raw, np.float32)
+    track = track[int(float(cfg.get("start", 0)) * SR):]
+    speech = vo[np.abs(vo) > 0.01]
+    if not len(track) or not len(speech):
+        return None
+    rms = lambda x: float(np.sqrt(np.mean(x ** 2))) + 1e-9
+    gain = rms(speech) * 10 ** (float(cfg.get("level_db", -16)) / 20) / rms(track)
+    windows = [(sp.t0, sp.t1) for sp in p.spans if sp.kind == "hold" and sp.phase != "review"]
+    windows.append((p.review_t, p.duration))
+    bed = np.zeros(n, np.float32)
+    pos = 0
+    for a, b in sorted(windows):
+        i0, i1 = int(round((a - t_from) * SR)), int(round((b - t_from) * SR))
+        length = i1 - i0
+        if length <= 0:
+            continue
+        seg = np.take(track, np.arange(pos, pos + length), mode="wrap") * gain
+        fin, fout = min(length // 2, int(0.3 * SR)), min(length // 2, int(0.5 * SR))
+        seg[:fin] *= np.linspace(0, 1, fin)
+        seg[-fout:] *= np.linspace(1, 0, fout)
+        pos += length
+        j0, j1 = max(0, -i0), min(length, n - i0)
+        if j1 > j0:
+            bed[i0 + j0:i0 + j1] += seg[j0:j1]
+    return bed
 
 
 def write_wav(path, stereo):

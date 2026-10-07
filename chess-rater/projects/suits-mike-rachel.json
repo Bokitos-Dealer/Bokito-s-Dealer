@@ -4,9 +4,10 @@
     "text": "I rated Mike and Rachel's late-night kiss",
     "accent": "like a chess game"
   },
-  "voice": "am_puck:0.5+am_fenrir:0.5",
-  "pitch": 2,
-  "speed": 1.12,
+  "voice": "am_michael:0.5+am_fenrir:0.5",
+  "pitch": -1.5,
+  "speed": 1.1,
+  "music": {"level_db": -16},
   "coach": {"enabled": true, "size": 220},
   "players": {
     "white": {

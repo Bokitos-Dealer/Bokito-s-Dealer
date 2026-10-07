@@ -10,10 +10,13 @@ commentary). It renders a finished 1080×1920 MP4 with:
 - move badges (`!!` brilliant, `!` great, ★ best, 👍 excellent, ✓ good, 📖 book, `?!`, `?`, ✕, `??`)
 - freeze frames with a commentary card, read aloud by an AI voice in chess.com Game Review
   coach style ("The Kiss is brilliant!") while the words light up
-- a coach character (a cocky pawn in sunglasses) that pops up on each rating banner and
+- a coach character (an owl in big round glasses) that pops up on each rating banner and
   lip-syncs to the narrator: smug on good moves, shook on bad ones
-- the official chess.com move, capture, check and game start/end sounds
-- a cold-open hook that teases the big move, then rewinds to the start
+- background music under the commentary
+- the official chess.com sounds, used the way popular edits do: a plain move sound for normal
+  moves, capture for the big ones, castling for openers, a chime when a great or brilliant card
+  lands, and game-start when the Game Review opens
+- a cold-open hook that teases the big move, then cuts back to the start
 - a closing **Game Review** with accuracy scores, move counts and the result
 
 Everything runs locally and needs no paid services. The voice-over uses
@@ -28,8 +31,12 @@ Everything runs locally and needs no paid services. The voice-over uses
    pip install -r requirements.txt
    ```
 
-The first render downloads the voice model (about 340 MB) into `models/` and the chess.com
-sound files into `sounds/`. The sounds are fetched from chess.com's site and aren't stored in
+The first render downloads the voice model (about 340 MB) into `models/`, the chess.com
+sound files into `sounds/`, and the background music into `music/`. The music is
+"Be Chillin" by Alexander Nakarada, released into the public domain (CC0) on FreePD, so it's
+free to use in posted videos. Use `"music": {"file": "my-track.mp3"}` for your own track,
+`"level_db"` to set how far it sits under the voice (default −16 dB), or `"music": false` to
+turn it off. The sounds are fetched from chess.com's site and aren't stored in
 this repo. Set `"sfx": false` to turn them off, or point `"sounds"` at a folder with your own
 `move-self.mp3`, `capture.mp3`, and so on.
 
@@ -77,10 +84,11 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 {
   "source": "../clips/suits-mike-rachel.mp4",
   "title": {"text": "I rated Mike and Rachel's late-night kiss", "accent": "like a chess game"},
-  "voice": "am_puck:0.5+am_fenrir:0.5",  // the series narrator: a blend of two Kokoro voices ...
-  "pitch": 2,                     // ... raised 2 semitones (formants kept) to suit the pawn coach
-  "speed": 1.12,
-  "coach": {"enabled": true, "size": 220},  // the pawn character on the rating banners
+  "voice": "am_michael:0.5+am_fenrir:0.5",  // the series narrator: a blend of two Kokoro voices ...
+  "pitch": -1.5,                  // ... lowered 1.5 semitones (formants kept) for a deeper sound
+  "speed": 1.1,
+  "coach": {"enabled": true, "size": 220},  // the owl on the rating banners
+  "music": {"level_db": -16},     // background music under the commentary
   "coach_intro": true,            // voice-over opens like the chess.com coach: "In Here is a great move!"
   "sfx_volume": 0.7,              // chess.com sounds: move/capture on badges, check on bad cards, game start/end
   "crop": "auto",                 // trims letterbox bars; or [w, h, x, y]; or false
@@ -119,7 +127,7 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 - **`card`** is `"right"` (the default) or `"left"`. Cards sit along the bottom of the clip, and
   a left card briefly hides the bottom player tag. Pick the side that keeps faces visible.
 - **`voice`** can be one Kokoro voice (`"am_fenrir"`) or a weighted blend
-  (`"am_puck:0.5+am_fenrir:0.5"`). Leave out `voice` and `pitch` to get the series narrator.
+  (`"am_michael:0.5+am_fenrir:0.5"`). Leave out `voice` and `pitch` to get the series narrator.
   Keep the same voice across videos so the account has one recognisable host.
 - **The coach** sprites are in `assets/coach/`. To restyle the character, edit
   `tools/coach_sprites.cjs` (plain SVG) and run `node tools/coach_sprites.cjs` (needs Playwright).
