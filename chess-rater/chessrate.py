@@ -41,7 +41,7 @@ KOKORO_URLS = {
 # key: (label, card phrase, colour, glyph, accuracy score)
 CLASSES = {
     "brilliant": ("Brilliant", "is brilliant", "#26c2a3", "!!", 100),
-    "great": ("Great", "is great", "#749bbf", "!", 100),
+    "great": ("Great", "is a great move", "#749bbf", "!", 100),
     "best": ("Best", "is best", "#81b64c", "star", 100),
     "excellent": ("Excellent", "is excellent", "#81b64c", "thumb", 92),
     "good": ("Good", "is good", "#95b776", "check", 80),
@@ -51,6 +51,24 @@ CLASSES = {
     "miss": ("Miss", "is a miss", "#ff7769", "x", 30),
     "blunder": ("Blunder", "is a blunder", "#fa412d", "??", 15),
 }
+
+# what the Game Review coach says before explaining a move
+COACH_INTRO = {
+    "brilliant": "Brilliant!",
+    "great": "Great move!",
+    "best": "That's the best move.",
+    "excellent": "Excellent move.",
+    "good": "Good move.",
+    "book": "That's a book move.",
+    "inaccuracy": "That's an inaccuracy.",
+    "mistake": "That's a mistake.",
+    "miss": "That's a miss.",
+    "blunder": "That's a blunder!",
+}
+POSITIVE = {"brilliant", "great", "best", "excellent", "good", "book"}
+
+# official chess.com sound theme, fetched on first use (not redistributed with this repo)
+SOUND_URL = "https://images.chesscomfiles.com/chess-themes/sounds/_MP3_/default/{}.mp3"
 
 WHITE = (255, 255, 255, 255)
 ACCENT = "#f2242b"
@@ -451,27 +469,17 @@ def word_times(display_text, spans):
 
 
 # --------------------------------------------------------------------------
-# synthesized sound effects
+# sound effects (chess.com sound theme)
 
-def sfx_tock():
-    n = int(0.12 * SR)
-    t = np.arange(n) / SR
-    body = (np.sin(2 * np.pi * 540 * t) * 0.55 + np.sin(2 * np.pi * 1180 * t) * 0.22) * np.exp(-t * 48)
-    click = np.random.default_rng(1).standard_normal(n) * np.exp(-t * 900) * 0.25
-    return ((body + click) * 0.32).astype(np.float32)
-
-
-def sfx_whoosh(d=0.75):
-    n = int(d * SR)
-    x = np.random.default_rng(2).standard_normal(n).astype(np.float32)
-    y = np.zeros(n, np.float32)
-    coef = np.linspace(0.45, 0.04, n)
-    acc = 0.0
-    for i in range(n):
-        acc += coef[i] * (x[i] - acc)
-        y[i] = acc
-    env = np.sin(np.linspace(0, np.pi, n)) ** 1.5
-    return (y * env * 0.5 / (np.max(np.abs(y)) + 1e-6)).astype(np.float32)
+def load_sound(name, folder):
+    path = os.path.join(folder, name + ".mp3")
+    if not os.path.exists(path):
+        os.makedirs(folder, exist_ok=True)
+        urllib.request.urlretrieve(SOUND_URL.format(name), path + ".part")
+        os.replace(path + ".part", path)
+    raw = run(["ffmpeg", "-v", "error", "-i", path, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
+              capture_output=True).stdout
+    return np.frombuffer(raw, np.float32).copy()
 
 
 # --------------------------------------------------------------------------
@@ -565,15 +573,20 @@ class Project:
             t += dur
             return sp
 
+        coach = cfg.get("coach_intro", True)
+
         def card_hold(move, phase, vo_text, blur=False):
-            audio, spans = self.voice.say(vo_text)
+            intro = COACH_INTRO[move["class"]] if coach and not blur else ""
+            audio, spans = self.voice.say((intro + " " + vo_text).strip())
+            if intro:
+                spans = spans[len(split_sentences(speakable(intro))):] or spans
             lead, tail = 0.45, 0.7
             sp = hold(move["t"], lead + len(audio) / SR + tail, phase)
             self.clips.append(Clip(sp.t0 + lead, audio))
             words = [sp.t0 + lead + w for w in word_times(move.get("comment", vo_text), spans)]
             show = Show(len(self.shows), move, sp.t0, sp.t1, True, blur, words)
             self.shows.append(show)
-            self.sfx.append((sp.t0, "tock"))
+            self.sfx.append((sp.t0, self.move_sound(move)))
             if "eval" in move:
                 self.evals.append((sp.t0, move["eval"], True))
             return sp
@@ -588,7 +601,7 @@ class Project:
             card_hold(hook_move, "hook", hook.get("vo", ""), blur=True)
             self.spans.append(Span("rewind", t, t + 0.8, hook_move["t"], main_start, "hook"))
             self.evals.append((t, 0.0, True))
-            self.sfx.append((t, "whoosh"))
+            self.sfx.append((t, "premove"))
             t += 0.8
         else:
             self.evals.append((0.0, 0.0, False))
@@ -620,7 +633,7 @@ class Project:
             if ot is None:
                 continue
             self.shows.append(Show(len(self.shows), m, ot, ot + 2.8, False))
-            self.sfx.append((ot, "tock"))
+            self.sfx.append((ot, self.move_sound(m)))
             if "eval" in m:
                 self.evals.append((ot, m["eval"], True))
         # review panel + outro voice-over, then hold on the final frame
@@ -637,6 +650,11 @@ class Project:
             if sp.t0 >= self.review_t - 1e-6 and sp.phase == "main":
                 sp.phase = "review"
         self.duration = t
+        self.sfx.append((0.0, "game-start"))
+        if not any(name == "game-end" and self.review_t - 4 <= at <= self.review_t for at, name in self.sfx):
+            self.sfx.append((self.review_t, "game-end"))
+        else:
+            self.sfx.append((self.review_t, "notify"))
         # each move stays on screen until the next one appears
         self.shows.sort(key=lambda s: s.t0)
         for a, b in zip(self.shows, self.shows[1:]):
@@ -649,6 +667,16 @@ class Project:
         for s in self.shows:
             s.t1 = min(s.t1, self.review_t)
         self.evals.sort(key=lambda e: e[0])
+
+    @staticmethod
+    def move_sound(move):
+        if isinstance(move.get("eval"), str) and move["eval"] in ("1-0", "0-1"):
+            return "game-end"
+        if move.get("comment"):
+            return "capture" if move["class"] in POSITIVE else "move-check"
+        if move["class"] not in POSITIVE:
+            return "move-check" if move["class"] in ("mistake", "blunder") else "move-opponent"
+        return "move-self" if move["side"] == "white" else "move-opponent"
 
     def find_move(self, name):
         for m in self.moves:
@@ -838,11 +866,9 @@ class Renderer:
         for li, line in enumerate(lines):
             x = pad + 8
             for wi in line:
-                c = WHITE if wi < lit else (255, 255, 255, 82)
+                c = WHITE if wi < lit else (255, 255, 255, 165)
                 draw_text(body, (x, li * line_h), words[wi], bf, c)
                 x += bf.getlength(words[wi]) + space
-        if show.blur:
-            body = body.filter(ImageFilter.GaussianBlur(7))
         img.alpha_composite(body, (0, 98))
         out = with_shadow(img, 12, 150)
         self.cache[key] = out
@@ -973,7 +999,8 @@ class Renderer:
             b = b.resize((max(1, int(b.width * s)), max(1, int(b.height * s))), Image.LANCZOS)
         alpha_paste(clip, fade(b, alpha), (cx - b.width / 2, cy - b.height / 2 + 2 * s))
         if show.card:
-            img = self.card(show, sum(1 for wt in show.words if wt <= t))
+            lit = len(show.words) if show.blur else sum(1 for wt in show.words if wt <= t)
+            img = self.card(show, lit)
             ca = clamp((age - 0.15) / 0.25, 0, 1)
             side = self.card_side(move)
             pad = 24  # shadow padding
@@ -1092,9 +1119,13 @@ def build_audio(p, t_from, t_to):
             if j1 > j0:
                 duck[i + j0:i + j1] = np.minimum(duck[i + j0:i + j1], env[j0:j1])
     if p.cfg.get("sfx", True):
-        tock, whoosh = sfx_tock(), sfx_whoosh()
-        for at, kind in p.sfx:
-            place(fx, at, tock if kind == "tock" else whoosh)
+        folder = os.path.join(p.base, p.cfg["sounds"]) if p.cfg.get("sounds") else os.path.join(HERE, "sounds")
+        gain = float(p.cfg.get("sfx_volume", 0.7))
+        cache = {}
+        for at, name in p.sfx:
+            if name not in cache:
+                cache[name] = load_sound(name, folder)
+            place(fx, at, cache[name], gain)
     mix = scene * duck[:, None] + (vo * 1.0 + fx)[:, None]
     return np.clip(mix, -1, 1)
 

@@ -10,7 +10,9 @@ commentary). It renders a finished 1080×1920 MP4 with:
 - chess.com-style player tags (White at the bottom, Black at the top) and a live eval bar
 - name labels over each character, shot by shot
 - move badges (`!!` brilliant, `!` great, ★ best, 👍 excellent, ✓ good, 📖 book, `?!`, `?`, ✕, `??`)
-- freeze frames with a commentary card, read aloud by an AI voice while the words light up
+- freeze frames with a commentary card, read aloud by an AI voice in chess.com Game Review
+  coach style ("That's a blunder!", "Excellent move.") while the words light up
+- the official chess.com move, capture, check and game start/end sounds
 - a cold-open hook that teases the big move, then rewinds to the start
 - a closing **Game Review** with accuracy scores, move counts and the result
 
@@ -26,7 +28,10 @@ Everything runs locally and needs no paid services. The voice-over uses
    pip install -r requirements.txt
    ```
 
-The first render downloads the voice model (about 340 MB) into `models/`.
+The first render downloads the voice model (about 340 MB) into `models/` and the chess.com
+sound files into `sounds/`. The sounds are fetched from chess.com's site and aren't stored in
+this repo. Set `"sfx": false` to turn them off, or point `"sounds"` at a folder with your own
+`move-self.mp3`, `capture.mp3`, and so on.
 
 ## Render the demo
 
@@ -70,6 +75,8 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   "title": {"text": "I rated Mike Ross's job interview", "accent": "like a chess game"},
   "voice": "af_heart",            // Kokoro voice: af_heart, af_bella, am_michael, am_puck, bm_george, ...
   "speed": 1.05,
+  "coach_intro": true,            // each card's voice-over starts "That's a blunder!", "Excellent move." ...
+  "sfx_volume": 0.7,              // chess.com sounds: move/capture on badges, check on bad cards, game start/end
   "crop": "auto",                 // trims letterbox bars; or [w, h, x, y]; or false
   "players": {
     "white": {"name": "Mike Ross", "short": "Mike",
@@ -107,6 +114,26 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   a left card briefly hides the bottom player tag. Pick the side that keeps faces visible.
 - **Timing**: the freeze lasts as long as the voice-over, so keep each comment to about
   25–40 words.
+
+## Rating guide
+
+Rate lines the way chess.com rates moves, and don't inflate the ratings:
+
+| Rating | Use it for | How often |
+|---|---|---|
+| Brilliant `!!` | the single best line, usually a "sacrifice" that wins anyway | once per video at most |
+| Great `!` | the only reply that saves or wins the exchange | 1–2 |
+| Best ★ | the strongest possible reply in that moment | a few |
+| Excellent 👍 | clever, strong lines | often |
+| Good ✓ | solid, normal lines | most common |
+| Book 📖 | standard openers ("Hi, nice to meet you") | opening only |
+| Inaccuracy `?!` / Mistake `?` / Blunder `??` | weak, bad and game-losing lines | as deserved |
+
+Write card comments the way the Game Review coach talks: say what the move does, then where
+the game stands. For example: *"He accepted the rejection, so she punishes him for it. Black
+keeps the initiative."* The coach's opener ("That's the best move.") is added automatically.
+Check every quote and speaker against the clip. The scout transcript and contact sheet are
+there for that.
 
 ## Posting
 

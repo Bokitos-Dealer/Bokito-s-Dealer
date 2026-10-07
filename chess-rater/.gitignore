@@ -5,3 +5,4 @@ models/
 __pycache__/
 *.scout.txt
 *.shots.png
+sounds/
