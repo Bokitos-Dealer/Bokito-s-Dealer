@@ -4,8 +4,8 @@
     "text": "I rated Audrey Hepburn's rizz in Charade (1963)",
     "accent": "like a chess game"
   },
-  "voice": "af_heart",
-  "speed": 1.05,
+  "voice": "am_michael",
+  "speed": 1.1,
   "players": {
     "white": {
       "name": "Peter Joshua",
@@ -21,7 +21,7 @@
   "hook": {
     "from": 226.62,
     "move": "Fake Shakespeare",
-    "vo": "Brilliant! Regina sacrifices the truth with a made-up Shakespeare quote, and it wins her the game. Let's review the game from the start."
+    "vo": "Fake Shakespeare is brilliant! But how did Regina get here? Let's review the game."
   },
   "segments": [
     [137.5, 165.45],
@@ -88,14 +88,14 @@
     {"t": 144.85, "side": "white", "class": "good", "name": "Name Drop", "note": "Name-drops a baron. Solid.", "eval": 0.4, "badge": [0.82, 0.22]},
     {"t": 148.2, "side": "white", "class": "inaccuracy", "name": "Do We Know Each Other", "note": "A cliché. Easy for Black to answer.", "eval": 0.0, "badge": [0.82, 0.22]},
     {"t": 150.0, "side": "black", "class": "excellent", "name": "Counter-Question", "note": "Turns his question back on him.", "eval": -0.4, "badge": [0.82, 0.22]},
-    {"t": 157.05, "side": "black", "class": "best", "name": "The Waitlist", "comment": "Regina declines without closing the door. Putting him on a waiting list keeps the game open on her terms. Black takes the advantage.", "eval": -1.6, "badge": [0.83, 0.24], "card": "right"},
+    {"t": 157.05, "side": "black", "class": "best", "name": "The Waitlist", "comment": "She turns him down but leaves the door open. Black takes the lead.", "eval": -1.6, "badge": [0.83, 0.24], "card": "right"},
     {"t": 160.86, "side": "white", "class": "excellent", "name": "Critical List", "note": "Turns the rejection into a joke.", "eval": -0.9, "badge": [0.82, 0.22]},
-    {"t": 162.4, "side": "black", "class": "great", "name": "Quitter", "comment": "He accepted the rejection, so she punishes him for it. This is the only move that keeps the game going, and Black keeps the initiative.", "eval": -2.0, "badge": [0.3, 0.32], "card": "left"},
+    {"t": 162.4, "side": "black", "class": "great", "name": "Quitter", "comment": "The only move that keeps the game alive. Black keeps the initiative.", "eval": -2.0, "badge": [0.3, 0.32], "card": "left"},
     {"t": 165.32, "side": "black", "class": "good", "name": "Rematch", "note": "Invites him back to the board.", "eval": -2.2, "badge": [0.82, 0.22]},
     {"t": 184.24, "side": "black", "class": "good", "name": "Blocked View", "note": "Restarts the game.", "eval": -2.1, "badge": [0.83, 0.22]},
     {"t": 187.82, "side": "white", "class": "excellent", "name": "Which View", "note": "Offers himself as the view.", "eval": -1.6, "badge": [0.52, 0.22]},
     {"t": 188.98, "side": "black", "class": "excellent", "name": "The One You're Blocking", "note": "Picks the mountains over him.", "eval": -2.0, "badge": [0.84, 0.24]},
-    {"t": 193.36, "side": "black", "class": "inaccuracy", "name": "What's Your Name", "comment": "She said she couldn't meet anyone new, then asked for his name. This shows her hand. Better was to let him ask first. White is back in the game.", "eval": 0.6, "badge": [0.83, 0.2], "card": "left"},
+    {"t": 193.36, "side": "black", "class": "inaccuracy", "name": "What's Your Name", "comment": "She asks for his name right after rejecting him. White is back in it.", "eval": 0.6, "badge": [0.83, 0.2], "card": "left"},
     {"t": 198.08, "side": "white", "class": "good", "name": "Is There a Mr. Lampert", "note": "Checks if she's married.", "eval": 0.8, "badge": [0.5, 0.22]},
     {"t": 200.54, "side": "black", "class": "good", "name": "Divorce", "note": "The husband is leaving the board.", "eval": 0.5, "badge": [0.82, 0.22]},
     {"t": 202.06, "side": "white", "class": "excellent", "name": "Not on My Account", "note": "A clean joke.", "eval": 0.9, "badge": [0.82, 0.22]},
@@ -104,18 +104,18 @@
     {"t": 212.0, "side": "black", "class": "inaccuracy", "name": "Not a Proposal", "note": "Over-explains.", "eval": 1.0, "badge": [0.83, 0.2]},
     {"t": 215.72, "side": "black", "class": "good", "name": "Never With Me", "note": "The husband isn't a factor.", "eval": 0.8, "badge": [0.83, 0.2]},
     {"t": 217.1, "side": "black", "class": "inaccuracy", "name": "Pete?", "note": "Too familiar, too fast.", "eval": 1.2, "badge": [0.83, 0.2]},
-    {"t": 219.25, "side": "white", "class": "best", "name": "Mr. Joshua", "comment": "He refuses the nickname and keeps it formal. By staying cold, White takes control of the conversation. White is now better.", "eval": 2.0, "badge": [0.8, 0.24], "card": "right"},
+    {"t": 219.25, "side": "white", "class": "best", "name": "Mr. Joshua", "comment": "He refuses the nickname and stays cold. White takes control.", "eval": 2.0, "badge": [0.8, 0.24], "card": "right"},
     {"t": 221.34, "side": "white", "class": "excellent", "name": "The Exit", "note": "Ends the conversation on his terms.", "eval": 2.4, "badge": [0.36, 0.32]},
     {"t": 222.74, "side": "black", "class": "mistake", "name": "Now You're Angry", "note": "He isn't angry. He's leaving.", "eval": 3.2, "badge": [0.84, 0.26]},
     {"t": 226.54, "side": "white", "class": "inaccuracy", "name": "Paris Too", "note": "Gives her a reason to see him again.", "eval": 2.2, "badge": [0.36, 0.32]},
-    {"t": 231.5, "side": "black", "class": "brilliant", "name": "Fake Shakespeare", "comment": "Regina sacrifices her credibility with a made-up quote. It doesn't matter that he catches it, because it gets him asking how to reach her in Paris. That sacrifice wins the game.", "eval": -1.5, "badge": [0.83, 0.22], "card": "left"},
+    {"t": 231.5, "side": "black", "class": "brilliant", "name": "Fake Shakespeare", "comment": "She sacrifices the truth to see him again in Paris. It works.", "eval": -1.5, "badge": [0.83, 0.22], "card": "left"},
     {"t": 233.4, "side": "white", "class": "good", "name": "Fact Check", "note": "Correct, but it doesn't matter.", "eval": -1.3, "badge": [0.76, 0.22]},
     {"t": 234.74, "side": "black", "class": "good", "name": "How Do You Know", "note": "Holds her ground.", "eval": -1.4, "badge": [0.83, 0.22]},
     {"t": 236.74, "side": "white", "class": "excellent", "name": "Busted", "note": "Calls the bluff.", "eval": -1.0, "badge": [0.78, 0.22]},
     {"t": 238.66, "side": "black", "class": "great", "name": "Sounds Right", "note": "Goes straight for the ask.", "eval": -1.9, "badge": [0.83, 0.28]},
     {"t": 239.56, "side": "white", "class": "mistake", "name": "Are You in the Book", "note": "He's agreeing to call her.", "eval": -2.8, "badge": [0.42, 0.26]},
     {"t": 240.84, "side": "black", "class": "excellent", "name": "Charles Is", "note": "Gives him a way to find her.", "eval": -3.2, "badge": [0.83, 0.28]},
-    {"t": 242.6, "side": "white", "class": "blunder", "name": "Only One Charles", "comment": "After playing it cool all game, he asks how to find her in the phone book. This hands Black the win. Black is winning.", "eval": -6.5, "badge": [0.42, 0.26], "card": "right"},
+    {"t": 242.6, "side": "white", "class": "blunder", "name": "Only One Charles", "comment": "He just asked how to find her. Black is winning.", "eval": -6.5, "badge": [0.42, 0.26], "card": "right"},
     {"t": 245.96, "side": "black", "class": "best", "name": "Lord, I Hope So", "note": "Checkmate.", "eval": "0-1", "badge": [0.82, 0.22]}
   ]
 }

@@ -73,9 +73,9 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 {
   "source": "../clips/scene.mp4",
   "title": {"text": "I rated Mike Ross's job interview", "accent": "like a chess game"},
-  "voice": "af_heart",            // Kokoro voice: af_heart, af_bella, am_michael, am_puck, bm_george, ...
-  "speed": 1.05,
-  "coach_intro": true,            // each card's voice-over starts "That's a blunder!", "Excellent move." ...
+  "voice": "am_michael",          // Kokoro voice: am_michael, am_puck, am_fenrir, bm_george, af_heart, ...
+  "speed": 1.1,
+  "coach_intro": true,            // voice-over opens like the chess.com coach: "Quitter is a great move!"
   "sfx_volume": 0.7,              // chess.com sounds: move/capture on badges, check on bad cards, game start/end
   "crop": "auto",                 // trims letterbox bars; or [w, h, x, y]; or false
   "players": {
@@ -112,8 +112,8 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   the freeze lands on the right face. The scout transcript gives the end time of every word.
 - **`card`** is `"right"` (the default) or `"left"`. Cards sit along the bottom of the clip, and
   a left card briefly hides the bottom player tag. Pick the side that keeps faces visible.
-- **Timing**: the freeze lasts as long as the voice-over, so keep each comment to about
-  25–40 words.
+- **Timing**: the freeze lasts as long as the voice-over, so keep each comment short: one or two
+  sentences, about 10–15 words.
 
 ## Rating guide
 
@@ -129,9 +129,10 @@ Rate lines the way chess.com rates moves, and don't inflate the ratings:
 | Book 📖 | standard openers ("Hi, nice to meet you") | opening only |
 | Inaccuracy `?!` / Mistake `?` / Blunder `??` | weak, bad and game-losing lines | as deserved |
 
-Write card comments the way the Game Review coach talks: say what the move does, then where
-the game stands. For example: *"He accepted the rejection, so she punishes him for it. Black
-keeps the initiative."* The coach's opener ("That's the best move.") is added automatically.
+Write card comments the way the Game Review coach talks: one short line on what the move does,
+then where the game stands. For example: *"The only move that keeps the game alive. Black keeps
+the initiative."* The voice-over opens with the move and its rating, the way the coach does
+("Quitter is a great move!"), so the comment shouldn't repeat it.
 Check every quote and speaker against the clip. The scout transcript and contact sheet are
 there for that.
 

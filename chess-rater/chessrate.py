@@ -52,19 +52,6 @@ CLASSES = {
     "blunder": ("Blunder", "is a blunder", "#fa412d", "??", 15),
 }
 
-# what the Game Review coach says before explaining a move
-COACH_INTRO = {
-    "brilliant": "Brilliant!",
-    "great": "Great move!",
-    "best": "That's the best move.",
-    "excellent": "Excellent move.",
-    "good": "Good move.",
-    "book": "That's a book move.",
-    "inaccuracy": "That's an inaccuracy.",
-    "mistake": "That's a mistake.",
-    "miss": "That's a miss.",
-    "blunder": "That's a blunder!",
-}
 POSITIVE = {"brilliant", "great", "best", "excellent", "good", "book"}
 
 # official chess.com sound theme, fetched on first use (not redistributed with this repo)
@@ -392,8 +379,8 @@ def speakable(text):
 
 class Voice:
     def __init__(self, cfg, models_dir, enabled, cache_dir):
-        self.voice = cfg.get("voice", "af_heart")
-        self.speed = float(cfg.get("speed", 1.05))
+        self.voice = cfg.get("voice", "am_michael")
+        self.speed = float(cfg.get("speed", 1.1))
         self.lang = cfg.get("lang", "en-us")
         self.cache_dir = cache_dir
         self.kokoro = None
@@ -449,6 +436,13 @@ class Voice:
         np.save(cache + ".npy", audio)
         json.dump(spans, open(cache + ".json", "w"))
         return audio, spans
+
+
+def coach_line(move):
+    """The Game Review coach's opener, e.g. "Quitter is a great move!" or "Nf3 is best." """
+    phrase = CLASSES[move["class"]][1]
+    end = "!" if move["class"] in ("brilliant", "great", "blunder") else "."
+    return f"{move['name'].rstrip('?!.')} {phrase}{end}"
 
 
 def word_times(display_text, spans):
@@ -576,7 +570,7 @@ class Project:
         coach = cfg.get("coach_intro", True)
 
         def card_hold(move, phase, vo_text, blur=False):
-            intro = COACH_INTRO[move["class"]] if coach and not blur else ""
+            intro = coach_line(move) if coach and not blur else ""
             audio, spans = self.voice.say((intro + " " + vo_text).strip())
             if intro:
                 spans = spans[len(split_sentences(speakable(intro))):] or spans
