@@ -6,9 +6,9 @@ classifications, commentary) and renders a 1080x1920 MP4 in the style of
 chess.com game-review edits: hook title, player tags, eval bar, move badges,
 freeze-frame commentary cards read by an AI voice, and a final Game Review.
 
-    python chessrate.py projects/charade.json -o out/charade.mp4
-    python chessrate.py projects/charade.json --timeline
-    python chessrate.py projects/charade.json --preview 4.5,31,62
+    python chessrate.py projects/suits-mike-rachel.json -o out/suits.mp4
+    python chessrate.py projects/suits-mike-rachel.json --timeline
+    python chessrate.py projects/suits-mike-rachel.json --preview 4.5,31,62
 
 See README.md for the project file format.
 """
@@ -439,7 +439,7 @@ class Voice:
 
 
 def coach_line(move):
-    """The Game Review coach's opener, e.g. "Quitter is a great move!" or "Nf3 is best." """
+    """The Game Review coach's opener, e.g. "In Here is a great move!" or "Nf3 is best." """
     phrase = CLASSES[move["class"]][1]
     end = "!" if move["class"] in ("brilliant", "great", "blunder") else "."
     return f"{move['name'].rstrip('?!.')} {phrase}{end}"

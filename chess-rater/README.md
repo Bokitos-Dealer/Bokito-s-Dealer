@@ -1,7 +1,5 @@
 # Chess Rater
 
-<img src="docs/preview.jpg" width="360" align="right" alt="Frame from the Charade demo: a brilliant-move card over Audrey Hepburn">
-
 Makes **"I rated ___ like a chess game"** videos for TikTok and Instagram Reels. You give it
 a movie or TV clip and a list of "moves" (who said what, how good it was, and a line of
 commentary). It renders a finished 1080×1920 MP4 with:
@@ -11,7 +9,7 @@ commentary). It renders a finished 1080×1920 MP4 with:
 - name labels over each character, shot by shot
 - move badges (`!!` brilliant, `!` great, ★ best, 👍 excellent, ✓ good, 📖 book, `?!`, `?`, ✕, `??`)
 - freeze frames with a commentary card, read aloud by an AI voice in chess.com Game Review
-  coach style ("That's a blunder!", "Excellent move.") while the words light up
+  coach style ("The Kiss is brilliant!") while the words light up
 - the official chess.com move, capture, check and game start/end sounds
 - a cold-open hook that teases the big move, then rewinds to the start
 - a closing **Game Review** with accuracy scores, move counts and the result
@@ -33,18 +31,22 @@ sound files into `sounds/`. The sounds are fetched from chess.com's site and are
 this repo. Set `"sfx": false` to turn them off, or point `"sounds"` at a folder with your own
 `move-self.mp3`, `capture.mp3`, and so on.
 
-## Render the demo
+## Example project
 
-The demo uses the ski-lodge scene from *Charade* (1963), which is in the US public domain.
-Fetch the clip (about 50 MB), then render:
+`projects/suits-mike-rachel.json` rates Mike and Rachel's late-night scene from *Suits*, as
+posted on the official Suits YouTube channel. The clip isn't included in this repo. Save your
+own copy as `clips/suits-mike-rachel.mp4`. If you saved the video and audio as separate files,
+merge them first:
 
 ```sh
 mkdir -p clips
-ffmpeg -ss 180 -i "https://archive.org/download/charade-1963-cary-grant-audrey-hepburn-walter-matthau-1080p-reup/Charade%20%281963%29%20Cary%20Grant%2C%20Audrey%20Hepburn%2C%20Walter%20Matthau%2C%20James%20Coburn%2C%20George%20Kennedy%3B%201080p%5D.ia.mp4" \
-  -t 280 -c copy -avoid_negative_ts make_zero clips/charade-lodge.mp4
+ffmpeg -i videoplayback.mp4 -i videoplayback.m4a -map 0:v -map 1:a -c copy clips/suits-mike-rachel.mp4
 
-python chessrate.py projects/charade.json        # -> out/charade.mp4
+python chessrate.py projects/suits-mike-rachel.json        # -> out/suits-mike-rachel.mp4
 ```
+
+The times in the project file match that upload (4:11, ending in the Suits end card). A
+different copy of the scene will need its times re-checked with `scout.py`.
 
 ## Making a new video
 
@@ -53,7 +55,7 @@ python chessrate.py projects/charade.json        # -> out/charade.mp4
 2. **Scout it.** `python scout.py clips/scene.mp4 --from 120 --to 250` writes a transcript
    with timestamps and a contact sheet of every shot with a 10×10 grid. The transcript needs
    `pip install faster-whisper`. Use the sheet to read off x/y positions for labels and badges.
-3. **Write the project file.** Copy `projects/charade.json` and edit it (format below).
+3. **Write the project file.** Copy `projects/suits-mike-rachel.json` and edit it (format below).
    Five or six voiced cards plus 20–30 quick badges is about right for 2–3 minutes.
 4. **Check it.**
    - `python chessrate.py projects/scene.json --timeline` prints the edit and where every
@@ -71,34 +73,34 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 
 ```jsonc
 {
-  "source": "../clips/scene.mp4",
-  "title": {"text": "I rated Mike Ross's job interview", "accent": "like a chess game"},
+  "source": "../clips/suits-mike-rachel.mp4",
+  "title": {"text": "I rated Mike and Rachel's late-night kiss", "accent": "like a chess game"},
   "voice": "am_michael",          // Kokoro voice: am_michael, am_puck, am_fenrir, bm_george, af_heart, ...
   "speed": 1.1,
-  "coach_intro": true,            // voice-over opens like the chess.com coach: "Quitter is a great move!"
+  "coach_intro": true,            // voice-over opens like the chess.com coach: "In Here is a great move!"
   "sfx_volume": 0.7,              // chess.com sounds: move/capture on badges, check on bad cards, game start/end
   "crop": "auto",                 // trims letterbox bars; or [w, h, x, y]; or false
   "players": {
-    "white": {"name": "Mike Ross", "short": "Mike",
-              "avatar": {"t": 151.0, "x": 0.47, "y": 0.27, "size": 0.4}},  // face crop from the clip
-    "black": {"name": "Harvey Specter", "short": "Harvey", "avatar": "harvey.png"}  // or an image file
+    "white": {"name": "Rachel Zane", "short": "Rachel",
+              "avatar": {"t": 106.8, "x": 0.34, "y": 0.47, "size": 0.5}},  // face crop from the clip
+    "black": {"name": "Mike Ross", "short": "Mike", "avatar": "mike.png"}   // or an image file
   },
   "hook": {                       // optional cold open: plays up to a card move, then rewinds
-    "from": 226.6,
-    "move": "Fake Shakespeare",   // name of a move that has a "comment"
-    "vo": "He just blundered. So how did he still get the job? Let's start from the beginning."
+    "from": 187.45,
+    "move": "The Kiss",           // name of a move that has a "comment"
+    "vo": "The Kiss is brilliant! But how did Rachel get here? Let's review the game."
   },
-  "segments": [[137.5, 165.45], [182.6, 248.9]],   // the parts of the clip to use, in order
-  "review": {"at": 248.0, "result": "1-0 · Mike gets the job", "vo": "White wins."},
-  "labels": [[137.0, 139.15, "Regina", 0.55, 0.07]],  // [from, to, text, x, y]
+  "segments": [[44.6, 113.85], [122.72, 137.0]],   // the parts of the clip to use, in order
+  "review": {"at": 226.0, "result": "1-0 · Rachel wins", "vo": "Good game! White wins."},
+  "labels": [[89.92, 92.88, "Rachel", 0.60, 0.05]],  // [from, to, text, x, y]
   "moves": [
     // a quick badge: shows for ~3 s while the clip keeps playing
-    {"t": 143.0, "side": "black", "class": "good", "name": "Bank Robber",
-     "note": "Answers with a joke.", "eval": 0.2, "badge": [0.82, 0.22]},
+    {"t": 59.44, "side": "black", "class": "excellent", "name": "Stealing From Us",
+     "note": "Straight to the point.", "eval": -0.3, "badge": [0.84, 0.22]},
     // a card: freezes the clip, and the voice reads "comment" (or "vo" if given)
-    {"t": 157.05, "side": "black", "class": "best", "name": "The Waitlist",
-     "comment": "She doesn't say no. She says not yet. ...", "eval": -1.6,
-     "badge": [0.83, 0.24], "card": "left"}
+    {"t": 93.0, "side": "white", "class": "great", "name": "In Here",
+     "comment": "Mike read the files once, so he already has them. White is better.",
+     "eval": 1.2, "badge": [0.75, 0.24], "card": "right"}
   ]
 }
 ```
@@ -130,20 +132,19 @@ Rate lines the way chess.com rates moves, and don't inflate the ratings:
 | Inaccuracy `?!` / Mistake `?` / Blunder `??` | weak, bad and game-losing lines | as deserved |
 
 Write card comments the way the Game Review coach talks: one short line on what the move does,
-then where the game stands. For example: *"The only move that keeps the game alive. Black keeps
-the initiative."* The voice-over opens with the move and its rating, the way the coach does
-("Quitter is a great move!"), so the comment shouldn't repeat it.
+then where the game stands. For example: *"She cuts him off mid-sentence and kisses him. White
+is winning."* The voice-over opens with the move and its rating, the way the coach does
+("In Here is a great move!"), so the comment shouldn't repeat it.
 Check every quote and speaker against the clip. The scout transcript and contact sheet are
 there for that.
 
 ## Posting
 
-- The output is 1080×1920, 30 fps, H.264 + AAC with loudness normalised to −14 LUFS. It
+- The output is 1080×1920, 30 fps, H.264 + AAC, loudness-normalised for social apps. It
   uploads straight to TikTok, Reels and Shorts.
 - Cards and badges keep clear of the right-hand like/comment/share buttons.
 - The hook matters most: open on the most surprising move, and make the title name someone
   people know.
-- **Copyright:** films and shows under copyright can get muted, taken down or earn strikes,
-  even with commentary over them. Public-domain films are safe (for example *Charade*,
-  *His Girl Friday*, *Night of the Living Dead*, *Detour* and *D.O.A.*), as is footage you
-  have rights to.
+- **Copyright:** clips from shows under copyright (like *Suits*) can get muted, taken down or
+  earn strikes, even with commentary over them. Public-domain films (for example *Charade*,
+  *His Girl Friday* and *Night of the Living Dead*) and footage you have rights to are safe.
