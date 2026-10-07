@@ -53,9 +53,9 @@ CLASSES = {
 }
 
 LEAD_IN = "Right."  # spoken first and cut off; the model reliably pauses after it
-# the series narrator: a blend of two Kokoro voices, lowered 1.5 semitones (formants kept)
-SERIES_VOICE = "am_michael:0.5+am_fenrir:0.5"
-SERIES_PITCH = -1.5
+# the series narrator: a deep, calm blend of two Kokoro voices
+SERIES_VOICE = "am_michael:0.6+am_onyx:0.4"
+SERIES_PITCH = 0.0
 # background music under the commentary: "Be Chillin" by Alexander Nakarada (FreePD, CC0 public domain)
 MUSIC_URL = ("https://archive.org/download/allfreepdmusicbykuronekony4n/content/drive/My%20Drive/Download/"
              "all%20freepd%20music%20%28by%20kuronekony4n%29/Be%20Chillin.mp3")
@@ -390,8 +390,10 @@ def speakable(text):
 class Voice:
     def __init__(self, cfg, models_dir, enabled, cache_dir):
         self.voice = cfg.get("voice", SERIES_VOICE)
-        self.speed = float(cfg.get("speed", 1.1))
+        self.speed = float(cfg.get("speed", 1.08))
         self.pitch = float(cfg.get("pitch", SERIES_PITCH if self.voice == SERIES_VOICE else 0.0))
+        # some voices (am_puck, am_fenrir) swallow the first sound of a line; "lead_in": true works around it
+        self.lead_in = bool(cfg.get("lead_in", False))
         self.lang = cfg.get("lang", "en-us")
         self.cache_dir = cache_dir
         self.kokoro = None
@@ -436,22 +438,28 @@ class Voice:
                 spans.append((t, t + d))
                 t += d + 0.25
             return np.zeros(int(t * SR), np.float32), spans
-        key = hashlib.sha1(json.dumps([3, self.voice, self.speed, self.pitch, self.lang, sentences]).encode()).hexdigest()[:16]
+        key = hashlib.sha1(json.dumps([5, self.voice, self.speed, self.pitch, self.lead_in, self.lang,
+                                       sentences]).encode()).hexdigest()[:16]
         cache = os.path.join(self.cache_dir, key)
         if os.path.exists(cache + ".npy"):
             return np.load(cache + ".npy"), json.load(open(cache + ".json"))
-        # Kokoro under-articulates the first sound of an utterance ("Bro" comes out as "Row"), so
-        # the whole line is spoken in one pass after a throwaway lead-in word, which is cut off
-        raw, sr = self.kokoro.create(LEAD_IN + " " + " ".join(sentences), voice=self.style,
+        # the whole line is spoken in one pass so sentences flow into each other; with lead_in, a
+        # throwaway word goes first (some voices swallow the first sound of a line) and is cut off
+        prefix = LEAD_IN + " " if self.lead_in else ""
+        raw, sr = self.kokoro.create(prefix + " ".join(sentences), voice=self.style,
                                      speed=self.speed, lang=self.lang)
         raw = np.asarray(raw, np.float32)
         raw = np.interp(np.arange(int(len(raw) * SR / sr)) * (sr / SR), np.arange(len(raw)), raw).astype(np.float32)
-        gaps = pauses(raw, 0.06)
-        lead = next((g for g in gaps if int(0.12 * SR) <= g[0] <= int(0.6 * SR)), None)
-        if lead is None:  # no clear pause after the lead-in: fall back to speaking the line as is
-            raw, sr = self.kokoro.create(" ".join(sentences), voice=self.style, speed=self.speed, lang=self.lang)
-            raw = np.interp(np.arange(int(len(raw) * SR / sr)) * (sr / SR), np.arange(len(raw)),
-                            np.asarray(raw, np.float32)).astype(np.float32)
+        gaps = pauses(raw, 0.06) if self.lead_in else []
+        # the pause after the lead-in is the longest one early in the line (a stop consonant like the
+        # k-p in "Workplace" makes a shorter silence that must not be mistaken for it)
+        early = [g for g in gaps if int(0.12 * SR) <= g[0] <= int(0.6 * SR)]
+        lead = max(early, key=lambda g: g[1] - g[0]) if early else None
+        if lead is None:  # no lead-in, or no clear pause after it: speak the line as is
+            if self.lead_in:
+                raw, sr = self.kokoro.create(" ".join(sentences), voice=self.style, speed=self.speed, lang=self.lang)
+                raw = np.interp(np.arange(int(len(raw) * SR / sr)) * (sr / SR), np.arange(len(raw)),
+                                np.asarray(raw, np.float32)).astype(np.float32)
             cut, gaps = 0, pauses(raw)
         else:
             cut = max(lead[0], lead[1] - int(0.03 * SR))
@@ -596,9 +604,13 @@ class Project:
         self.clip_h = int(round(W * sh / sw / 2)) * 2
         self.clip_y = (H - self.clip_h) // 2
         self.players = cfg["players"]
+        for key, pl in self.players.items():
+            pl.setdefault("team", key if key in ("white", "black") else "black")
         self.moves = sorted(cfg["moves"], key=lambda m: m["t"])
         for i, m in enumerate(self.moves):
             m["_n"] = i + 1
+            if m["side"] not in self.players:
+                sys.exit(f"move {m.get('name')}: side {m['side']!r} isn't one of the players ({', '.join(self.players)})")
             if m["class"] not in CLASSES:
                 sys.exit(f"move {m.get('name')}: unknown class {m['class']!r}; use one of {', '.join(CLASSES)}")
         self.labels = [l if isinstance(l, dict) else dict(zip(("from", "to", "text", "x", "y"), l))
@@ -756,6 +768,17 @@ class Project:
         scores = [CLASSES[m["class"]][4] for m in self.moves if m["side"] == side]
         return sum(scores) / len(scores) if scores else 0.0
 
+    def team(self, key):
+        return self.players[key]["team"]
+
+    def members(self, team, src_t=None):
+        """Player keys on a team, main player first; with src_t, only those who have joined by then."""
+        keys = [k for k, pl in self.players.items() if pl["team"] == team]
+        keys.sort(key=lambda k: k != team)
+        if src_t is not None:
+            keys = [k for k in keys if k == team or self.players[k].get("joins", -1e9) <= src_t]
+        return tuple(keys)
+
     def counts(self, side):
         c = {k: 0 for k in CLASSES}
         for m in self.moves:
@@ -788,7 +811,7 @@ class Renderer:
         self.frames = FrameSource(project.source, self.cw, self.ch, project.crop)
         self.cache = {}
         self.base = self.render_base()
-        self.avatars = {side: self.avatar(project.players[side]) for side in ("white", "black")}
+        self.avatars = {key: self.avatar(pl) for key, pl in project.players.items()}
         coach = project.cfg.get("coach", {})
         self.coach_h = int(coach.get("size", 190)) if coach.get("enabled", True) else 0
         self.coach = {}
@@ -800,7 +823,6 @@ class Renderer:
                     self.coach[expr, m] = with_shadow(im, 8, 130)
             self.coach_w = self.coach["hype", 0].width - 32
         self.talk = self.talk_levels()
-        self.tags = {side: self.player_tag(side) for side in ("white", "black")}
 
     # ---- static pieces
     def render_base(self):
@@ -849,16 +871,23 @@ class Renderer:
         img.putalpha(rounded_mask(size, size, size // 7))
         return img
 
-    def player_tag(self, side):
-        pl = self.p.players[side]
+    def player_tag(self, members, team):
+        """Name tag for a side; when a guest has joined, both avatars and "Mike & Louis"."""
+        key = ("tag", members, team)
+        if key in self.cache:
+            return self.cache[key]
+        pls = [self.p.players[k] for k in members]
+        name = pls[0]["name"] if len(pls) == 1 else " & ".join(pl.get("short", pl["name"]) for pl in pls)
         name_f, sub_f = font("Bold", 22), font("Medium", 15)
-        av = self.avatars[side].resize((48, 48), Image.LANCZOS)
-        tw = int(max(name_f.getlength(pl["name"]), sub_f.getlength(side.title())))
-        w, h = 10 + 48 + 12 + tw + 14, 64
+        av_w = 48 * len(pls) + 4 * (len(pls) - 1)
+        tw = int(max(name_f.getlength(name), sub_f.getlength(team.title())))
+        w, h = 10 + av_w + 12 + tw + 14, 64
         img = rounded_box(w, h, 10, (18, 18, 18, 150))
-        img.alpha_composite(av, (8, 8))
-        draw_text(img, (70, 9), pl["name"], name_f, WHITE)
-        draw_text(img, (70, 36), side.title(), sub_f, (176, 176, 176, 255))
+        for i, k in enumerate(members):
+            img.alpha_composite(self.avatars[k].resize((48, 48), Image.LANCZOS), (8 + 52 * i, 8))
+        draw_text(img, (22 + av_w, 9), name, name_f, WHITE)
+        draw_text(img, (22 + av_w, 36), team.title(), sub_f, (176, 176, 176, 255))
+        self.cache[key] = img
         return img
 
     def label(self, text):
@@ -924,7 +953,8 @@ class Renderer:
         draw_text(img, (x, 23 + (31 - hf_fit.size) // 2), name, hf_fit, WHITE)
         draw_text(img, (x + hf_fit.getlength(name + " "), 23 + (31 - hf_fit.size) // 2), cls[1], hf_fit, color)
         side = move["side"]
-        sub = f"{move['_n']}. {self.p.players[side].get('short', self.p.players[side]['name'])} · {side.title()}"
+        sub = (f"{move['_n']}. {self.p.players[side].get('short', self.p.players[side]['name'])} · "
+               f"{self.p.team(side).title()}")
         draw_text(img, (pad + 8, 66), sub, sf, (160, 160, 160, 255))
         body = Image.new("RGBA", (cw, line_h * len(lines) + 12), (0, 0, 0, 0))
         space = bf.getlength(" ")
@@ -944,37 +974,54 @@ class Renderer:
         if key in self.cache:
             return self.cache[key]
         p = self.p
-        pw, ph = 470, 548
+        whites, blacks = p.members("white"), p.members("black")
+        step_x, x = 70, 252
+        cols = []
+        for k in whites:
+            cols.append((k, x))
+            x += step_x
+        col_i = x
+        x += step_x
+        for k in blacks:
+            cols.append((k, x))
+            x += step_x
+        pw, ph = x - step_x + 70, 556
         img = rounded_box(pw, ph, 16, (30, 30, 30, 238))
         tf, nf, lf, cf = font("Bold", 32), font("SemiBold", 16), font("Medium", 19), font("Bold", 19)
+        hf = font("SemiBold", 13)
         draw_text(img, (pw / 2 - tf.getlength("Game Review") / 2, 22), "Game Review", tf, WHITE)
-        col_w, col_i, col_b = 268, 338, 408
-        top = 70
-        for side, cx in (("white", col_w), ("black", col_b)):
-            av = self.avatars[side].resize((46, 46), Image.LANCZOS)
-            img.alpha_composite(av, (cx - 23, top))
-            short = p.players[side].get("short", p.players[side]["name"])
+        top = 92
+        for team, group in (("white", whites), ("black", blacks)):
+            xs = [cx for k, cx in cols if k in group]
+            label = team.title() if len(group) == 1 else "Team " + team.title()
+            lw = int(hf.getlength(label)) + 16
+            pill = rounded_box(lw, 20, 6, (64, 64, 64, 255))
+            draw_text(pill, (8, 3), label, hf, (200, 200, 200, 255))
+            img.alpha_composite(pill, (int((xs[0] + xs[-1]) / 2 - lw / 2), top - 28))
+        for k, cx in cols:
+            img.alpha_composite(self.avatars[k].resize((46, 46), Image.LANCZOS), (cx - 23, top))
+            short = p.players[k].get("short", p.players[k]["name"])
             draw_text(img, (cx - nf.getlength(short) / 2, top + 52), short, nf, WHITE)
         acc_y = top + 84
         draw_text(img, (30, acc_y + 4), "Accuracy", font("SemiBold", 20), WHITE)
-        for side, cx in (("white", col_w), ("black", col_b)):
-            box = rounded_box(74, 34, 6, (240, 240, 240, 255))
-            txt = f"{p.accuracy(side):.1f}"
-            bfnt = font("Bold", 20)
-            draw_text(box, (37 - bfnt.getlength(txt) / 2, 6), txt, bfnt, (30, 30, 30, 255))
-            img.alpha_composite(box, (cx - 37, acc_y))
-        cw_, cb_ = p.counts("white"), p.counts("black")
-        row_y, step = acc_y + 48, 30
-        for i, k in enumerate(CLASSES):
+        for k, cx in cols:
+            box = rounded_box(64, 34, 6, (240, 240, 240, 255))
+            txt = f"{p.accuracy(k):.1f}"
+            bfnt = font("Bold", 19)
+            draw_text(box, (32 - bfnt.getlength(txt) / 2, 7), txt, bfnt, (30, 30, 30, 255))
+            img.alpha_composite(box, (cx - 32, acc_y))
+        counts = {k: p.counts(k) for k, _ in cols}
+        row_y, step = acc_y + 46, 29
+        for i, c in enumerate(CLASSES):
             if i >= rows:
                 break
-            label, _, color, _, _ = CLASSES[k]
+            label, _, color, _, _ = CLASSES[c]
             y = row_y + i * step
             draw_text(img, (30, y + 3), label, lf, (228, 228, 228, 255))
-            for cnt, cx in ((cw_[k], col_w), (cb_[k], col_b)):
-                s = str(cnt)
-                draw_text(img, (cx - cf.getlength(s) / 2, y + 3), s, cf, hex_rgba(color))
-            img.alpha_composite(badge(k, 26), (col_i - 13, y))
+            for k, cx in cols:
+                n = str(counts[k][c])
+                draw_text(img, (cx - cf.getlength(n) / 2, y + 3), n, cf, hex_rgba(color))
+            img.alpha_composite(badge(c, 26), (col_i - 13, y))
         if rows > len(CLASSES):
             result = p.cfg.get("review", {}).get("result", "")
             rf = font("Bold", 20)
@@ -1143,10 +1190,11 @@ class Renderer:
                     alpha_paste(clip, li, (lb["x"] * self.cw - li.width / 2, lb["y"] * self.ch - li.height / 2))
         self.draw_eval(clip, t)
         if not in_review:
-            alpha_paste(clip, self.tags["black"], (34, 12))
+            alpha_paste(clip, self.player_tag(p.members("black", src_t), "black"), (34, 12))
             ta = self.bottom_tag_alpha(t)
             if ta > 0.01:
-                alpha_paste(clip, fade(self.tags["white"], ta), (34, self.ch - 12 - self.tags["white"].height))
+                wt = self.player_tag(p.members("white", src_t), "white")
+                alpha_paste(clip, fade(wt, ta), (34, self.ch - 12 - wt.height))
         for show in p.shows:
             if show.t0 <= t < show.t1:
                 self.draw_show(clip, show, t)

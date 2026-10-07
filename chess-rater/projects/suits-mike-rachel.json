@@ -4,11 +4,16 @@
     "text": "I rated Mike and Rachel's late-night kiss",
     "accent": "like a chess game"
   },
-  "voice": "am_michael:0.5+am_fenrir:0.5",
-  "pitch": -1.5,
-  "speed": 1.1,
-  "music": {"level_db": -16},
-  "coach": {"enabled": true, "size": 220},
+  "voice": "am_michael:0.6+am_onyx:0.4",
+  "pitch": 0,
+  "speed": 1.08,
+  "music": {
+    "level_db": -16
+  },
+  "coach": {
+    "enabled": true,
+    "size": 220
+  },
   "players": {
     "white": {
       "name": "Rachel Zane",
@@ -19,6 +24,13 @@
       "name": "Mike Ross",
       "short": "Mike",
       "avatar": {"t": 108.5, "x": 0.67, "y": 0.37, "size": 0.45}
+    },
+    "louis": {
+      "name": "Louis Litt",
+      "short": "Louis",
+      "team": "black",
+      "joins": 203.7,
+      "avatar": {"t": 230.4, "x": 0.365, "y": 0.21, "size": 0.36}
     }
   },
   "hook": {
@@ -33,11 +45,12 @@
     [215.3, 231.1]
   ],
   "review": {
-    "at": 226.0,
+    "at": 226.6,
     "result": "1-0 · Rachel wins, Mike is cooked",
     "vo": "Good game! Rachel wins, Louis caught it in 4K, and Mike? Mike is absolutely cooked."
   },
   "labels": [
+    [44.6, 45.2, "NPC 1", 0.12, 0.22],
     [44.6, 47.13, "Rachel", 0.5, 0.14],
     [47.13, 54.01, "Rachel", 0.29, 0.22],
     [47.13, 54.01, "Mike", 0.56, 0.39],
@@ -53,8 +66,8 @@
     [67.94, 70.95, "Mike", 0.6, 0.1],
     [70.95, 72.7, "Rachel", 0.48, 0.05],
     [72.7, 74.16, "Mike", 0.7, 0.05],
-    [74.16, 78.2, "Rachel", 0.68, 0.22],
     [74.16, 78.2, "Mike", 0.53, 0.42],
+    [74.16, 78.2, "Rachel", 0.68, 0.22],
     [78.2, 85.29, "Mike", 0.67, 0.38],
     [85.29, 87.5, "Mike", 0.34, 0.12],
     [87.5, 88.88, "Rachel", 0.62, 0.05],
@@ -73,8 +86,8 @@
     [126.42, 130.38, "Rachel", 0.62, 0.06],
     [130.38, 132.13, "Mike", 0.6, 0.05],
     [132.13, 134.76, "Rachel", 0.43, 0.06],
-    [134.76, 136.55, "Mike", 0.66, 0.07],
     [134.76, 136.55, "Rachel", 0.36, 0.42],
+    [134.76, 136.55, "Mike", 0.66, 0.07],
     [136.55, 138.06, "Rachel", 0.55, 0.06],
     [142.73, 144.23, "Mike", 0.72, 0.05],
     [144.23, 147.73, "Rachel", 0.45, 0.06],
@@ -102,11 +115,13 @@
     [203.7, 206.08, "Louis", 0.52, 0.2],
     [206.08, 208.29, "Mike", 0.36, 0.07],
     [206.08, 208.29, "Rachel", 0.56, 0.08],
-    [208.29, 211.04, "Mike", 0.75, 0.1],
+    [208.29, 211.04, "Louis", 0.56, 0.24],
+    [208.29, 209.9, "Rachel", 0.65, 0.27],
+    [208.29, 211.04, "Mike", 0.76, 0.12],
     [215.3, 219.8, "Mike", 0.6, 0.08],
-    [219.8, 223.72, "Louis", 0.34, 0.16],
+    [219.8, 223.72, "Louis", 0.45, 0.12],
     [223.72, 229.56, "Mike", 0.6, 0.05],
-    [229.56, 231.3, "Louis", 0.36, 0.15]
+    [229.56, 231.3, "Louis", 0.37, 0.05]
   ],
   "moves": [
     {"t": 46.74, "side": "white", "class": "book", "name": "What Is It This Time", "note": "Standard opener. Nothing crazy.", "eval": 0.2, "badge": [0.82, 0.22]},
@@ -136,7 +151,10 @@
     {"t": 187.2, "side": "white", "class": "best", "name": "Who Said I Did", "note": "Translation: I'm single.", "eval": 3.5, "badge": [0.15, 0.32]},
     {"t": 190.5, "side": "white", "class": "brilliant", "name": "The Kiss", "comment": "She grabbed his tie and shut him up mid-sentence. While he was talking about his girlfriend. Diabolical.", "eval": 5.2, "badge": [0.15, 0.32], "card": "right"},
     {"t": 195.5, "side": "black", "class": "blunder", "name": "Kissing Back", "comment": "Two seconds ago he was defending Jenny. Now he's kissing back. Bro is cooked.", "eval": 8.5, "badge": [0.84, 0.2], "card": "left"},
-    {"t": 206.12, "side": "black", "class": "good", "name": "For Harvey", "note": "Technically not a lie.", "eval": 8.0, "badge": [0.82, 0.22]},
-    {"t": 208.36, "side": "white", "class": "excellent", "name": "Good Night", "note": "Rachel exits like a boss.", "eval": 8.3, "badge": [0.5, 0.25]}
+    {"t": 204.4, "side": "louis", "class": "great", "name": "Interruption", "note": "Worst timing ever. For Rachel.", "eval": 5.5, "badge": [0.68, 0.22]},
+    {"t": 206.12, "side": "black", "class": "good", "name": "For Harvey", "note": "Technically not a lie.", "eval": 5.2, "badge": [0.82, 0.22]},
+    {"t": 208.36, "side": "white", "class": "excellent", "name": "Good Night", "note": "Rachel exits like a boss.", "eval": 5.6, "badge": [0.5, 0.25]},
+    {"t": 222.65, "side": "louis", "class": "best", "name": "Workplace Policy", "comment": "Louis clearly saw something, so he hit Mike with the HR handbook. Brutal.", "eval": 3.5, "badge": [0.58, 0.2], "card": "right"},
+    {"t": 225.18, "side": "black", "class": "inaccuracy", "name": "Yeah.", "note": "Bro had nothing.", "eval": 4.2, "badge": [0.84, 0.22]}
   ]
 }

@@ -84,9 +84,9 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 {
   "source": "../clips/suits-mike-rachel.mp4",
   "title": {"text": "I rated Mike and Rachel's late-night kiss", "accent": "like a chess game"},
-  "voice": "am_michael:0.5+am_fenrir:0.5",  // the series narrator: a blend of two Kokoro voices ...
-  "pitch": -1.5,                  // ... lowered 1.5 semitones (formants kept) for a deeper sound
-  "speed": 1.1,
+  "voice": "am_michael:0.6+am_onyx:0.4",   // the series narrator: a deep blend of two Kokoro voices
+  "pitch": 0,                     // semitones up or down (formants kept)
+  "speed": 1.08,
   "coach": {"enabled": true, "size": 220},  // the owl on the rating banners
   "music": {"level_db": -16},     // background music under the commentary
   "coach_intro": true,            // voice-over opens like the chess.com coach: "In Here is a great move!"
@@ -95,7 +95,11 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   "players": {
     "white": {"name": "Rachel Zane", "short": "Rachel",
               "avatar": {"t": 106.8, "x": 0.34, "y": 0.47, "size": 0.5}},  // face crop from the clip
-    "black": {"name": "Mike Ross", "short": "Mike", "avatar": "mike.png"}   // or an image file
+    "black": {"name": "Mike Ross", "short": "Mike", "avatar": "mike.png"},  // or an image file
+    // a main-storyline character who joins partway through: gets ratings, joins a team's tag
+    // ("Mike & Louis") from `joins` (clip time) on, and gets a column in the Game Review
+    "louis": {"name": "Louis Litt", "short": "Louis", "team": "black", "joins": 203.7,
+              "avatar": {"t": 230.4, "x": 0.365, "y": 0.21, "size": 0.36}}
   },
   "hook": {                       // optional cold open: plays up to a card move, then rewinds
     "from": 187.45,
@@ -104,7 +108,8 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   },
   "segments": [[44.6, 113.85], [122.72, 137.0]],   // the parts of the clip to use, in order
   "review": {"at": 226.0, "result": "1-0 · Rachel wins", "vo": "Good game! White wins."},
-  "labels": [[89.92, 92.88, "Rachel", 0.60, 0.05]],  // [from, to, text, x, y]
+  "labels": [[89.92, 92.88, "Rachel", 0.60, 0.05],    // [from, to, text, x, y]
+             [44.6, 45.2, "NPC 1", 0.12, 0.22]],         // random extras are NPC 1, NPC 2, ...
   "moves": [
     // a quick badge: shows for ~3 s while the clip keeps playing
     {"t": 59.44, "side": "black", "class": "excellent", "name": "Stealing From Us",
@@ -126,8 +131,11 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   the freeze lands on the right face. The scout transcript gives the end time of every word.
 - **`card`** is `"right"` (the default) or `"left"`. Cards sit along the bottom of the clip, and
   a left card briefly hides the bottom player tag. Pick the side that keeps faces visible.
+- **Other characters**: anyone from the main storyline who joins in goes under `players` with a
+  `team` and a `joins` time, and their moves use their key as `side` (`"side": "louis"`).
+  Random extras get a label only: `NPC 1`, `NPC 2`, and so on.
 - **`voice`** can be one Kokoro voice (`"am_fenrir"`) or a weighted blend
-  (`"am_michael:0.5+am_fenrir:0.5"`). Leave out `voice` and `pitch` to get the series narrator.
+  (`"am_michael:0.6+am_onyx:0.4"`). Leave out `voice` and `pitch` to get the series narrator.
   Keep the same voice across videos so the account has one recognisable host.
 - **The coach** sprites are in `assets/coach/`. To restyle the character, edit
   `tools/coach_sprites.cjs` (plain SVG) and run `node tools/coach_sprites.cjs` (needs Playwright).
