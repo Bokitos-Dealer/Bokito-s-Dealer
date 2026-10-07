@@ -52,6 +52,11 @@ CLASSES = {
     "blunder": ("Blunder", "is a blunder", "#fa412d", "??", 15),
 }
 
+LEAD_IN = "Right."  # spoken first and cut off; the model reliably pauses after it
+# the series narrator: a blend of two Kokoro voices, raised two semitones to suit the pawn coach
+SERIES_VOICE = "am_puck:0.5+am_fenrir:0.5"
+COACH_DIR = os.path.join(HERE, "assets", "coach")
+
 POSITIVE = {"brilliant", "great", "best", "excellent", "good", "book"}
 
 # official chess.com sound theme, fetched on first use (not redistributed with this repo)
@@ -372,6 +377,7 @@ def speakable(text):
     t = re.sub(r"\bMrs\.", "Missus", t)
     t = re.sub(r"\bMs\.", "Miz", t)
     t = t.replace("&", "and").replace("·", ",").replace("—", ", ").replace("…", "...")
+    t = re.sub(r"\bis an inaccuracy", "is, an inaccuracy", t)  # otherwise heard as "isn't an accuracy"
     t = re.sub(r"\b1-0\b", "one, nothing", t)
     t = re.sub(r"\b0-1\b", "nothing, one", t)
     return t
@@ -379,8 +385,9 @@ def speakable(text):
 
 class Voice:
     def __init__(self, cfg, models_dir, enabled, cache_dir):
-        self.voice = cfg.get("voice", "am_fenrir")
+        self.voice = cfg.get("voice", SERIES_VOICE)
         self.speed = float(cfg.get("speed", 1.12))
+        self.pitch = float(cfg.get("pitch", 2.0 if self.voice == SERIES_VOICE else 0.0))
         self.lang = cfg.get("lang", "en-us")
         self.cache_dir = cache_dir
         self.kokoro = None
@@ -401,6 +408,19 @@ class Voice:
                 urllib.request.urlretrieve(url, dest + ".part")
                 os.replace(dest + ".part", dest)
         self.kokoro = Kokoro(os.path.join(models_dir, "kokoro-v1.0.onnx"), os.path.join(models_dir, "voices-v1.0.bin"))
+        self.style = self.voice
+        if ":" in self.voice:  # weighted blend of Kokoro voices, e.g. "am_puck:0.5+am_fenrir:0.5"
+            parts = [p.split(":") for p in self.voice.split("+")]
+            self.style = sum(float(w) * self.kokoro.get_voice_style(v) for v, w in parts)
+
+    def shift_pitch(self, audio):
+        if abs(self.pitch) < 0.01:
+            return audio
+        out = run(["ffmpeg", "-v", "error", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-",
+                   "-af", f"rubberband=pitch={2 ** (self.pitch / 12):.5f}:formant=preserved",
+                   "-f", "f32le", "-ar", str(SR), "-ac", "1", "-"], input=audio.tobytes(), capture_output=True).stdout
+        shifted = np.frombuffer(out, np.float32)
+        return np.pad(shifted, (0, max(0, len(audio) - len(shifted))))[:len(audio)].copy()
 
     def say(self, text):
         """Return (mono float32 samples at SR, [(start, end)] per sentence in seconds)."""
@@ -412,30 +432,69 @@ class Voice:
                 spans.append((t, t + d))
                 t += d + 0.25
             return np.zeros(int(t * SR), np.float32), spans
-        key = hashlib.sha1(json.dumps([self.voice, self.speed, self.lang, sentences]).encode()).hexdigest()[:16]
+        key = hashlib.sha1(json.dumps([3, self.voice, self.speed, self.pitch, self.lang, sentences]).encode()).hexdigest()[:16]
         cache = os.path.join(self.cache_dir, key)
         if os.path.exists(cache + ".npy"):
             return np.load(cache + ".npy"), json.load(open(cache + ".json"))
-        chunks, spans, t = [], [], 0.0
-        for i, s in enumerate(sentences):
-            samples, sr = self.kokoro.create(s, voice=self.voice, speed=self.speed, lang=self.lang)
-            samples = np.asarray(samples, np.float32)
-            loud = np.nonzero(np.abs(samples) > 0.01)[0]
-            if len(loud):
-                samples = samples[max(0, loud[0] - int(0.02 * sr)): loud[-1] + int(0.05 * sr)]
-            x = np.arange(int(len(samples) * SR / sr)) * (sr / SR)
-            samples = np.interp(x, np.arange(len(samples)), samples).astype(np.float32)
-            gap = 0.0 if i == len(sentences) - 1 else (0.32 if s.endswith(("?", "!")) else 0.24)
-            chunks += [samples, np.zeros(int(gap * SR), np.float32)]
-            spans.append((t, t + len(samples) / SR))
-            t += len(samples) / SR + gap
-        audio = np.concatenate(chunks) if chunks else np.zeros(1, np.float32)
+        # Kokoro under-articulates the first sound of an utterance ("Bro" comes out as "Row"), so
+        # the whole line is spoken in one pass after a throwaway lead-in word, which is cut off
+        raw, sr = self.kokoro.create(LEAD_IN + " " + " ".join(sentences), voice=self.style,
+                                     speed=self.speed, lang=self.lang)
+        raw = np.asarray(raw, np.float32)
+        raw = np.interp(np.arange(int(len(raw) * SR / sr)) * (sr / SR), np.arange(len(raw)), raw).astype(np.float32)
+        gaps = pauses(raw, 0.06)
+        lead = next((g for g in gaps if int(0.12 * SR) <= g[0] <= int(0.6 * SR)), None)
+        if lead is None:  # no clear pause after the lead-in: fall back to speaking the line as is
+            raw, sr = self.kokoro.create(" ".join(sentences), voice=self.style, speed=self.speed, lang=self.lang)
+            raw = np.interp(np.arange(int(len(raw) * SR / sr)) * (sr / SR), np.arange(len(raw)),
+                            np.asarray(raw, np.float32)).astype(np.float32)
+            cut, gaps = 0, pauses(raw)
+        else:
+            cut = max(lead[0], lead[1] - int(0.03 * SR))
+            gaps = [(a - cut, b - cut) for a, b in pauses(raw) if a > lead[1]]
+        audio = raw[cut:]
+        loud = np.nonzero(np.abs(audio) > 0.005)[0]
+        if len(loud):
+            audio = audio[: loud[-1] + int(0.08 * SR)]
+        # sentence spans: the longest pauses inside the line separate its sentences
+        need = len(sentences) - 1
+        inner = [g for g in gaps if g[1] < len(audio)]
+        if len(inner) >= need:
+            breaks = sorted(sorted(inner, key=lambda g: g[1] - g[0], reverse=True)[:need])
+            edges = [0] + [x for g in breaks for x in g] + [len(audio)]
+            spans = [(edges[2 * i] / SR, edges[2 * i + 1] / SR) for i in range(len(sentences))]
+        else:
+            total = sum(len(x) for x in sentences)
+            spans, acc = [], 0
+            for x in sentences:
+                spans.append((len(audio) / SR * acc / total, len(audio) / SR * (acc + len(x)) / total))
+                acc += len(x)
+        audio = self.shift_pitch(audio)
         peak = float(np.max(np.abs(audio))) or 1.0
         audio = audio * (0.89 / peak)
         os.makedirs(self.cache_dir, exist_ok=True)
         np.save(cache + ".npy", audio)
         json.dump(spans, open(cache + ".json", "w"))
         return audio, spans
+
+
+def pauses(audio, min_len=0.09):
+    """(start, end) sample ranges of the silent stretches inside `audio`."""
+    hop = SR // 100
+    env = np.sqrt(np.mean(audio[: len(audio) // hop * hop].reshape(-1, hop) ** 2, axis=1))
+    quiet = env < 0.08 * (np.percentile(env, 95) + 1e-9)
+    out, i = [], 0
+    while i < len(quiet):
+        if quiet[i]:
+            j = i
+            while j < len(quiet) and quiet[j]:
+                j += 1
+            if i > 0 and j < len(quiet) and (j - i) * hop >= min_len * SR:
+                out.append((i * hop, j * hop))
+            i = j
+        else:
+            i += 1
+    return out
 
 
 def coach_line(move):
@@ -730,6 +789,17 @@ class Renderer:
         self.cache = {}
         self.base = self.render_base()
         self.avatars = {side: self.avatar(project.players[side]) for side in ("white", "black")}
+        coach = project.cfg.get("coach", {})
+        self.coach_h = int(coach.get("size", 190)) if coach.get("enabled", True) else 0
+        self.coach = {}
+        if self.coach_h:
+            for expr in ("hype", "shook"):
+                for m in range(3):
+                    im = Image.open(os.path.join(COACH_DIR, f"{expr}_{m}.png")).convert("RGBA")
+                    im = im.resize((round(im.width * self.coach_h / im.height), self.coach_h), Image.LANCZOS)
+                    self.coach[expr, m] = with_shadow(im, 8, 130)
+            self.coach_w = self.coach["hype", 0].width - 32
+        self.talk = self.talk_levels()
         self.tags = {side: self.player_tag(side) for side in ("white", "black")}
 
     # ---- static pieces
@@ -848,7 +918,8 @@ class Renderer:
         x = pad + 34 + 12
         name = move["name"]
         hf_fit = hf
-        while hf_fit.size > 20 and hf_fit.getlength(name + " " + cls[1]) > cw - x - pad:
+        room = cw - x - pad - (self.coach_w if self.coach_h else 0)
+        while hf_fit.size > 20 and hf_fit.getlength(name + " " + cls[1]) > room:
             hf_fit = font("Bold", hf_fit.size - 1)
         draw_text(img, (x, 23 + (31 - hf_fit.size) // 2), name, hf_fit, WHITE)
         draw_text(img, (x + hf_fit.getlength(name + " "), 23 + (31 - hf_fit.size) // 2), cls[1], hf_fit, color)
@@ -958,6 +1029,39 @@ class Renderer:
         else:
             draw_text(clip, (x0 + w / 2 - f.getlength(txt) / 2, y0 + 4), txt, f, (230, 230, 230, 255))
 
+    def talk_levels(self):
+        """Voice-over loudness per pair of frames (0-1), for the coach's lip flap."""
+        n = int(self.p.duration * FPS) + 2
+        level = np.zeros(n, np.float32)
+        hop = SR * 2 // FPS
+        for c in self.p.clips:
+            a = c.audio
+            if len(a) < hop:
+                continue
+            rms = np.sqrt(np.mean(a[: len(a) // hop * hop].reshape(-1, hop) ** 2, axis=1))
+            rms = rms / (np.percentile(rms, 95) + 1e-6)
+            f0 = int(round(c.t * FPS))
+            for k, v in enumerate(rms):
+                for j in (f0 + 2 * k, f0 + 2 * k + 1):
+                    if 0 <= j < n:
+                        level[j] = max(level[j], v)
+        return level
+
+    def draw_coach(self, clip, t, expr, cx, bottom, appear_t, leave_t):
+        """The pawn coach, standing with its feet at `bottom`, talking along with the voice-over."""
+        if not self.coach_h or not (appear_t <= t < leave_t):
+            return
+        age = t - appear_t
+        lv = self.talk[min(len(self.talk) - 1, int(t * FPS))]
+        mouth = 0 if lv < 0.18 else (1 if lv < 0.55 else 2)
+        img = self.coach[expr, mouth]
+        s = 0.55 + 0.45 * ease_out(age / 0.25) if age < 0.25 else 1.0
+        if s < 0.999:
+            img = img.resize((max(1, int(img.width * s)), max(1, int(img.height * s))), Image.LANCZOS)
+        bob = 3 * math.sin(2 * math.pi * 1.6 * t) if mouth else 0
+        a = min(clamp(age / 0.15, 0, 1), clamp((leave_t - t) / 0.2, 0, 1))
+        alpha_paste(clip, fade(img, a), (cx - img.width / 2, bottom - img.height + 16 * s + bob))
+
     def card_side(self, move):
         return move.get("card", "right")
 
@@ -1004,6 +1108,9 @@ class Renderer:
             x = 34 if side == "left" else self.cw - iw - SAFE_RIGHT
             y = max(8, self.ch - 20 - ih) + (1 - ease_out(ca)) * 28
             alpha_paste(clip, fade(img, min(alpha, ca)), (x - pad, y - pad))
+            if self.coach_h:
+                expr = "hype" if move["class"] in POSITIVE else "shook"
+                self.draw_coach(clip, t, expr, x + iw - self.coach_w / 2 - 6, y + 50, show.t0 + 0.2, show.t1)
         elif move.get("note") is not None:
             img = self.note_tag(move)
             ox = oy = 16  # shadow padding
@@ -1066,6 +1173,9 @@ class Renderer:
             a = ease_out(age / 0.35)
             py = (self.ch - (panel.height - 56)) / 2
             alpha_paste(clip, fade(panel, a), (76 - 28, py - 28 + (1 - a) * 20))
+            if self.coach_h:
+                self.draw_coach(clip, t, "hype", 76 + panel.width - 56 + self.coach_w / 2 + 10,
+                                self.ch - 24, p.review_t + 0.6, p.duration + 1)
         out = self.base.copy()
         out.paste(clip.convert("RGB"), (0, p.clip_y))
         return out

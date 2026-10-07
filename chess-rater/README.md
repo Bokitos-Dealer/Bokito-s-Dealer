@@ -10,6 +10,8 @@ commentary). It renders a finished 1080×1920 MP4 with:
 - move badges (`!!` brilliant, `!` great, ★ best, 👍 excellent, ✓ good, 📖 book, `?!`, `?`, ✕, `??`)
 - freeze frames with a commentary card, read aloud by an AI voice in chess.com Game Review
   coach style ("The Kiss is brilliant!") while the words light up
+- a coach character (a cocky pawn in sunglasses) that pops up on each rating banner and
+  lip-syncs to the narrator: smug on good moves, shook on bad ones
 - the official chess.com move, capture, check and game start/end sounds
 - a cold-open hook that teases the big move, then rewinds to the start
 - a closing **Game Review** with accuracy scores, move counts and the result
@@ -75,8 +77,10 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 {
   "source": "../clips/suits-mike-rachel.mp4",
   "title": {"text": "I rated Mike and Rachel's late-night kiss", "accent": "like a chess game"},
-  "voice": "am_fenrir",           // Kokoro voice: am_fenrir (most expressive), am_michael, bm_george, af_heart, ...
+  "voice": "am_puck:0.5+am_fenrir:0.5",  // the series narrator: a blend of two Kokoro voices ...
+  "pitch": 2,                     // ... raised 2 semitones (formants kept) to suit the pawn coach
   "speed": 1.12,
+  "coach": {"enabled": true, "size": 220},  // the pawn character on the rating banners
   "coach_intro": true,            // voice-over opens like the chess.com coach: "In Here is a great move!"
   "sfx_volume": 0.7,              // chess.com sounds: move/capture on badges, check on bad cards, game start/end
   "crop": "auto",                 // trims letterbox bars; or [w, h, x, y]; or false
@@ -114,6 +118,11 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   the freeze lands on the right face. The scout transcript gives the end time of every word.
 - **`card`** is `"right"` (the default) or `"left"`. Cards sit along the bottom of the clip, and
   a left card briefly hides the bottom player tag. Pick the side that keeps faces visible.
+- **`voice`** can be one Kokoro voice (`"am_fenrir"`) or a weighted blend
+  (`"am_puck:0.5+am_fenrir:0.5"`). Leave out `voice` and `pitch` to get the series narrator.
+  Keep the same voice across videos so the account has one recognisable host.
+- **The coach** sprites are in `assets/coach/`. To restyle the character, edit
+  `tools/coach_sprites.cjs` (plain SVG) and run `node tools/coach_sprites.cjs` (needs Playwright).
 - **Timing**: the freeze lasts as long as the voice-over, so keep each comment short: one or two
   sentences, about 10–15 words.
 
