@@ -1,0 +1,49 @@
+{
+  "source": "../clips/suits-lease.mp4",
+  "title": {"text": "I rated Mike's 364-page lease test", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Mike Ross", "short": "Mike",
+              "avatar": {"t": 164.0, "x": 0.5, "y": 0.25, "size": 0.42}},
+    "black": {"name": "Robert Stensland", "short": "Stensland",
+              "avatar": {"t": 160.0, "x": 0.42, "y": 0.25, "size": 0.42}},
+    "harvey": {"name": "Harvey Specter", "short": "Harvey", "team": "white", "joins": 120.9,
+               "avatar": {"t": 172.0, "x": 0.3, "y": 0.2, "size": 0.4}}
+  },
+  "hook": {
+    "from": 166.0,
+    "move": "364 Pages",
+    "vo": "364 Pages is brilliant! Mike corrected a CEO on his own lease. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[120.9, 202.9], [206.2, 218.1]],
+  "review": {"at": 218.0, "hold_at": 217.95, "result": "1-0 · Mike passes the test",
+             "vo": "Good game! Mike aced the quiz. The CEO failed the real one."},
+  "face_labels": true,
+  "cast": {"Stensland": [{"t": 121.567, "x": 0.702, "y": 0.319}, {"t": 128.15, "x": 0.675, "y": 0.283}, {"t": 129.733, "x": 0.678, "y": 0.295}, {"t": 137.233, "x": 0.169, "y": 0.23}, {"t": 146.983, "x": 0.274, "y": 0.282}, {"t": 178.983, "x": 0.239, "y": 0.278}], "-": [{"t": 121.567, "x": 0.291, "y": 0.568}, {"t": 121.567, "x": 0.383, "y": 0.565}, {"t": 131.733, "x": 0.955, "y": 0.756}, {"t": 137.317, "x": 0.822, "y": 0.208}, {"t": 145.067, "x": 0.501, "y": 0.38}, {"t": 151.067, "x": 0.913, "y": 0.438}, {"t": 186.483, "x": 0.835, "y": 0.342}, {"t": 187.9, "x": 0.794, "y": 0.288}, {"t": 191.9, "x": 0.378, "y": 0.653}, {"t": 194.4, "x": 0.129, "y": 0.271}, {"t": 193.15, "x": 0.871, "y": 0.299}, {"t": 200.9, "x": 0.268, "y": 0.551}, {"t": 214.117, "x": 0.272, "y": 0.478}, {"t": 214.2, "x": 0.137, "y": 0.409}, {"t": 214.367, "x": 0.08, "y": 0.413}, {"t": 215.033, "x": 0.124, "y": 0.394}, {"t": 215.867, "x": 0.882, "y": 0.446}, {"t": 217.783, "x": 0.536, "y": 0.365}, {"t": 126.9, "x": 0.314, "y": 0.245}, {"t": 199.567, "x": 0.855, "y": 0.281}, {"t": 199.65, "x": 0.179, "y": 0.283}, {"t": 211.45, "x": 0.259, "y": 0.265}], "Mike": [{"t": 121.317, "x": 0.241, "y": 0.175}, {"t": 123.15, "x": 0.542, "y": 0.194}, {"t": 133.4, "x": 0.724, "y": 0.288}, {"t": 134.067, "x": 0.676, "y": 0.295}, {"t": 209.617, "x": 0.394, "y": 0.266}], "Harvey": [{"t": 123.15, "x": 0.474, "y": 0.183}, {"t": 128.733, "x": 0.205, "y": 0.265}, {"t": 133.817, "x": 0.361, "y": 0.257}, {"t": 178.983, "x": 0.811, "y": 0.157}, {"t": 184.733, "x": 0.447, "y": 0.21}, {"t": 209.117, "x": 0.614, "y": 0.168}, {"t": 215.033, "x": 0.679, "y": 0.24}]},
+  "labels": [
+    [159.07, 161.23, "Stensland", 0.42, 0.25],
+    [163.57, 165.0, "Mike", 0.5, 0.25],
+    [170.2, 173.3, "Harvey", 0.3, 0.2]
+  ],
+  "moves": [
+    {"t": 127.5, "side": "black", "class": "good", "name": "Not Paying Him That", "note": "Tightwad energy.", "eval": -0.2, "badge": [0.78, 0.3]},
+    {"t": 130.1, "side": "harvey", "class": "good", "name": "Highly Effective", "note": "Vouching.", "eval": 0.0, "badge": [0.78, 0.3]},
+    {"t": 132.5, "side": "black", "class": "good", "name": "Believe It When I See It", "note": "Challenge issued.", "eval": -0.2, "badge": [0.78, 0.3]},
+    {"t": 136.05, "side": "harvey", "class": "excellent", "name": "Ask Him Anything", "note": "Betting on his guy.", "eval": 0.3, "badge": [0.78, 0.3]},
+    {"t": 138.1, "side": "black", "class": "good", "name": "300 Pages", "note": "No way he read it.", "eval": 0.0, "badge": [0.78, 0.3]},
+    {"t": 142.5, "side": "black", "class": "good", "name": "What Are the Terms?", "note": "Pop quiz.", "eval": -0.3, "badge": [0.78, 0.3]},
+    {"t": 159.0, "side": "white", "class": "great", "name": "The Terms", "comment": "He read a 300-page lease once and recited it like song lyrics. Square feet, price per foot, the option. Everything.", "eval": 1.5, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 162.1, "side": "white", "class": "good", "name": "You Did", "note": "Easy one.", "eval": 1.7, "badge": [0.78, 0.3]},
+    {"t": 164.35, "side": "white", "class": "excellent", "name": "The Letter L", "note": "Not even a name. Still knew it.", "eval": 2.2, "badge": [0.78, 0.3]},
+    {"t": 167.0, "side": "black", "class": "best", "name": "Trick Question", "note": "Trap card.", "eval": 1.5, "badge": [0.78, 0.3]},
+    {"t": 168.6, "side": "white", "class": "excellent", "name": "Wasn't in the Lease", "note": "Didn't fall for it.", "eval": 2.0, "badge": [0.78, 0.3]},
+    {"t": 177.9, "side": "white", "class": "brilliant", "name": "364 Pages", "comment": "Mike corrected the CEO on his own lease. Not 300 pages, 364. And he can tell you what's on every single one.", "eval": 4.0, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 179.0, "side": "black", "class": "good", "name": "Excellent", "note": "Convinced.", "eval": 4.0, "badge": [0.78, 0.3]},
+    {"t": 199.6, "side": "black", "class": "blunder", "name": "Move Overseas", "comment": "The CEO just proudly announced he's selling the factory and moving everything overseas. Harvey's face says it all.", "eval": 6.0, "badge": [0.3, 0.35], "card": "right"},
+    {"t": 201.85, "side": "harvey", "class": "excellent", "name": "Take Care of Everything", "note": "Poker face.", "eval": 6.0, "badge": [0.78, 0.3]},
+    {"t": 211.0, "side": "harvey", "class": "good", "name": "He's an Idiot", "note": "Mask off.", "eval": 6.2, "badge": [0.78, 0.3]},
+    {"t": 217.9, "side": "harvey", "class": "best", "name": "Golden Engine", "comment": "The real asset is the quality, not the name. Stensland just blundered the whole company. GG.", "eval": "1-0", "badge": [0.78, 0.3], "card": "left"}
+  ]
+}

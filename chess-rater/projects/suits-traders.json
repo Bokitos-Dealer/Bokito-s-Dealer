@@ -1,0 +1,60 @@
+{
+  "source": "../clips/suits-traders.mp4",
+  "title": {"text": "I rated Mike hustling the traders", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"track": "Behind Enemy Lines", "level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Mike Ross", "short": "Mike",
+              "avatar": {"t": 139.5, "x": 0.33, "y": 0.22, "size": 0.42}},
+    "black": {"name": "Vince Landis", "short": "Vince",
+              "avatar": {"t": 166.3, "x": 0.7, "y": 0.35, "size": 0.45}}
+  },
+  "hook": {
+    "from": 154.9,
+    "move": "Sister's Panties",
+    "vo": "Sister's Panties is brilliant! One insult, and this guy handed over every trade he's got. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[7.6, 19.0], [36.8, 45.0], [55.87, 206.6], [227.4, 236.3]],
+  "review": {"at": 236.2, "hold_at": 236.0, "result": "1-0 · Mike walks out with the trades",
+             "vo": "Good game! Mike walked into a bar with fake friends and a fake name, and left with every real trade."},
+  "face_labels": true,
+  "npc_tags": false,
+  "cast": {"Trader": [{"t": 142.3, "x": 0.87, "y": 0.2}, {"t": 157.5, "x": 0.65, "y": 0.13}], "-": [{"t": 58.203, "x": 0.608, "y": 0.379}, {"t": 60.953, "x": 0.405, "y": 0.388}, {"t": 62.453, "x": 0.703, "y": 0.359}, {"t": 62.537, "x": 0.318, "y": 0.334}, {"t": 66.453, "x": 0.502, "y": 0.417}, {"t": 68.787, "x": 0.649, "y": 0.382}, {"t": 71.12, "x": 0.592, "y": 0.349}, {"t": 78.37, "x": 0.676, "y": 0.258}, {"t": 100.703, "x": 0.503, "y": 0.402}, {"t": 101.12, "x": 0.319, "y": 0.345}, {"t": 104.37, "x": 0.592, "y": 0.276}, {"t": 102.037, "x": 0.248, "y": 0.176}, {"t": 104.12, "x": 0.159, "y": 0.212}, {"t": 107.37, "x": 0.151, "y": 0.214}, {"t": 108.453, "x": 0.568, "y": 0.236}, {"t": 109.953, "x": 0.239, "y": 0.37}, {"t": 115.703, "x": 0.083, "y": 0.231}, {"t": 126.203, "x": 0.553, "y": 0.141}, {"t": 132.37, "x": 0.833, "y": 0.125}, {"t": 133.787, "x": 0.621, "y": 0.254}, {"t": 141.953, "x": 0.558, "y": 0.356}, {"t": 148.62, "x": 0.411, "y": 0.434}, {"t": 176.037, "x": 0.051, "y": 0.44}, {"t": 64.62, "x": 0.301, "y": 0.3}, {"t": 100.537, "x": 0.64, "y": 0.405}, {"t": 103.203, "x": 0.15, "y": 0.331}, {"t": 135.203, "x": 0.122, "y": 0.3}, {"t": 150.453, "x": 0.121, "y": 0.242}, {"t": 191.537, "x": 0.107, "y": 0.276}, {"t": 202.87, "x": 0.832, "y": 0.324}]},
+  "labels": [
+    [86.87, 90.83, "Mike", 0.3, 0.3],
+    [136.13, 137.67, "Vince", 0.75, 0.3],
+    [137.67, 141.33, "Mike", 0.3, 0.2],
+    [149.3, 154.77, "Mike", 0.55, 0.2],
+    [154.77, 157.07, "Vince", 0.7, 0.3],
+    [157.07, 163.3, "Mike", 0.25, 0.3],
+    [163.3, 183.03, "Vince", 0.7, 0.3]
+  ],
+  "moves": [
+    {"t": 15.9, "side": "white", "class": "book", "name": "The Closing Bell", "note": "Scouting the venue.", "eval": 0.2, "badge": [0.75, 0.25]},
+    {"t": 69.6, "side": "white", "class": "excellent", "name": "Memorized the Desks", "note": "Name plates, one glance each.", "eval": 0.5, "badge": [0.75, 0.25]},
+    {"t": 82.7, "side": "black", "class": "good", "name": "Get You a Nipple", "note": "Opening roast.", "eval": 0.3, "badge": [0.78, 0.22]},
+    {"t": 88.5, "side": "white", "class": "great", "name": "Vince Landis", "comment": "Bro saw this man's name plate for half a second and greeted him like his college roommate.", "eval": 1.0, "badge": [0.3, 0.25], "card": "right"},
+    {"t": 93.65, "side": "white", "class": "excellent", "name": "The Gint-a-sizer", "note": "Fake name, real confidence.", "eval": 1.2, "badge": [0.78, 0.25]},
+    {"t": 98.55, "side": "black", "class": "good", "name": "No Idea", "note": "Suspicious...", "eval": 0.9, "badge": [0.78, 0.25]},
+    {"t": 104.4, "side": "white", "class": "excellent", "name": "You Owe Me 20", "comment": "He named the whole desk, then charged the man twenty bucks for a night that never happened. Diabolical.", "eval": 1.8, "badge": [0.3, 0.25], "card": "right"},
+    {"t": 109.8, "side": "black", "class": "inaccuracy", "name": "Begging for Scraps", "note": "He fully bought it.", "eval": 2.1, "badge": [0.78, 0.25]},
+    {"t": 115.15, "side": "black", "class": "good", "name": "Drink Mine", "note": "Already friends.", "eval": 2.1, "badge": [0.78, 0.25]},
+    {"t": 131.15, "side": "white", "class": "good", "name": "Bunch of Wimps", "note": "Poking the bear.", "eval": 2.2, "badge": [0.75, 0.25]},
+    {"t": 135.75, "side": "white", "class": "excellent", "name": "Biggest Trades", "note": "The bait is set.", "eval": 2.5, "badge": [0.75, 0.25]},
+    {"t": 141.25, "side": "white", "class": "best", "name": "Cahill Metals", "note": "A fake brag to start a bidding war.", "eval": 2.8, "badge": [0.75, 0.3]},
+    {"t": 147.75, "side": "black", "class": "mistake", "name": "Montrelux", "note": "Leaked trade number one.", "eval": 3.5, "badge": [0.25, 0.3]},
+    {"t": 153.95, "side": "white", "class": "excellent", "name": "Six Million", "note": "Raising with zero chips.", "eval": 3.8, "badge": [0.78, 0.25]},
+    {"t": 157.0, "side": "black", "class": "good", "name": "My Boy Here", "note": "Calling in backup.", "eval": 3.6, "badge": [0.3, 0.3]},
+    {"t": 162.2, "side": "white", "class": "brilliant", "name": "Sister's Panties", "comment": "He insulted the backup's sister on purpose, because a mad trader is a talking trader. Pure tilt bait.", "eval": 4.5, "badge": [0.35, 0.25], "card": "right"},
+    {"t": 168.0, "side": "black", "class": "mistake", "name": "It's On", "note": "Tilted.", "eval": 5.0, "badge": [0.78, 0.25]},
+    {"t": 173.3, "side": "black", "class": "blunder", "name": "Drogon Limited", "note": "Seven million, out loud.", "eval": 6.0, "badge": [0.25, 0.3]},
+    {"t": 175.7, "side": "black", "class": "blunder", "name": "Epling RTX", "note": "Eight. He's still going.", "eval": 7.0, "badge": [0.25, 0.3]},
+    {"t": 179.45, "side": "black", "class": "blunder", "name": "Nine Million", "comment": "Vince just read his whole trade history out loud to a stranger from a rival firm. Insider info speedrun.", "eval": 8.0, "badge": [0.25, 0.3], "card": "left"},
+    {"t": 182.95, "side": "white", "class": "good", "name": "Greed Is Good", "note": "Gordon Gekko cosplay.", "eval": 8.0, "badge": [0.75, 0.25]},
+    {"t": 187.15, "side": "white", "class": "excellent", "name": "That's Not Cool", "note": "Roasting his own joke.", "eval": 8.2, "badge": [0.25, 0.3]},
+    {"t": 190.2, "side": "black", "class": "good", "name": "Same Joke", "note": "He noticed. Too late.", "eval": 8.0, "badge": [0.25, 0.3]},
+    {"t": 206.5, "side": "white", "class": "excellent", "name": "Make Money", "note": "Exit before they check his ID.", "eval": 8.5, "badge": [0.25, 0.3]},
+    {"t": 230.45, "side": "white", "class": "best", "name": "I Got the Trades", "comment": "He called Harvey drunk off free shots, with every trade they made. Mission complete. GG.", "eval": "1-0", "badge": [0.75, 0.25], "card": "right"}
+  ]
+}

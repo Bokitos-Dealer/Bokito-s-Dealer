@@ -1,0 +1,49 @@
+{
+  "source": "../clips/suits-fire-mike.mp4",
+  "title": {"text": "I rated Harvey firing Mike", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"track": "Behind Enemy Lines", "level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Mike Ross", "short": "Mike", "joins": 74.0,
+              "avatar": {"t": 117.0, "x": 0.25, "y": 0.35, "size": 0.45}},
+    "black": {"name": "Harvey Specter", "short": "Harvey",
+              "avatar": {"t": 122.0, "x": 0.6, "y": 0.3, "size": 0.42}},
+    "jessica": {"name": "Jessica Pearson", "short": "Jessica", "team": "white", "joins": 2.1, "leaves": 70.5,
+                "avatar": {"t": 30.0, "x": 0.65, "y": 0.25, "size": 0.42}}
+  },
+  "hook": {
+    "from": 103.0,
+    "move": "Drag You With Me",
+    "vo": "Drag You With Me is brilliant! Mike got fired and un-fired in the same minute. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[2.1, 123.45]],
+  "review": {"at": 123.4, "hold_at": 123.35, "result": "1-0 · Mike keeps his job",
+             "vo": "Good game! Harvey lost to Jessica, then lost to Mike. Rough day for the closer."},
+  "face_labels": true,
+  "cast": {"Jessica": [{"t": 9.68, "x": 0.8, "y": 0.63}, {"t": 53.43, "x": 0.78, "y": 0.65}], "Harvey": [{"t": 57.77, "x": 0.36, "y": 0.24}, {"t": 71.68, "x": 0.39, "y": 0.31}], "Mike": [{"t": 76.6, "x": 0.29, "y": 0.15}, {"t": 80.1, "x": 0.3, "y": 0.15}, {"t": 89.85, "x": 0.34, "y": 0.16}, {"t": 101.68, "x": 0.37, "y": 0.15}]},
+  "labels": [
+    [12.83, 19.43, "Harvey", 0.25, 0.3],
+    [19.43, 25.43, "Jessica", 0.4, 0.3],
+    [114.57, 120.3, "Mike", 0.25, 0.35]
+  ],
+  "moves": [
+    {"t": 4.25, "side": "jessica", "class": "good", "name": "Tate Fired Us", "note": "Bad news first.", "eval": 0.4, "badge": [0.78, 0.3]},
+    {"t": 6.2, "side": "black", "class": "inaccuracy", "name": "My Promotion?", "note": "Worried about himself.", "eval": 0.7, "badge": [0.25, 0.35]},
+    {"t": 12.8, "side": "jessica", "class": "best", "name": "He Figured It Out", "note": "Facts.", "eval": 1.2, "badge": [0.78, 0.3]},
+    {"t": 19.65, "side": "black", "class": "excellent", "name": "You Didn't Mind", "note": "Calling her out.", "eval": 0.7, "badge": [0.78, 0.3]},
+    {"t": 25.65, "side": "jessica", "class": "excellent", "name": "Same Day", "note": "No promotion for you.", "eval": 1.2, "badge": [0.25, 0.35]},
+    {"t": 27.7, "side": "black", "class": "inaccuracy", "name": "One Client", "note": "In a recession, bro?", "eval": 1.5, "badge": [0.78, 0.3]},
+    {"t": 42.9, "side": "jessica", "class": "great", "name": "You Humiliated Him", "comment": "Jessica said the lie was fine. Humiliating the client wasn't. Then she told him to take the L like a grown man.", "eval": 2.0, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 50.6, "side": "black", "class": "mistake", "name": "Heading for the Door", "note": "Threatening to quit.", "eval": 2.3, "badge": [0.78, 0.3]},
+    {"t": 55.4, "side": "jessica", "class": "best", "name": "Out the Window", "comment": "He threatened to quit. She threatened to throw him out the window. Harvey just met his final boss.", "eval": 3.0, "badge": [0.25, 0.35], "card": "left"},
+    {"t": 67.05, "side": "jessica", "class": "excellent", "name": "In Front of the Bar", "note": "Last warning.", "eval": 3.2, "badge": [0.78, 0.3]},
+    {"t": 77.28, "side": "white", "class": "book", "name": "Great First Day", "note": "Oh no.", "eval": 1.0, "badge": [0.25, 0.35]},
+    {"t": 79.15, "side": "black", "class": "good", "name": "Let You Go", "note": "Passing the pain down.", "eval": -1.0, "badge": [0.25, 0.35]},
+    {"t": 94.0, "side": "black", "class": "best", "name": "Nothing Personal", "comment": "Harvey just got cooked by Jessica, so he passed the L straight down to Mike. On his first day.", "eval": -3.0, "badge": [0.25, 0.35], "card": "left"},
+    {"t": 108.8, "side": "white", "class": "brilliant", "name": "Drag You With Me", "comment": "Mike realized his fake degree is Harvey's problem too. Fire him, and they both go down. Mutually assured destruction.", "eval": 3.0, "badge": [0.25, 0.35], "card": "right"},
+    {"t": 114.4, "side": "black", "class": "good", "name": "Under the Bus?", "note": "He gets it now.", "eval": 3.2, "badge": [0.25, 0.35]},
+    {"t": 119.4, "side": "white", "class": "excellent", "name": "Next to Yours", "note": "Calm. Deadly.", "eval": 4.5, "badge": [0.78, 0.3]},
+    {"t": 123.3, "side": "black", "class": "good", "name": "You're Rehired", "comment": "Harvey fired him and rehired him in under a minute. Mike wins on day one.", "eval": "1-0", "badge": [0.25, 0.35], "card": "left"}
+  ]
+}

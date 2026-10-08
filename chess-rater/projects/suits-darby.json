@@ -1,0 +1,50 @@
+{
+  "source": "../clips/suits-darby.mp4",
+  "title": {"text": "I rated Harvey vs Edward Darby", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"track": "Behind Enemy Lines", "level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Harvey Specter", "short": "Harvey",
+              "avatar": {"t": 58.0, "x": 0.65, "y": 0.25, "size": 0.42}},
+    "black": {"name": "Edward Darby", "short": "Darby",
+              "avatar": {"t": 33.0, "x": 0.3, "y": 0.3, "size": 0.42}},
+    "jessica": {"name": "Jessica Pearson", "short": "Jessica", "team": "black", "joins": 80.0,
+                "avatar": {"t": 135.0, "x": 0.35, "y": 0.3, "size": 0.42}}
+  },
+  "hook": {
+    "from": 133.0,
+    "move": "Not Going Up There",
+    "vo": "Not Going Up There is brilliant! Harvey came to fight Darby and lost to his own boss. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[7.37, 145.05]],
+  "review": {"at": 145.0, "hold_at": 144.95, "result": "0-1 · Jessica sets the terms",
+             "vo": "Good game! Harvey picked a fight with Darby, and Jessica made him bet his name on it."},
+  "face_labels": true,
+  "cast": {"Harvey": [{"t": 12.037, "x": 0.405, "y": 0.336}, {"t": 17.787, "x": 0.387, "y": 0.338}, {"t": 66.62, "x": 0.471, "y": 0.246}, {"t": 81.87, "x": 0.498, "y": 0.288}, {"t": 122.453, "x": 0.736, "y": 0.124}], "Darby": [{"t": 12.537, "x": 0.609, "y": 0.36}, {"t": 17.453, "x": 0.631, "y": 0.356}, {"t": 66.62, "x": 0.746, "y": 0.254}, {"t": 81.87, "x": 0.81, "y": 0.32}], "-": [{"t": 24.37, "x": 0.343, "y": 0.369}, {"t": 24.703, "x": 0.056, "y": 0.344}, {"t": 27.453, "x": 0.174, "y": 0.201}, {"t": 28.953, "x": 0.025, "y": 0.068}, {"t": 31.037, "x": 0.097, "y": 0.21}, {"t": 35.287, "x": 0.121, "y": 0.222}, {"t": 38.87, "x": 0.016, "y": 0.401}, {"t": 40.537, "x": 0.038, "y": 0.058}, {"t": 41.703, "x": 0.567, "y": 0.146}, {"t": 40.703, "x": 0.239, "y": 0.182}, {"t": 45.037, "x": 0.048, "y": 0.367}, {"t": 44.037, "x": 0.879, "y": 0.372}, {"t": 44.703, "x": 0.854, "y": 0.331}, {"t": 47.62, "x": 0.191, "y": 0.195}, {"t": 47.37, "x": 0.786, "y": 0.138}, {"t": 50.537, "x": 0.637, "y": 0.162}, {"t": 48.787, "x": 0.028, "y": 0.06}, {"t": 50.87, "x": 0.176, "y": 0.194}, {"t": 62.953, "x": 0.73, "y": 0.152}, {"t": 63.453, "x": 0.48, "y": 0.205}, {"t": 66.62, "x": 0.275, "y": 0.354}, {"t": 74.203, "x": 0.651, "y": 0.231}, {"t": 75.703, "x": 0.037, "y": 0.247}, {"t": 79.37, "x": 0.661, "y": 0.238}, {"t": 79.287, "x": 0.055, "y": 0.245}, {"t": 81.87, "x": 0.329, "y": 0.402}, {"t": 90.62, "x": 0.709, "y": 0.155}, {"t": 114.537, "x": 0.725, "y": 0.685}], "Jessica": [{"t": 81.87, "x": 0.633, "y": 0.31}, {"t": 98.87, "x": 0.266, "y": 0.184}, {"t": 105.287, "x": 0.218, "y": 0.29}, {"t": 118.453, "x": 0.153, "y": 0.347}, {"t": 122.453, "x": 0.53, "y": 0.107}, {"t": 130.203, "x": 0.147, "y": 0.305}, {"t": 138.37, "x": 0.196, "y": 0.325}]},
+  "labels": [
+    [29.47, 30.53, "Darby", 0.3, 0.3],
+    [53.47, 61.57, "Harvey", 0.65, 0.25],
+    [92.7, 94.43, "Jessica", 0.3, 0.3]
+  ],
+  "moves": [
+    {"t": 18.4, "side": "white", "class": "excellent", "name": "Three Lawsuits", "note": "Opening with paperwork.", "eval": 0.5, "badge": [0.78, 0.3]},
+    {"t": 20.75, "side": "black", "class": "good", "name": "What Have I Done Now?", "note": "Unbothered.", "eval": 0.4, "badge": [0.78, 0.3]},
+    {"t": 25.6, "side": "white", "class": "best", "name": "Fixing Prices", "note": "Receipts.", "eval": 0.9, "badge": [0.78, 0.3]},
+    {"t": 29.4, "side": "black", "class": "good", "name": "Merger Talks", "note": "Knew it was coming.", "eval": 0.6, "badge": [0.78, 0.3]},
+    {"t": 32.78, "side": "white", "class": "excellent", "name": "Kiss My Ass", "note": "Black tie, no filter.", "eval": 0.8, "badge": [0.78, 0.3]},
+    {"t": 43.8, "side": "black", "class": "great", "name": "Permanently Regret", "comment": "Darby threatened Harvey without raising his voice once. Wine in hand. Full British villain arc.", "eval": -0.4, "badge": [0.25, 0.35], "card": "right"},
+    {"t": 46.75, "side": "white", "class": "good", "name": "You Gonna Kill Me?", "note": "Not scared.", "eval": -0.3, "badge": [0.25, 0.35]},
+    {"t": 52.1, "side": "black", "class": "good", "name": "Open Court", "note": "Old school.", "eval": -0.3, "badge": [0.78, 0.3]},
+    {"t": 61.5, "side": "white", "class": "great", "name": "Steamer Back to London", "comment": "Harvey said it'll never reach court, and Darby will be on a boat home wondering what hit him. Chilling.", "eval": 0.8, "badge": [0.25, 0.35], "card": "left"},
+    {"t": 64.45, "side": "black", "class": "good", "name": "A Wager?", "note": "Now we're talking.", "eval": 0.7, "badge": [0.78, 0.3]},
+    {"t": 78.8, "side": "white", "class": "excellent", "name": "Never Gonna Win", "note": "Didn't even hear his terms.", "eval": 1.2, "badge": [0.25, 0.35]},
+    {"t": 83.95, "side": "jessica", "class": "good", "name": "Getting Along", "note": "She knew.", "eval": 1.0, "badge": [0.78, 0.3]},
+    {"t": 98.1, "side": "jessica", "class": "great", "name": "Showed Him Ours", "comment": "Jessica showed Darby the firm's books behind Harvey's back. And Harvey finds out at a party. Brutal.", "eval": -0.8, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 99.3, "side": "white", "class": "inaccuracy", "name": "Why Didn't You Tell Me?", "note": "Outplayed.", "eval": -1.0, "badge": [0.78, 0.3]},
+    {"t": 108.95, "side": "white", "class": "best", "name": "Knock You Up", "note": "Merger analogy of the year.", "eval": -0.6, "badge": [0.78, 0.3]},
+    {"t": 115.7, "side": "jessica", "class": "good", "name": "No Reservations", "note": "Setting the bet.", "eval": -0.7, "badge": [0.25, 0.35]},
+    {"t": 125.1, "side": "white", "class": "excellent", "name": "Fixing His Teeth", "note": "British teeth joke. Of course.", "eval": -0.4, "badge": [0.78, 0.3]},
+    {"t": 144.65, "side": "jessica", "class": "brilliant", "name": "Not Going Up There", "comment": "Harvey bet on beating Darby. Jessica made him bet his name on the door. She raised on her own partner. GG.", "eval": "0-1", "badge": [0.78, 0.3], "card": "right"}
+  ]
+}

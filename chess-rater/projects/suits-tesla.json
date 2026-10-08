@@ -1,0 +1,41 @@
+{
+  "source": "../clips/suits-tesla.mp4",
+  "title": {"text": "I rated Harvey's Tesla showdown", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Harvey Specter", "short": "Harvey",
+              "avatar": {"t": 17.67, "x": 0.69, "y": 0.27, "size": 0.42}},
+    "black": {"name": "Lawrence", "short": "Lawrence",
+              "avatar": {"t": 16.0, "x": 0.32, "y": 0.25, "size": 0.42}}
+  },
+  "hook": {
+    "from": 52.5,
+    "move": "Knock Yourself Out",
+    "vo": "Knock Yourself Out is brilliant! Harvey gave away the Tesla, and still won. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[0.0, 73.2]],
+  "review": {"at": 73.1, "hold_at": 73.0, "result": "1-0 · A billionaire owes Harvey one",
+             "vo": "Good game! Harvey lost the car and won the guy who owns a two billion dollar hedge fund."},
+  "face_labels": true,
+  "cast": {"Lawrence's Date": [{"t": 20.75, "x": 0.131, "y": 0.256}, {"t": 26.167, "x": 0.15, "y": 0.222}, {"t": 33.417, "x": 0.497, "y": 0.333}], "Harvey": [{"t": 11.25, "x": 0.561, "y": 0.33}, {"t": 15.083, "x": 0.637, "y": 0.323}, {"t": 17.667, "x": 0.69, "y": 0.299}, {"t": 19.833, "x": 0.707, "y": 0.349}, {"t": 25.167, "x": 0.829, "y": 0.146}, {"t": 31.083, "x": 0.582, "y": 0.356}, {"t": 35.5, "x": 0.425, "y": 0.298}, {"t": 39.75, "x": 0.356, "y": 0.424}, {"t": 44.5, "x": 0.286, "y": 0.401}, {"t": 49.333, "x": 0.257, "y": 0.173}, {"t": 51.25, "x": 0.402, "y": 0.36}, {"t": 57.0, "x": 0.285, "y": 0.361}, {"t": 62.667, "x": 0.391, "y": 0.443}, {"t": 68.75, "x": 0.381, "y": 0.384}, {"t": 72.333, "x": 0.306, "y": 0.34}], "-": [{"t": 33.0, "x": 0.059, "y": 0.363}], "Lawrence": [{"t": 39.0, "x": 0.647, "y": 0.376}, {"t": 25.167, "x": 0.223, "y": 0.166}], "NPC 1": [{"t": 64.667, "x": 0.567, "y": 0.354}]},
+  "labels": [
+    [14.47, 15.77, "Lawrence", 0.32, 0.25],
+    [19.5, 20.27, "Harvey", 0.42, 0.25]
+  ],
+  "moves": [
+    {"t": 9.0, "side": "white", "class": "book", "name": "Before She's a Pontiac", "note": "Smooth opener.", "eval": 0.2, "badge": [0.78, 0.3]},
+    {"t": 14.45, "side": "white", "class": "good", "name": "Something Other Than the Tesla", "note": "Asking nicely. For now.", "eval": 0.3, "badge": [0.78, 0.3]},
+    {"t": 15.65, "side": "black", "class": "good", "name": "My Policy", "note": "Holding the line.", "eval": 0.0, "badge": [0.78, 0.3]},
+    {"t": 18.6, "side": "black", "class": "excellent", "name": "The Tesla Policy", "note": "Honest king.", "eval": -0.3, "badge": [0.78, 0.3]},
+    {"t": 24.95, "side": "white", "class": "best", "name": "Know More About the Car", "comment": "Harvey turned a parking problem into a car quiz. Winner drives the Tesla. He's done this before.", "eval": 0.4, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 29.6, "side": "white", "class": "good", "name": "Horsepower", "note": "Question one.", "eval": 0.4, "badge": [0.78, 0.3]},
+    {"t": 36.7, "side": "black", "class": "good", "name": "288", "note": "Correct.", "eval": 0.1, "badge": [0.25, 0.35]},
+    {"t": 42.0, "side": "black", "class": "excellent", "name": "3.7 Seconds", "note": "He studied.", "eval": -0.3, "badge": [0.78, 0.3]},
+    {"t": 47.8, "side": "black", "class": "good", "name": "Waiting for Months", "note": "Down bad for this car.", "eval": -0.4, "badge": [0.25, 0.35]},
+    {"t": 57.6, "side": "white", "class": "brilliant", "name": "Knock Yourself Out", "comment": "Harvey beat him, then handed over the Tesla anyway. That's not losing. That's a billionaire owing you a favor.", "eval": 3.0, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 64.12, "side": "white", "class": "great", "name": "Owe You One", "note": "The real prize.", "eval": 4.0, "badge": [0.78, 0.3]},
+    {"t": 69.95, "side": "white", "class": "best", "name": "Had to Beat Him First", "comment": "If he didn't win first, the gift means nothing. Harvey plays chess while everyone else plays valet.", "eval": "1-0", "badge": [0.78, 0.3], "card": "right"}
+  ]
+}

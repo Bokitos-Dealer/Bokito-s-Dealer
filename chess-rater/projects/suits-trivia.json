@@ -1,0 +1,46 @@
+{
+  "source": "../clips/suits-trivia.mp4",
+  "title": {"text": "I rated Mike's Harvard trivia battle", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Mike Ross", "short": "Mike",
+              "avatar": {"t": 110.0, "x": 0.38, "y": 0.3, "size": 0.45}},
+    "black": {"name": "The Harvard Guy", "short": "Harvard Guy",
+              "avatar": {"t": 42.5, "x": 0.68, "y": 0.3, "size": 0.45}}
+  },
+  "hook": {
+    "from": 106.6,
+    "move": "Precise Endeavor",
+    "vo": "Precise Endeavor is brilliant! A guy who never went to Harvard just won Harvard trivia. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[5.9, 127.7]],
+  "review": {"at": 127.6, "hold_at": 127.5, "result": "1-0 · Mike wins Harvard trivia",
+             "vo": "Good game! Mike never went to Harvard, and he still out-Harvarded the Harvard guy."},
+  "face_labels": true,
+  "npc_tags": false,
+  "cast": {"Louis (Arbiter)": [{"t": 17.733, "x": 0.719, "y": 0.275}, {"t": 34.483, "x": 0.669, "y": 0.239}, {"t": 69.817, "x": 0.627, "y": 0.176}, {"t": 79.733, "x": 0.506, "y": 0.178}, {"t": 101.483, "x": 0.47, "y": 0.201}, {"t": 121.4, "x": 0.617, "y": 0.166}], "Mike": [{"t": 9.817, "x": 0.211, "y": 0.234}, {"t": 34.483, "x": 0.427, "y": 0.247}, {"t": 69.817, "x": 0.414, "y": 0.206}, {"t": 79.483, "x": 0.153, "y": 0.225}, {"t": 121.4, "x": 0.113, "y": 0.159}], "-": [{"t": 66.817, "x": 0.14, "y": 0.198}, {"t": 35.817, "x": 0.349, "y": 0.318}]},
+  "labels": [
+    [58.87, 66.37, "Mike", 0.4, 0.3],
+    [41.43, 43.77, "Harvard Guy", 0.68, 0.3]
+  ],
+  "moves": [
+    {"t": 10.65, "side": "white", "class": "good", "name": "46 Pulitzers", "note": "Instant.", "eval": 0.3, "badge": [0.78, 0.3]},
+    {"t": 14.9, "side": "black", "class": "inaccuracy", "name": "The Bible", "note": "Close. Not close enough.", "eval": 0.6, "badge": [0.78, 0.3]},
+    {"t": 16.6, "side": "white", "class": "excellent", "name": "The Gutenberg Bible", "note": "Precise.", "eval": 1.0, "badge": [0.78, 0.3]},
+    {"t": 18.7, "side": "black", "class": "inaccuracy", "name": "Everyone Knows", "note": "Crying to the ref.", "eval": 1.2, "badge": [0.25, 0.3]},
+    {"t": 31.78, "side": "white", "class": "great", "name": "Before the Question", "comment": "Mike answered before Louis even finished asking. That's not trivia anymore, that's reading minds.", "eval": 2.0, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 33.1, "side": "white", "class": "excellent", "name": "Want Names?", "note": "Showing off now.", "eval": 2.2, "badge": [0.78, 0.3]},
+    {"t": 43.25, "side": "black", "class": "good", "name": "I Bleed Crimson", "note": "Harvard cosplay... wait, he's real.", "eval": 2.0, "badge": [0.25, 0.3]},
+    {"t": 66.0, "side": "white", "class": "blunder", "name": "Burger Guy", "comment": "Mike's fake Harvard degree almost got exposed by a pizza question. I study better on protein is crazy.", "eval": -1.5, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 71.95, "side": "black", "class": "best", "name": "Pinocchio's", "note": "Easy points.", "eval": -2.5, "badge": [0.78, 0.3]},
+    {"t": 74.15, "side": "black", "class": "inaccuracy", "name": "I Win", "note": "Famous last words.", "eval": -2.2, "badge": [0.78, 0.3]},
+    {"t": 85.4, "side": "black", "class": "mistake", "name": "Five", "note": "Is it though?", "eval": -0.5, "badge": [0.25, 0.3]},
+    {"t": 97.6, "side": "white", "class": "excellent", "name": "Ginsburg", "note": "One more justice.", "eval": 1.0, "badge": [0.78, 0.3]},
+    {"t": 99.4, "side": "black", "class": "good", "name": "She Went to Columbia", "note": "Fighting back.", "eval": 0.5, "badge": [0.25, 0.3]},
+    {"t": 103.1, "side": "white", "class": "best", "name": "Two Years at Harvard", "note": "Receipts.", "eval": 1.5, "badge": [0.78, 0.3]},
+    {"t": 106.6, "side": "black", "class": "good", "name": "From Harvard", "note": "Lawyering the wording.", "eval": 1.2, "badge": [0.25, 0.3]},
+    {"t": 117.2, "side": "white", "class": "brilliant", "name": "Precise Endeavor", "comment": "Mike took the Harvard guy's own nerdy rule and used it to beat him. Uno reverse, Harvard edition.", "eval": "1-0", "badge": [0.78, 0.3], "card": "right"}
+  ]
+}

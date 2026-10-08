@@ -43,6 +43,9 @@ SAME_PERSON = 0.36       # fingerprint similarity above which two tracks are the
 CUT = 0.8                # colour-histogram similarity below which two samples are different shots
 MAX_GAP = 0.35           # a face missing longer than this (s) ends its track: it was covered
 MIN_TRACK = 0.4          # tracks shorter than this (s) are dropped as noise
+MIN_TAG_TRACK = 0.8      # unnamed faces seen for less than this (s) get no tag: it would only flicker
+STEADY = 0.3             # tag positions are smoothed over about this long (s)
+HIDE = "-"               # a "cast" entry with this name hides the tag on that face
 
 
 def ensure_models(models_dir):
@@ -229,7 +232,7 @@ def name_tracks(tracks, hints):
                 tr.name, conf[id(tr)] = name, 3.0
     refs = {}
     for tr in tracks:
-        if tr.name:
+        if tr.name and tr.name != HIDE:
             refs.setdefault(tr.name, []).append(tr.emb())
     # weak hints given for the same moment are matched to faces together, one face each,
     # preferring faces that are near the hint and look like the person it names
@@ -283,6 +286,8 @@ def name_tracks(tracks, hints):
     # one tag per person at a time: the most certain track keeps the name, the rest are extras
     kept = []
     for tr in sorted([t for t in tracks if t.name], key=lambda t: (-conf.get(id(t), 0), -len(t.pts))):
+        if tr.name == HIDE:
+            continue
         if any(k.name == tr.name and _overlap(k, tr) for k in kept):
             tr.name = None
         else:
@@ -310,6 +315,9 @@ def name_tracks(tracks, hints):
     for tr in sorted(tracks, key=lambda tr: tr.t0):
         if tr.name:
             continue
+        if tr.t1 - tr.t0 < MIN_TAG_TRACK:
+            tr.name = HIDE
+            continue
         e = tr.emb()
         scores = {n: max(float(e @ o.emb()) for o in ts) for n, ts in npcs.items()
                   if not any(_overlap(o, tr) for o in ts)}
@@ -330,13 +338,45 @@ def name_tracks(tracks, hints):
 
 class FaceLabels:
     def __init__(self, tracks):
-        self.tracks = sorted(tracks, key=lambda tr: tr.t0)
-        self.arrs = [np.array(tr.pts) for tr in self.tracks]
+        self.tracks = sorted([tr for tr in tracks if tr.name != HIDE], key=lambda tr: tr.t0)
+        self.arrs = [self.steady(np.array(tr.pts)) for tr in self.tracks]
+
+    @staticmethod
+    def steady(a):
+        """Detections wobble a little from frame to frame. Smooth the boxes, then let the tag stay
+        put until the face has really moved, so tags sit still instead of shaking."""
+        if len(a) < 3:
+            return a
+        n = len(a)
+        sig = STEADY * SAMPLE_FPS / 2
+        k = np.arange(-int(3 * sig), int(3 * sig) + 1)
+        wts = np.exp(-0.5 * (k / sig) ** 2)
+        out = a.copy()
+        for c in range(1, 5):
+            col = a[:, c]
+            pad = np.concatenate([np.full(len(k), col[0]), col, np.full(len(k), col[-1])])
+            out[:, c] = np.convolve(pad, wts / wts.sum(), mode="same")[len(k):len(k) + n]
+        # dead zone: the tag only follows once the face drifts more than a fraction of its size
+        anchor = out[0, 1:5].copy()
+        for i in range(n):
+            x, y, w, h = out[i, 1:5]
+            cx, cy = x + w / 2, y
+            ax, ay = anchor[0] + anchor[2] / 2, anchor[1]
+            dzx, dzy = 0.18 * w, 0.12 * h
+            if abs(cx - ax) > dzx:
+                ax = cx - np.sign(cx - ax) * dzx
+            if abs(cy - ay) > dzy:
+                ay = cy - np.sign(cy - ay) * dzy
+            if abs(h - anchor[3]) > 0.12 * h:
+                anchor[2:4] = (w, h)
+            anchor[0], anchor[1] = ax - anchor[2] / 2, ay
+            out[i, 1:5] = anchor
+        return out
 
     def at(self, t):
-        """[(name, x_center, y_top, face_w, face_h)] for every face visible at source time t."""
+        """[(track_id, name, x_center, y_top, face_w, face_h)] for every face visible at source time t."""
         out = []
-        for tr, a in zip(self.tracks, self.arrs):
+        for i, (tr, a) in enumerate(zip(self.tracks, self.arrs)):
             if t < tr.t0 - 1e-6 or t > tr.t1 + 1.0 / SAMPLE_FPS:
                 continue
             k = int(np.searchsorted(a[:, 0], t))
@@ -349,7 +389,7 @@ class FaceLabels:
                 f = (t - lo[0]) / (hi[0] - lo[0])
                 row = lo + (hi - lo) * f
             _, x, y, w, h = row
-            out.append((tr.name, x + w / 2, y, w, h))
+            out.append((i, tr.name, x + w / 2, y, w, h))
         return out
 
 

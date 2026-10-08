@@ -1,0 +1,50 @@
+{
+  "source": "../clips/suits-mud.mp4",
+  "title": {"text": "I rated Louis's mud fight", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Louis Litt", "short": "Louis",
+              "avatar": {"t": 45.0, "x": 0.35, "y": 0.35, "size": 0.45}},
+    "black": {"name": "Nigel Nesbitt", "short": "Nigel",
+              "avatar": {"t": 56.5, "x": 0.72, "y": 0.3, "size": 0.45}}
+  },
+  "hook": {
+    "from": 67.5,
+    "move": "Royal Muds of England",
+    "vo": "Royal Muds of England is brilliant! Louis just won a fight about mud. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[9.6, 80.07]],
+  "review": {"at": 80.0, "hold_at": 79.95, "result": "1-0 · Louis wins the mud war",
+             "vo": "Good game! Never talk about mud with Louis Litt."},
+  "face_labels": true,
+  "cast": {"Louis": [{"t": 10.683, "x": 0.567, "y": 0.411}]},
+  "npc_tags": false,
+  "labels": [
+    [43.13, 47.97, "Louis", 0.33, 0.3],
+    [47.97, 49.43, "Nigel", 0.68, 0.3],
+    [55.1, 58.93, "Nigel", 0.72, 0.3]
+  ],
+  "moves": [
+    {"t": 14.75, "side": "black", "class": "inaccuracy", "name": "Cutting the Line", "note": "Ordering a frappe. Bold.", "eval": 0.3, "badge": [0.25, 0.3]},
+    {"t": 16.15, "side": "white", "class": "excellent", "name": "Prince Charles", "note": "First jab.", "eval": 0.6, "badge": [0.25, 0.3]},
+    {"t": 18.65, "side": "white", "class": "good", "name": "Wait Your Turn", "note": "New York rules.", "eval": 0.7, "badge": [0.78, 0.25]},
+    {"t": 21.45, "side": "black", "class": "book", "name": "Thought You'd Been Served", "note": "Polite. For now.", "eval": 0.6, "badge": [0.78, 0.25]},
+    {"t": 29.8, "side": "black", "class": "great", "name": "Baboon", "comment": "He called Louis a baboon and ordered him a Miller Lite in the same breath. British people really do violence politely.", "eval": -0.8, "badge": [0.78, 0.25], "card": "left"},
+    {"t": 32.2, "side": "white", "class": "excellent", "name": "Macallan 25", "note": "Upgraded on the spot.", "eval": -0.3, "badge": [0.25, 0.3]},
+    {"t": 34.65, "side": "black", "class": "best", "name": "Put a Banana in It", "note": "Baboon callback.", "eval": -0.8, "badge": [0.78, 0.25]},
+    {"t": 37.7, "side": "black", "class": "mistake", "name": "Playing in Mud", "note": "Wrong topic, bro.", "eval": -0.2, "badge": [0.78, 0.25]},
+    {"t": 40.45, "side": "white", "class": "great", "name": "It's for Cleansing", "comment": "Nigel brought up mud. To Louis Litt. That's walking straight into his home preparation.", "eval": 1.2, "badge": [0.25, 0.3], "card": "right"},
+    {"t": 43.0, "side": "black", "class": "inaccuracy", "name": "You? Mud?", "note": "Doubting the mud king.", "eval": 1.4, "badge": [0.25, 0.3]},
+    {"t": 47.9, "side": "white", "class": "excellent", "name": "More Places", "note": "Snooty little mind.", "eval": 1.8, "badge": [0.78, 0.25]},
+    {"t": 52.0, "side": "white", "class": "good", "name": "Sedona", "note": "Speed round.", "eval": 1.8, "badge": [0.78, 0.25]},
+    {"t": 55.2, "side": "white", "class": "best", "name": "Baden Baden", "note": "The final boss of mud.", "eval": 2.2, "badge": [0.78, 0.25]},
+    {"t": 58.85, "side": "black", "class": "blunder", "name": "Wet Dirt", "comment": "He called Baden Baden wet dirt. In front of Louis Litt. Nigel just declared war.", "eval": 4.0, "badge": [0.3, 0.3], "card": "left"},
+    {"t": 60.8, "side": "white", "class": "good", "name": "Who You Think You Are", "note": "Asking for ID.", "eval": 4.0, "badge": [0.78, 0.25]},
+    {"t": 63.55, "side": "black", "class": "good", "name": "Nigel Alexander Nesbitt", "note": "Full name. It's serious.", "eval": 3.8, "badge": [0.25, 0.3]},
+    {"t": 74.3, "side": "white", "class": "brilliant", "name": "Royal Muds of England", "comment": "Louis said dissing Baden Baden is like dumping on England's royal mud. To an Englishman. Unreal.", "eval": 6.0, "badge": [0.78, 0.25], "card": "right"},
+    {"t": 76.03, "side": "black", "class": "mistake", "name": "How Dare You", "note": "Clutching pearls.", "eval": 6.5, "badge": [0.25, 0.3]},
+    {"t": 79.6, "side": "white", "class": "best", "name": "Already Dared", "comment": "Nigel asked how he dared. Louis said he already did. Game over, mud king.", "eval": "1-0", "badge": [0.78, 0.25], "card": "right"}
+  ]
+}

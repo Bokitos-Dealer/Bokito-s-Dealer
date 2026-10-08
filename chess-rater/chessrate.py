@@ -637,8 +637,12 @@ class Project:
         for lb in self.labels:
             hints.append((lb["text"], lb["from"], lb["to"], lb["x"], lb["y"], False))
         ranges = [[max(0.0, a - 0.5), min(self.src_dur, b + 0.5)] for a, b in self.segments]
-        return faces.load(self.source, self.crop, ranges, hints, os.path.join(HERE, "models"),
-                          os.path.join(HERE, ".cache", "faces"))
+        fl = faces.load(self.source, self.crop, ranges, hints, os.path.join(HERE, "models"),
+                        os.path.join(HERE, ".cache", "faces"))
+        if self.cfg.get("npc_tags") is False:  # a crowd scene: tag only the people who matter
+            keep = [i for i, tr in enumerate(fl.tracks) if not tr.name.startswith("NPC")]
+            fl.tracks, fl.arrs = [fl.tracks[i] for i in keep], [fl.arrs[i] for i in keep]
+        return fl
 
     # ---- timeline construction
     def build(self):
@@ -834,6 +838,7 @@ class Renderer:
         self.cw, self.ch = project.clip_w, project.clip_h
         self.frames = FrameSource(project.source, self.cw, self.ch, project.crop)
         self.cache = {}
+        self.tag_side = {}  # face track -> 0 above the head, 1 under the chin
         self.base = self.render_base()
         self.avatars = {key: self.avatar(pl) for key, pl in project.players.items()}
         coach = project.cfg.get("coach", {})
@@ -1209,14 +1214,19 @@ class Renderer:
 
         if not in_review and p.faces:
             placed = [(0, 0, self.cw * 0.3, self.ch * 0.15)]  # the top player tag
-            for name, fx, fy, fw, fh in sorted(p.faces.at(src_t), key=lambda f: -f[4]):  # biggest first
+            for tid, name, fx, fy, fw, fh in sorted(p.faces.at(src_t), key=lambda f: -f[5]):  # biggest first
                 li = self.label(name)
                 x = clamp(fx * self.cw - li.width / 2, 4, self.cw - li.width - 4)
-                for y in (fy * self.ch - li.height + 6, (fy + fh) * self.ch - 6):  # above the head, else under the chin
+                slots = [0, 1]  # above the head, else under the chin; a tag keeps its side so it doesn't hop
+                if self.tag_side.get(tid) == 1:
+                    slots = [1, 0]
+                for side in slots:
+                    y = fy * self.ch - li.height + 6 if side == 0 else (fy + fh) * self.ch - 6
                     box = (x + 8, y + 8, x + li.width - 8, y + li.height - 8)
                     if y >= 4 and y + li.height <= self.ch - 4 and not any(
                             box[0] < b[2] and b[0] < box[2] and box[1] < b[3] and b[1] < box[3] for b in placed):
                         placed.append(box)
+                        self.tag_side[tid] = side
                         alpha_paste(clip, li, (x, y))
                         break
         elif not in_review:

@@ -1,0 +1,57 @@
+{
+  "source": "../clips/suits-louis-poker.mp4",
+  "title": {"text": "I rated Harvey vs Louis at the poker table", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"track": "Behind Enemy Lines", "level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Harvey Specter", "short": "Harvey",
+              "avatar": {"t": 165.0, "x": 0.3, "y": 0.3, "size": 0.45}},
+    "black": {"name": "Louis Litt", "short": "Louis",
+              "avatar": {"t": 120.0, "x": 0.33, "y": 0.33, "size": 0.45}}
+  },
+  "hook": {
+    "from": 196.5,
+    "move": "Ten High",
+    "vo": "Ten High is brilliant! He went all in with nothing, and Louis folded anyway. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[9.5, 44.8], [48.3, 238.4]],
+  "review": {"at": 238.35, "hold_at": 238.3, "result": "1-0 · Harvey takes Louis's money",
+             "vo": "Good game! Louis won the first hand. Harvey won the man."},
+  "face_labels": true,
+  "npc_tags": false,
+  "cast": {"Stephen (Client)": [{"t": 153.0, "x": 0.6, "y": 0.3}, {"t": 191.5, "x": 0.5, "y": 0.2}, {"t": 13.0, "x": 0.6, "y": 0.3}], "-": [{"t": 27.5, "x": 0.608, "y": 0.339}, {"t": 41.083, "x": 0.741, "y": 0.362}, {"t": 49.8, "x": 0.092, "y": 0.382}, {"t": 70.133, "x": 0.246, "y": 0.372}]},
+  "labels": [
+    [115.57, 126.47, "Louis", 0.33, 0.3],
+    [159.8, 191.03, "Harvey", 0.3, 0.3],
+    [191.03, 214.4, "Louis", 0.62, 0.45]
+  ],
+  "moves": [
+    {"t": 18.93, "side": "black", "class": "good", "name": "Keeps His Promises", "note": "Sales pitch at the table.", "eval": -0.2, "badge": [0.78, 0.25]},
+    {"t": 36.9, "side": "white", "class": "book", "name": "Show You How", "note": "Uninvited. Of course.", "eval": 0.0, "badge": [0.78, 0.25]},
+    {"t": 40.4, "side": "white", "class": "excellent", "name": "Sure Louis Can't", "note": "Disrespect on arrival.", "eval": 0.3, "badge": [0.78, 0.25]},
+    {"t": 44.75, "side": "black", "class": "inaccuracy", "name": "Don't Mind at All", "note": "He minds.", "eval": 0.4, "badge": [0.78, 0.25]},
+    {"t": 49.9, "side": "black", "class": "good", "name": "Raise 10,000", "note": "Louis came to play.", "eval": 0.2, "badge": [0.78, 0.3]},
+    {"t": 67.6, "side": "black", "class": "great", "name": "Queens Full", "comment": "Louis hit a full house on the river against the client he's supposed to be closing. Bro chose violence.", "eval": -1.5, "badge": [0.3, 0.3], "card": "right"},
+    {"t": 76.4, "side": "black", "class": "good", "name": "Right Call", "note": "Lecturing the client on odds.", "eval": -1.3, "badge": [0.78, 0.25]},
+    {"t": 85.8, "side": "black", "class": "excellent", "name": "Beating Your Ass", "note": "Louis is cooking.", "eval": -1.8, "badge": [0.25, 0.3]},
+    {"t": 89.6, "side": "white", "class": "best", "name": "Playing the Man", "note": "Lesson one.", "eval": -1.0, "badge": [0.78, 0.25]},
+    {"t": 101.5, "side": "white", "class": "great", "name": "Folded Quads", "comment": "Harvey had four of a kind and folded it, on purpose, so the client could win. That's a sacrifice.", "eval": 0.5, "badge": [0.78, 0.25], "card": "left"},
+    {"t": 109.2, "side": "black", "class": "mistake", "name": "Bend a Knee to Me", "note": "Make it make sense.", "eval": 0.9, "badge": [0.78, 0.25]},
+    {"t": 116.25, "side": "white", "class": "excellent", "name": "Better at It", "note": "Ego check.", "eval": 1.2, "badge": [0.78, 0.25]},
+    {"t": 131.6, "side": "black", "class": "excellent", "name": "Humiliating You", "comment": "Louis said the quiet part out loud. He's not here for the client. He's here to cook Harvey.", "eval": 0.2, "badge": [0.25, 0.3], "card": "right"},
+    {"t": 137.48, "side": "white", "class": "inaccuracy", "name": "Don't Care About the Client", "note": "It's personal now.", "eval": -0.2, "badge": [0.78, 0.25]},
+    {"t": 150.2, "side": "white", "class": "best", "name": "Participation Trophy", "note": "Ouch.", "eval": 0.3, "badge": [0.78, 0.25]},
+    {"t": 152.0, "side": "black", "class": "good", "name": "Your Money", "note": "Louis talking big.", "eval": 0.2, "badge": [0.78, 0.25]},
+    {"t": 158.6, "side": "white", "class": "excellent", "name": "In the Courtroom", "note": "Pitching the client mid-fight.", "eval": 0.6, "badge": [0.78, 0.3]},
+    {"t": 161.7, "side": "black", "class": "good", "name": "Fights for Himself", "note": "Fair point, honestly.", "eval": 0.4, "badge": [0.78, 0.25]},
+    {"t": 163.25, "side": "black", "class": "good", "name": "Raise 50,000", "note": "Big bet.", "eval": 0.3, "badge": [0.78, 0.25]},
+    {"t": 165.3, "side": "white", "class": "excellent", "name": "All In", "note": "Everything in the middle.", "eval": 0.8, "badge": [0.78, 0.25]},
+    {"t": 185.25, "side": "white", "class": "great", "name": "Always Losing", "comment": "Harvey listed every L Louis has ever taken, right before the biggest hand of the night. Psychological warfare.", "eval": 2.5, "badge": [0.78, 0.25], "card": "left"},
+    {"t": 200.9, "side": "black", "class": "blunder", "name": "The Fold", "note": "Louis folds.", "eval": 5.0, "badge": [0.25, 0.3]},
+    {"t": 206.1, "side": "white", "class": "brilliant", "name": "Ten High", "comment": "He went all in with ten high. Nothing. Air. And Louis folded anyway. That's playing the man, not the cards.", "eval": 6.0, "badge": [0.25, 0.3], "card": "right"},
+    {"t": 220.6, "side": "white", "class": "best", "name": "Not About the Odds", "note": "Lesson two.", "eval": 6.2, "badge": [0.78, 0.25]},
+    {"t": 231.85, "side": "white", "class": "excellent", "name": "I Win", "note": "Main character speech.", "eval": 6.5, "badge": [0.78, 0.25]},
+    {"t": 238.3, "side": "white", "class": "best", "name": "Louis's Money", "comment": "He dissed the client, cooked Louis, and stayed to take the rest of his money. Peak Harvey. GG.", "eval": "1-0", "badge": [0.78, 0.25], "card": "left"}
+  ]
+}

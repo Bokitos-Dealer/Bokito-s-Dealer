@@ -1,0 +1,44 @@
+{
+  "source": "../clips/suits-donna-reads.mp4",
+  "title": {"text": "I rated Donna reading Harvey", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Donna Paulsen", "short": "Donna",
+              "avatar": {"t": 98.47, "x": 0.28, "y": 0.31, "size": 0.45}},
+    "black": {"name": "Harvey Specter", "short": "Harvey",
+              "avatar": {"t": 94.05, "x": 0.7, "y": 0.33, "size": 0.42}}
+  },
+  "hook": {
+    "from": 96.5,
+    "move": "Jessica Found Out",
+    "vo": "Jessica Found Out is brilliant! Donna cracked Harvey's biggest secret from his tie. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[54.3, 106.4]],
+  "review": {"at": 106.35, "hold_at": 106.3, "result": "1-0 · Donna knows everything",
+             "vo": "Good game! You can't hide anything from Donna. Not even with a tie."},
+  "face_labels": true,
+  "cast": {"Harvey": [{"t": 57.133, "x": 0.397, "y": 0.196}, {"t": 62.8, "x": 0.648, "y": 0.14}, {"t": 79.717, "x": 0.71, "y": 0.302}, {"t": 82.883, "x": 0.696, "y": 0.282}], "-": [{"t": 57.8, "x": 0.919, "y": 0.348}], "Donna": [{"t": 60.133, "x": 0.344, "y": 0.343}, {"t": 62.8, "x": 0.221, "y": 0.403}, {"t": 65.967, "x": 0.385, "y": 0.237}, {"t": 71.633, "x": 0.38, "y": 0.259}, {"t": 75.133, "x": 0.374, "y": 0.27}, {"t": 81.467, "x": 0.188, "y": 0.158}, {"t": 87.133, "x": 0.189, "y": 0.158}, {"t": 91.05, "x": 0.213, "y": 0.288}, {"t": 98.467, "x": 0.279, "y": 0.315}, {"t": 104.55, "x": 0.438, "y": 0.41}]},
+  "labels": [
+    [74.23, 76.07, "Donna", 0.55, 0.3],
+    [92.47, 95.63, "Harvey", 0.68, 0.25],
+    [95.63, 101.37, "Donna", 0.62, 0.3]
+  ],
+  "moves": [
+    {"t": 59.3, "side": "black", "class": "mistake", "name": "Please and Thank You", "note": "Way too polite. Suspicious.", "eval": 0.6, "badge": [0.78, 0.3]},
+    {"t": 62.85, "side": "white", "class": "good", "name": "What Was That?", "note": "She noticed.", "eval": 0.8, "badge": [0.78, 0.3]},
+    {"t": 67.7, "side": "white", "class": "excellent", "name": "Same Sentence", "note": "Evidence logged.", "eval": 1.2, "badge": [0.78, 0.3]},
+    {"t": 70.1, "side": "black", "class": "inaccuracy", "name": "No Time for This", "note": "Running.", "eval": 1.4, "badge": [0.78, 0.3]},
+    {"t": 72.9, "side": "white", "class": "good", "name": "You Got Time", "note": "Sit down.", "eval": 1.6, "badge": [0.78, 0.3]},
+    {"t": 74.2, "side": "black", "class": "mistake", "name": "Nothing's Going On", "note": "Something's going on.", "eval": 2.0, "badge": [0.78, 0.3]},
+    {"t": 78.35, "side": "white", "class": "great", "name": "Tie Dimple", "comment": "She read his tie dimple like a crime scene. One millimeter to the left and Donna knows your whole day.", "eval": 3.0, "badge": [0.25, 0.35], "card": "right"},
+    {"t": 85.5, "side": "white", "class": "excellent", "name": "136 Calls", "note": "She counted. Of course she counted.", "eval": 3.4, "badge": [0.78, 0.3]},
+    {"t": 86.35, "side": "black", "class": "inaccuracy", "name": "I'm Not Trying To", "note": "Weak defense.", "eval": 3.6, "badge": [0.78, 0.3]},
+    {"t": 87.85, "side": "white", "class": "best", "name": "Didn't Say Overcompensate", "note": "Caught.", "eval": 4.0, "badge": [0.78, 0.3]},
+    {"t": 89.0, "side": "black", "class": "good", "name": "As Long as We're Clear", "note": "Pride intact. Barely.", "eval": 4.0, "badge": [0.78, 0.3]},
+    {"t": 95.5, "side": "white", "class": "excellent", "name": "Lavender", "note": "Big brother mode detected.", "eval": 4.6, "badge": [0.25, 0.35]},
+    {"t": 100.95, "side": "white", "class": "brilliant", "name": "Jessica Found Out", "comment": "From a tie dimple and a lavender shirt, Donna figured out the firm's biggest secret just blew up. Sherlock could never.", "eval": 6.0, "badge": [0.25, 0.35], "card": "left"},
+    {"t": 106.3, "side": "white", "class": "best", "name": "Does He Know?", "comment": "Harvey didn't say a single word and still told her everything. Donna wins. She always wins.", "eval": "1-0", "badge": [0.25, 0.35], "card": "left"}
+  ]
+}

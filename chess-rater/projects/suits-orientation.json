@@ -1,0 +1,46 @@
+{
+  "source": "../clips/suits-orientation.mp4",
+  "title": {"text": "I rated Mike meeting Rachel", "accent": "like a chess game"},
+  "card_width": 636,
+  "music": {"level_db": -17},
+  "coach": {"enabled": true, "size": 220},
+  "players": {
+    "white": {"name": "Mike Ross", "short": "Mike",
+              "avatar": {"t": 63.0, "x": 0.4, "y": 0.25, "size": 0.42}},
+    "black": {"name": "Rachel Zane", "short": "Rachel",
+              "avatar": {"t": 47.0, "x": 0.3, "y": 0.3, "size": 0.42}}
+  },
+  "hook": {
+    "from": 178.5,
+    "move": "Too Smart for Paralegal",
+    "vo": "Too Smart for Paralegal is brilliant! Mike got roasted for ten minutes, then read her whole life back to her. How the hell did we get here? Let's review the game."
+  },
+  "segments": [[32.6, 106.0], [143.8, 194.35]],
+  "review": {"at": 194.3, "hold_at": 194.25, "result": "½-½ · Round one is a draw",
+             "vo": "Good game! She won the opening, he won the ending. These two are definitely not done."},
+  "face_labels": true,
+  "cast": {"Mike": [{"t": 68.933, "x": 0.723, "y": 0.269}, {"t": 77.767, "x": 0.443, "y": 0.231}, {"t": 92.267, "x": 0.388, "y": 0.184}], "-": [{"t": 68.433, "x": 0.309, "y": 0.224}, {"t": 74.6, "x": 0.604, "y": 0.265}, {"t": 75.85, "x": 0.016, "y": 0.287}, {"t": 93.1, "x": 0.545, "y": 0.253}, {"t": 148.217, "x": 0.253, "y": 0.421}, {"t": 152.55, "x": 0.562, "y": 0.781}, {"t": 152.55, "x": 0.516, "y": 0.695}, {"t": 156.467, "x": 0.527, "y": 0.757}, {"t": 155.717, "x": 0.517, "y": 0.404}, {"t": 156.467, "x": 0.594, "y": 0.843}, {"t": 164.633, "x": 0.314, "y": 0.56}, {"t": 193.633, "x": 0.547, "y": 0.408}, {"t": 194.217, "x": 0.817, "y": 0.263}, {"t": 152.55, "x": 0.567, "y": 0.398}], "Rachel": [{"t": 81.433, "x": 0.541, "y": 0.255}, {"t": 95.017, "x": 0.638, "y": 0.219}]},
+  "labels": [
+    [43.63, 47.5, "Rachel", 0.3, 0.3],
+    [61.7, 66.37, "Mike", 0.4, 0.25]
+  ],
+  "moves": [
+    {"t": 36.75, "side": "black", "class": "book", "name": "I'm Rachel Zane", "note": "Professional opener.", "eval": 0.0, "badge": [0.78, 0.3]},
+    {"t": 38.5, "side": "white", "class": "mistake", "name": "You're Pretty", "note": "Bro said it out loud.", "eval": -0.8, "badge": [0.25, 0.35]},
+    {"t": 42.2, "side": "black", "class": "best", "name": "Not Interested", "note": "Instant block.", "eval": -1.5, "badge": [0.78, 0.3]},
+    {"t": 43.85, "side": "white", "class": "inaccuracy", "name": "Wasn't Hitting on You", "note": "He was.", "eval": -1.8, "badge": [0.78, 0.3]},
+    {"t": 54.3, "side": "black", "class": "great", "name": "Dazzling Degree", "comment": "She rejected him before he could even shoot his shot, then roasted his Harvard degree. Which he doesn't have.", "eval": -2.5, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 59.3, "side": "white", "class": "excellent", "name": "I Was Hitting on You", "note": "Owning it. Respect.", "eval": -1.8, "badge": [0.78, 0.3]},
+    {"t": 61.5, "side": "black", "class": "best", "name": "Take Notes", "note": "Back to business.", "eval": -2.0, "badge": [0.78, 0.3]},
+    {"t": 79.0, "side": "white", "class": "inaccuracy", "name": "Symmetry", "note": "Joke did not land.", "eval": -2.3, "badge": [0.25, 0.35]},
+    {"t": 82.6, "side": "white", "class": "good", "name": "I Should Just Listen", "note": "Self-aware at least.", "eval": -2.2, "badge": [0.25, 0.35]},
+    {"t": 91.6, "side": "white", "class": "good", "name": "What About Harvey?", "note": "Gathering intel.", "eval": -2.0, "badge": [0.25, 0.35]},
+    {"t": 102.9, "side": "black", "class": "excellent", "name": "Continue the Tour", "note": "Didn't answer about Louis. Says a lot.", "eval": -2.2, "badge": [0.78, 0.3]},
+    {"t": 157.4, "side": "black", "class": "great", "name": "Ogling", "comment": "She caught him not taking a single note, then told him exactly why. Ogling. Mike has never been more exposed.", "eval": -3.2, "badge": [0.25, 0.35], "card": "right"},
+    {"t": 175.15, "side": "white", "class": "excellent", "name": "Admire Harvey, Fear Louis", "note": "He was listening after all.", "eval": -1.8, "badge": [0.78, 0.3]},
+    {"t": 184.9, "side": "white", "class": "brilliant", "name": "Too Smart for Paralegal", "comment": "Mike read her whole career from three sentences. Five years in, too smart to be a paralegal. Uno reverse on the read.", "eval": 0.3, "badge": [0.78, 0.3], "card": "left"},
+    {"t": 188.95, "side": "black", "class": "good", "name": "Nobody Likes a Show-Off", "note": "Fair.", "eval": 0.0, "badge": [0.25, 0.35]},
+    {"t": 190.5, "side": "white", "class": "excellent", "name": "You Used Ogling", "comment": "She called him a show-off. He reminded her she literally said ogling. Point Mike.", "eval": 0.5, "badge": [0.78, 0.3], "card": "right"},
+    {"t": 194.25, "side": "white", "class": "inaccuracy", "name": "When Do I See Harvey?", "note": "Ruined the moment.", "eval": 0.0, "badge": [0.25, 0.35]}
+  ]
+}
