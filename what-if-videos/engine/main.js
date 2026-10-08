@@ -36,7 +36,7 @@ const ui = {
   title: $('#title'), titleT: $('#title .t'),
   hud: $('#hud'), hudLabel: $('#hud .label'), hudValue: $('#hud .value'), hudSub: $('#hud .sub'),
   caption: $('#caption'), captionT: $('#caption span'),
-  crack: $('#crack'), fade: $('#fade'), flash: $('#flash'), tint: $('#tint'), grain: $('#grain'),
+  crack: $('#crack'), fade: $('#fade'), flash: $('#flash'), tint: $('#tint'), grain: $('#grain'), labels: $('#labels'),
   end: $('#end'),
 };
 
@@ -44,6 +44,7 @@ const ctx = {
   THREE, scene, camera, renderer, W, H, FPS, SCALE,
   cam: { pos: new THREE.Vector3(0, 50, 100), look: new THREE.Vector3(0, 40, 0), fov: 56, roll: 0 },
   handheld: 1.0,      // gentle drift amount
+  camScale: 1,        // world size of the drift/shake (1 = metres at street scale; 0.01 for a tabletop close-up)
   shake: 0,           // violent shake amount (0..1+)
   flash: 0, flashColor: '#ffffff',
   tint: null,         // { color, opacity, blend }
@@ -99,6 +100,22 @@ function overlay(t) {
   }
   setText(ui.captionT, ct);
   ui.caption.style.opacity = ca.toFixed(3);
+
+  // ---- labels pinned to points on screen: [{ x, y, text, alpha, big, side }]
+  const L = S.labels ? S.labels(t) : [];
+  while (ui.labels.children.length < L.length) {
+    const d = document.createElement('div'); d.className = 'lab';
+    d.innerHTML = '<i class="dot"></i><i class="line"></i><span></span>';
+    ui.labels.appendChild(d);
+  }
+  [...ui.labels.children].forEach((d, i) => {
+    const l = L[i];
+    if (!l || (l.alpha ?? 1) <= 0.001) { d.style.opacity = '0'; return; }
+    d.style.opacity = (l.alpha ?? 1).toFixed(3);
+    d.style.transform = `translate(${l.x.toFixed(1)}px, ${l.y.toFixed(1)}px)`;
+    d.className = 'lab' + (l.big ? ' big' : '') + (l.side === 'left' ? ' left' : '');
+    setText(d.querySelector('span'), l.text);
+  });
 
   // ---- cracked glass
   if (ctx.crack > 0) {
@@ -206,12 +223,12 @@ function grain(frame) {
 
 function applyCamera(t) {
   const c = ctx.cam;
-  camera.fov = c.fov; camera.near = c.near ?? 1; camera.updateProjectionMatrix();
+  camera.fov = c.fov; camera.near = c.near ?? 1; camera.far = c.far ?? 40000; camera.updateProjectionMatrix();
   camera.position.copy(c.pos);
-  const hh = ctx.handheld, sh = ctx.shake;
-  camera.position.x += fbm1(t * 0.31 + 3.1) * 0.25 * hh + fbm1(t * 9.0 + 1.3) * 0.9 * sh;
-  camera.position.y += fbm1(t * 0.27 + 7.7) * 0.18 * hh + fbm1(t * 10.0 + 4.1) * 0.7 * sh;
-  camera.position.z += fbm1(t * 8.0 + 9.4) * 0.5 * sh;
+  const hh = ctx.handheld, sh = ctx.shake, k = ctx.camScale ?? 1;
+  camera.position.x += (fbm1(t * 0.31 + 3.1) * 0.25 * hh + fbm1(t * 9.0 + 1.3) * 0.9 * sh) * k;
+  camera.position.y += (fbm1(t * 0.27 + 7.7) * 0.18 * hh + fbm1(t * 10.0 + 4.1) * 0.7 * sh) * k;
+  camera.position.z += fbm1(t * 8.0 + 9.4) * 0.5 * sh * k;
   camera.lookAt(c.look);
   camera.rotateZ((c.roll || 0) + fbm1(t * 0.2 + 2.2) * 0.004 * hh + fbm1(t * 11.0 + 6.6) * 0.02 * sh);
   camera.rotateX(fbm1(t * 0.23 + 5.5) * 0.004 * hh + fbm1(t * 12.0 + 8.8) * 0.015 * sh);

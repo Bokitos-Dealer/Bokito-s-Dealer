@@ -39,6 +39,19 @@ html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
 #caption span { font-family: 'Garamond', serif; font-style: italic; font-weight: 500; font-size: 64px; line-height: 1.14;
   text-shadow: 0 2px 3px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.85), 0 0 30px rgba(0,0,0,0.6), 0 0 60px rgba(0,0,0,0.4); display: inline-block; text-wrap: balance; }
 
+/* labels pinned to things in the scene: a dot, a short leader line, the name */
+#labels { position: absolute; inset: 0; }
+#labels .lab { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+#labels .dot { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.25), 0 0 12px rgba(0,0,0,0.6); }
+#labels .line { position: absolute; left: 0; top: -1.5px; width: 70px; height: 3px; background: rgba(255,255,255,0.9); transform-origin: 0 50%; transform: rotate(-35deg);
+  box-shadow: 0 0 6px rgba(0,0,0,0.5); }
+#labels span { position: absolute; left: 56px; top: -84px; white-space: nowrap; font-family: 'InterW', sans-serif; font-weight: 700; font-size: 26px;
+  letter-spacing: 0.2em; text-transform: uppercase; text-shadow: 0 0 10px rgba(0,0,0,0.75), 0 2px 3px rgba(0,0,0,0.8); }
+#labels .left .line { transform: rotate(-145deg); }
+#labels .left span { left: auto; right: 56px; }
+#labels .big span { font-family: 'Garamond', serif; font-weight: 500; font-size: 92px; letter-spacing: 0.02em; text-transform: none; top: -150px; }
+
 #crack { position: absolute; inset: 0; width: 1080px; height: 1920px; pointer-events: none; opacity: 0; }
 #crack path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 

@@ -29,8 +29,20 @@ SFX = {
     '1651': 'vintage manual fire siren', '1644': 'europe ambulance siren', '1296': 'thunder deep rumble', '1718': 'rocket rumble distant',
     '1703': 'explosion with rocks debris', '1686': 'underground explosion impact echo', '759': 'glass break with hammer thud', '1701': 'explosion and glass debris',
     '1150': 'introduction bell',
+    # paper
+    '2380': 'paper quick movement', '1104': 'page turn single', '1105': 'big paper page turn', '2385': 'paper crinkle',
+    '2379': 'papers being moved or wrinkling', '2386': 'pages of paper moving', '1530': 'paper slide', '2384': 'paper quick slice',
+    # air, flips and magic
+    '1489': 'air woosh', '1490': 'fast whoosh transition', '1461': 'short wind swoosh', '2605': 'quick air woosh', '2604': 'deep air woosh',
+    '2625': 'fast air zoom', '2350': 'magic sparkle whoosh', '563': 'drum deep impact', '2903': 'movie whoosh impact presentation',
+    # places
+    '367': 'calm park with people and children', '1238': 'windy humming forest with birds', '1267': 'wind on top of the mountain',
+    '1177': 'deep cinematic wind hum', '1579': 'low airplane flying over', '1578': 'long airplane flying over',
+    # ui
+    '1124': 'plastic bubble click', '2364': 'hard pop click', '1117': 'classic click',
 }
-MUSIC = {'614': 'Silent Descent', '871': 'Fright Night', '464': 'Sci-Fi Score'}
+MUSIC = {'614': 'Silent Descent', '871': 'Fright Night', '464': 'Sci-Fi Score', '184': 'Vastness', '188': 'Echoes', '79': 'The Journey',
+         '606': 'Drawing the Sky', '676': 'Epical Drums 01', '677': 'Epical Drums 02', '322': "Life's a Movie", '523': 'Rising Sun'}
 
 def get(url, path):
     if os.path.exists(path) and os.path.getsize(path) > 1000:
