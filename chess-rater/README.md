@@ -40,7 +40,18 @@ turn it off. The sounds are fetched from chess.com's site and aren't stored in
 this repo. Set `"sfx": false` to turn them off, or point `"sounds"` at a folder with your own
 `move-self.mp3`, `capture.mp3`, and so on.
 
-## Example project
+## Example projects
+
+`projects/charade.json` rates the ski-lodge scene from *Charade* (1963). The film is in the US
+public domain, so this one is safe to post on Instagram and TikTok. Fetch the clip with:
+
+```sh
+mkdir -p clips
+ffmpeg -ss 180 -i "https://archive.org/download/charade-1963-cary-grant-audrey-hepburn-walter-matthau-1080p-reup/Charade%20%281963%29%20Cary%20Grant%2C%20Audrey%20Hepburn%2C%20Walter%20Matthau%2C%20James%20Coburn%2C%20George%20Kennedy%3B%201080p%5D.ia.mp4" \
+  -t 280 -c copy -avoid_negative_ts make_zero clips/charade-lodge.mp4
+python chessrate.py projects/charade.json
+```
+
 
 `projects/suits-mike-rachel.json` rates Mike and Rachel's late-night scene from *Suits*, as
 posted on the official Suits YouTube channel. The clip isn't included in this repo. Save your
