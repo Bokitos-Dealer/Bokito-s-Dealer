@@ -1,0 +1,101 @@
+{
+  "source": "../clips/suits-salary.mp4",
+  "card_width": 636,
+  "music": {
+    "track": "Behind Enemy Lines",
+    "level_db": -17
+  },
+  "coach": {
+    "enabled": true,
+    "size": 220
+  },
+  "faces": {
+    "pins": [
+      [5.4, 0.518, 0.455, "Louis"],
+      [14.48, 0.648, 0.725, "Louis"],
+      [51.71, 0.33, 0.24, "Louis"],
+      [52.63, 0.337, 0.189, "Harvey"],
+      [130.33, 0.231, 0.163, "Harvey"],
+      [136.25, 0.258, 0.175, "Harvey"]
+    ]
+  },
+  "subtitles": {
+    "fix": {
+      "Lewis": "Louis"
+    },
+    "replace": [
+      [30.3, 30.6, ""],
+      [157.3, 158.6, "together. Harvey, I can't. Louis!"],
+      [158.6, 161.9, "Jessica tried to fire me once. I can't give her the chance to do that again."],
+      [165.5, 165.7, "did."],
+      [167.9, 168.1, "enough."],
+      [171.6, 173.6, "Well, you better have proof. You have proof, Harvey?"]
+    ]
+  },
+  "title": {
+    "text": "I Rated Louis Leaking Harvey's Salary",
+    "accent": "Like a Chess Game"
+  },
+  "players": {
+    "white": {
+      "name": "Harvey Specter",
+      "short": "Harvey",
+      "avatar": {"t": 29.34, "x": 0.315, "y": 0.469, "size": 0.55}
+    },
+    "black": {
+      "name": "Louis Litt",
+      "short": "Louis",
+      "avatar": {"t": 32.43, "x": 0.722, "y": 0.266, "size": 0.42}
+    },
+    "jack": {
+      "name": "Jack Soloff",
+      "short": "Jack",
+      "team": "black",
+      "joins": 78.9,
+      "leaves": 115.3,
+      "avatar": {"t": 114.31, "x": 0.597, "y": 0.335, "size": 0.5}
+    }
+  },
+  "hook": {
+    "from": 172.45,
+    "move": "Burden of Proof",
+    "vo": "Burden of Proof is brilliant! Louis leaked Harvey's salary, got caught, and still walked away. How did we even get here? Let's review the game."
+  },
+  "segments": [
+    [1.4, 30.75],
+    [32.95, 38.9],
+    [41.21, 60.1],
+    [62.55, 75.45],
+    [78.9, 85.82],
+    [100.45, 103.48],
+    [107.12, 115.2],
+    [127.0, 175.3]
+  ],
+  "review": {
+    "at": 175.28,
+    "hold_at": 175.25,
+    "result": "0-1 · Louis wins (for now)",
+    "vo": "Good game! Louis wins this round. But Harvey's not done. Part two: Donna."
+  },
+  "moves": [
+    {"t": 2.7, "side": "white", "class": "book", "name": "Got a Second?", "note": "Standard opener.", "eval": 0.2},
+    {"t": 6.0, "side": "black", "class": "good", "name": "Iguana", "note": "Petty from move one.", "eval": 0.0},
+    {"t": 9.7, "side": "white", "class": "good", "name": "Behind Us", "note": "Peace talks.", "eval": 0.3},
+    {"t": 36.6, "side": "white", "class": "great", "name": "The Apology", "comment": "Harvey Specter admitted he was a dick. Three separate times. Somebody check on this man.", "eval": 1.2},
+    {"t": 38.85, "side": "black", "class": "good", "name": "Come Here", "note": "Hug speedrun.", "eval": 1.4},
+    {"t": 53.45, "side": "black", "class": "mistake", "name": "The eBay Excuse", "comment": "In the middle of a hug he remembers what he did, and his cover story is an eBay bid. Bro, be serious.", "eval": 2.0},
+    {"t": 65.7, "side": "black", "class": "inaccuracy", "name": "Privileged Info", "note": "Too late. Everyone's read it.", "eval": 2.0},
+    {"t": 85.79, "side": "jack", "class": "excellent", "name": "This Much Money", "note": "Straight for the wallet.", "eval": -0.5},
+    {"t": 103.35, "side": "white", "class": "good", "name": "Every Penny", "note": "Classic Harvey.", "eval": -0.3},
+    {"t": 115.15, "side": "jack", "class": "best", "name": "Gravy Train", "comment": "Jack called a vote to cut Harvey's pay, then roasted him with a gravy train line. Cold.", "eval": -2.0},
+    {"t": 134.86, "side": "white", "class": "excellent", "name": "Goddamn Copier", "note": "Called it.", "eval": -1.0},
+    {"t": 140.0, "side": "black", "class": "inaccuracy", "name": "For My Records", "note": "For your records? Sure, Louis.", "eval": -0.4},
+    {"t": 151.0, "side": "black", "class": "excellent", "name": "We're Friends", "note": "Using Harvey's own apology. Evil.", "eval": -1.2},
+    {"t": 155.04, "side": "white", "class": "best", "name": "Admit It", "note": "The only way out.", "eval": -0.3},
+    {"t": 156.4, "side": "black", "class": "good", "name": "Termination", "note": "Not falling for it.", "eval": -0.5},
+    {"t": 157.75, "side": "white", "class": "excellent", "name": "Fight It Together", "note": "Ride or die offer.", "eval": 0.2},
+    {"t": 161.96, "side": "black", "class": "good", "name": "Fired Once", "note": "Trauma unlocked.", "eval": 0.0},
+    {"t": 165.7, "side": "white", "class": "inaccuracy", "name": "I Know What You Did", "note": "A threat with no receipts.", "eval": -0.8},
+    {"t": 175.25, "side": "black", "class": "brilliant", "name": "Burden of Proof", "comment": "He leaked the salaries, got caught, and still walked away because Harvey has no proof. Diabolical.", "eval": "0-1"}
+  ]
+}

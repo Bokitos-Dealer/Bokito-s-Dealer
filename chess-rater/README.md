@@ -84,6 +84,11 @@ the official "Mike Ross Interview with Harvey Specter" clip (8:53) saved as
 `clips/suits-interview.mp4`. Donna plays for Harvey's side at the door, and the Louis scene in
 the middle is cut out.
 
+`projects/suits-salary-part1.json` and `projects/suits-salary-part2.json` turn the official
+"Louis Exposes Harvey's Salary to the Firm" clip (4:22, saved as `clips/suits-salary.mp4`) into a
+two-parter, to keep each video under about three minutes: Part 1 is Harvey vs Louis (with Jack
+Soloff joining Louis's side), and Part 2 is Harvey vs Donna.
+
 ## Making a new video
 
 1. **Pick a scene.** The best ones are 1–3 minutes of back-and-forth between two sides: a
@@ -194,9 +199,11 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 - **Subtitles** need `faster-whisper`. The dialogue is transcribed once per clip (about a minute
   per minute of footage with the default `medium.en` model, cached after that), with the
   characters' names given as a hint so they're spelt right. Speech recognition still mishears the
-  odd word, so read the subtitles in a preview and correct words with `subtitles.fix` (the key is
-  the word as transcribed, including its punctuation). `"subtitles": {"model": "small.en"}` is
-  about twice as fast and a little less accurate.
+  odd word, so read the subtitles in a preview and correct them: `subtitles.fix` replaces a word
+  everywhere (`{"Lewis": "Louis"}`), and `subtitles.replace` rewrites a stretch
+  (`[[157.3, 158.6, "together. Harvey, I can't. Louis!"]]`, clip times; `""` deletes words that
+  were never said). `"subtitles": {"model": "small.en"}` is about twice as fast and a little less
+  accurate.
 - **The hook** decides whether people stay: TikTok's analytics showed most viewers of a 4:49 video
   leaving in the first second. Start it 2-5 s before the payoff line. The video opens on the first
   word of the next sentence after `hook.from` (never on silence or the tail of someone's line),

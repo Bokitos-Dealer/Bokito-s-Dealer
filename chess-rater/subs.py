@@ -87,18 +87,63 @@ def mask(word):
     return "".join(chars)
 
 
-def phrases(words, fixes=None, max_chars=34, max_words=7):
-    """Group words into on-screen phrases: [{"words": [...], "s": start, "e": end}]."""
-    fixes = fixes or {}
-    out, cur = [], []
+def apply_fixes(words, fix=None, replace=None):
+    """Correct the transcript.
+
+    fix: {"Lewis": "Louis"} replaces a word everywhere. A key matches the word as transcribed
+    (with its punctuation, e.g. "fix.") or just its letters, in which case the punctuation is kept.
+    replace: [[t0, t1, "new text"], ...] replaces the words that start between t0 and t1 (clip
+    time) with new text: word for word on the same timings when the counts match, otherwise
+    spread evenly over the same stretch. "" deletes them (for words that were never said)."""
+    fix = fix or {}
+    lower = {re.sub(r"[^A-Za-z']", "", k).lower(): v for k, v in fix.items()}
+    out = []
     for w in words:
-        text = fixes.get(w["w"], w["w"])
-        text = mask(text)
-        w = dict(w, w=text)
+        text = w["w"]
+        if text in fix:
+            text = fix[text]
+        else:
+            m = re.match(r"^([^A-Za-z']*)([A-Za-z']+)([^A-Za-z']*)$", text)
+            if m and m.group(2).lower() in lower:
+                text = m.group(1) + lower[m.group(2).lower()] + m.group(3)
+        out.append(dict(w, w=text))
+    for t0, t1, text in replace or []:
+        hit = [i for i, w in enumerate(out) if t0 <= w["s"] < t1]
+        new = text.split()
+        if hit:
+            span = [out[i] for i in hit]
+            a, b = span[0]["s"], span[-1]["e"]
+            first = hit[0]
+            out = out[:first] + out[hit[-1] + 1:]
+        else:
+            a, b = t0, t1
+            first = next((i for i, w in enumerate(out) if w["s"] >= t0), len(out))
+            span = []
+        if len(new) == len(span):
+            ins = [dict(o, w=n) for o, n in zip(span, new)]
+        else:
+            step = (b - a) / max(1, len(new))
+            ins = [{"w": n, "s": round(a + k * step, 3), "e": round(a + (k + 1) * step, 3)} for k, n in enumerate(new)]
+        out = out[:first] + ins + out[first:]
+    return out
+
+
+def phrases(words, max_chars=34, max_words=7):
+    """Group words into on-screen subtitles: [{"words": [...], "s": start, "e": end}]."""
+    joined = []
+    for w in words:  # a lone "-" marks someone being cut off: attach it to the word before as a dash
+        if w["w"] in ("-", "--", "—") and joined:
+            joined[-1] = dict(joined[-1], w=joined[-1]["w"].rstrip(",") + "—")
+        elif w["w"] not in ("-", "--", "—"):
+            joined.append(w)
+    out, cur = [], []
+    for w in joined:
+        w = dict(w, w=mask(w["w"]))
+        text = w["w"]
         if cur:
             gap = w["s"] - cur[-1]["e"]
             length = sum(len(x["w"]) + 1 for x in cur) + len(text)
-            ends = cur[-1]["w"].endswith((".", "?", "!"))
+            ends = cur[-1]["w"].endswith((".", "?", "!", "—"))
             if gap > 0.6 or length > max_chars or len(cur) >= max_words or ends:
                 out.append(cur)
                 cur = []

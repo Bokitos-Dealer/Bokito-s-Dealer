@@ -1,0 +1,62 @@
+{
+  "source": "../clips/suits-salary.mp4",
+  "card_width": 636,
+  "music": {
+    "track": "Behind Enemy Lines",
+    "level_db": -17
+  },
+  "coach": {
+    "enabled": true,
+    "size": 220
+  },
+  "subtitles": {
+    "fix": {
+      "Lewis": "Louis"
+    },
+    "replace": [
+      [211.7, 212.0, "would do something"],
+      [221.8, 222.2, "No. This"]
+    ]
+  },
+  "title": {
+    "text": "Part 2: I Rated Harvey vs Donna",
+    "accent": "Like a Chess Game"
+  },
+  "players": {
+    "white": {
+      "name": "Harvey Specter",
+      "short": "Harvey",
+      "avatar": {"t": 225.56, "x": 0.648, "y": 0.351, "size": 0.45}
+    },
+    "black": {
+      "name": "Donna Paulsen",
+      "short": "Donna",
+      "avatar": {"t": 214.13, "x": 0.354, "y": 0.231, "size": 0.36}
+    }
+  },
+  "hook": {
+    "from": 235.3,
+    "move": "12 Years",
+    "vo": "Twelve Years is brilliant! Donna ended Harvey with one sentence. How did we even get here? Let's review the game."
+  },
+  "segments": [
+    [180.3, 240.95]
+  ],
+  "review": {
+    "at": 240.9,
+    "hold_at": 240.85,
+    "result": "0-1 · Donna wins, Harvey is cooked",
+    "vo": "Good game! Twelve years of paying her salary, and Harvey still lost the argument."
+  },
+  "moves": [
+    {"t": 184.1, "side": "black", "class": "excellent", "name": "All Hours", "note": "Boundaries. Finally.", "eval": -0.4},
+    {"t": 190.02, "side": "white", "class": "good", "name": "Block the Vote", "note": "Straight to business.", "eval": -0.2},
+    {"t": 191.7, "side": "black", "class": "best", "name": "Get Louis Fired", "note": "Saw right through him.", "eval": -0.9},
+    {"t": 195.6, "side": "white", "class": "inaccuracy", "name": "Your Fault", "note": "Blaming Donna? Bold.", "eval": -1.5},
+    {"t": 209.65, "side": "black", "class": "great", "name": "Pick a Side", "comment": "She hit Harvey with his own rule. His own words, used against him. That's violating.", "eval": -2.5},
+    {"t": 213.0, "side": "white", "class": "inaccuracy", "name": "Should've Thought", "note": "Petty, but fair.", "eval": -2.8},
+    {"t": 221.55, "side": "black", "class": "excellent", "name": "Jealous of Us", "note": "The jealousy card.", "eval": -3.2},
+    {"t": 232.75, "side": "white", "class": "mistake", "name": "The Salary Secret", "comment": "Twelve years of secretly paying her salary, and he drops it mid-argument to win a point. Bro fumbled it.", "eval": -4.0},
+    {"t": 240.85, "side": "black", "class": "brilliant", "name": "12 Years", "comment": "He kept a secret from her for twelve years, and she flipped it into proof he's jealous. Game over.", "eval": "0-1"}
+  ]
+}

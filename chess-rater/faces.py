@@ -358,9 +358,11 @@ def name_tracks(tracks, refs, pins=(), npc_label="NPC", order=None):
             sims = []
             for o in g:
                 eo = o["emb"] if o["emb"] is not None else o["emb_any"]
+                if tr["emb"] is None and o["emb"] is None:
+                    continue  # two blurry faces look alike too easily to call them the same extra
                 if eo is not None:
                     both_good = tr["emb"] is not None and o["emb"] is not None
-                    sims.append(float(np.dot(e, eo)) - (0 if both_good else 0.08))
+                    sims.append(float(np.dot(e, eo)) - (0 if both_good else 0.15))
             sim = max(sims) if sims else -1
             if sim >= SAME_PERSON + 0.06 and (best_sim is None or sim > best_sim):
                 best, best_sim = g, sim

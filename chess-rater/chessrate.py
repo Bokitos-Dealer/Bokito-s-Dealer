@@ -777,11 +777,13 @@ class Project:
         names.update(self.cfg.get("faces", {}).get("cast", {}))
         words = subs.transcribe(self.source, ranges, sorted(names), cfg.get("model", "medium.en"),
                                 os.path.join(HERE, ".cache", "subs"))
-        return words, subs.phrases(words, cfg.get("fix"), max_chars=70, max_words=14)
+        words = subs.apply_fixes(words, cfg.get("fix"), cfg.get("replace"))
+        return words, subs.phrases(words, max_chars=70, max_words=14)
 
     def speech_start(self, t, within=1.5):
         """Move a start time forward onto the start of the next spoken sentence, so a video never
-        opens on silence or on the tail end of someone's line."""
+        opens on silence or on the tail end of someone's line. Transcript timings can be a few
+        tenths off, so the cut goes in the quietest moment just before that sentence."""
         ws = self.words
         for i, w in enumerate(ws):
             if w["s"] < t - 0.05:
@@ -789,7 +791,16 @@ class Project:
             if w["s"] - t > within:
                 break
             if i == 0 or ws[i - 1]["w"].endswith((".", "?", "!")) or w["s"] - ws[i - 1]["e"] > 0.5:
-                return max(t, w["s"] - 0.04)
+                lo, hi = max(t, w["s"] - 0.5), w["s"] + 0.2
+                a = decode_audio(self.source, lo, hi).mean(axis=1)
+                hop = SR // 20
+                db = [20 * math.log10(float(np.sqrt(np.mean(a[k:k + hop] ** 2))) + 1e-9)
+                      for k in range(0, len(a) - hop + 1, hop)]
+                if not db:
+                    return max(t, w["s"] - 0.04)
+                quiet = min(db)
+                k = max(j for j, v in enumerate(db) if v <= quiet + 1.0)  # latest of the quietest moments
+                return lo + k * hop / SR
         return t
 
     def find_faces(self):
@@ -818,7 +829,9 @@ class Project:
         for name, pts in cfg.get("cast", {}).items():
             refs.setdefault(name, []).extend(pts)
         embs = faces.reference_embeddings(self.source, refs, self.crop, self.models_dir)
-        pins = [(n, pt["t"], pt["x"], pt["y"]) for n, pts in refs.items() for pt in pts]
+        # avatar spots double as name pins, when they fall inside the footage the video uses
+        pins = [(n, pt["t"], pt["x"], pt["y"]) for n, pts in refs.items() for pt in pts
+                if any(a - 0.1 <= pt["t"] <= b + 0.1 for a, b in ranges)]
         pins += [(name, t, x, y) for t, x, y, name in cfg.get("pins", [])]
 
         def first_seen(tr):  # NPCs are numbered in the order viewers meet them
@@ -1497,14 +1510,14 @@ class Renderer:
         phrases = self.p.sub_phrases
         if not hasattr(self, "_sub_starts"):
             self._sub_starts = [ph["s"] for ph in phrases]
-        i = bisect.bisect_right(self._sub_starts, src_t + 0.05) - 1
+        i = bisect.bisect_right(self._sub_starts, src_t + 0.12) - 1  # show a subtitle just before it's spoken
         if i < 0:
             return
         ph = phrases[i]
         nxt = phrases[i + 1]["s"] - 0.05 if i + 1 < len(phrases) else 1e9
         if src_t > min(ph["e"] + 0.6, nxt):
             return
-        words = [k for k, w in enumerate(ph["words"]) if sp.s0 - 0.03 <= w["s"] < sp.s1]  # only what's heard
+        words = [k for k, w in enumerate(ph["words"]) if w["e"] > sp.s0 + 0.04 and w["s"] < sp.s1]  # only what's heard
         if not words:
             return
         img = self.subtitle(i, words)
