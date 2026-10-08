@@ -261,7 +261,7 @@ export default {
       wu.uPathStr.value = m * 0.75; wu.uPathRough.value = 0.07; wu.uPathCol.value.set('#dfe7ff');
       wu.uFoamCol.value.set('#5d6878');
       st.veh.lampU.k = 1.6; sf.lensMat.color.setScalar(1.4);
-      sf.beachU.uDark.value = m ? 0.25 : 0.45;
+      sf.beachU.uDark.value = m ? 0.25 : (shot === 'D' || shot === 'R') ? 0.2 : 0.45;
       for (const s of sf.shops) s.material.emissiveIntensity = 0.55;
     } else if (winter) {
       sky.uniforms.uZenith.value.set('#8e9aa6'); sky.uniforms.uHorizon.value.set('#d5dbe0'); sky.uniforms.uBelow.value.set('#c6ccd2');
@@ -295,7 +295,7 @@ export default {
       sf.beachU.uDark.value = 0;
       for (const s of sf.shops) s.material.emissiveIntensity = 0;
     }
-    scene(ctx).fog.near = winter ? 150 : 500; scene(ctx).fog.far = winter ? 2600 : 6000;
+    scene(ctx).fog.near = winter ? 350 : 500; scene(ctx).fog.far = winter ? 4200 : 6000;
 
     // the Moon
     const moonVis = moonUp && night;
@@ -343,7 +343,7 @@ export default {
     st.lampLights.forEach((L, i) => { const p = lampNear[i][0]; L.position.set(p.x, p.y - 0.4, p.z - 0.9); L.intensity = 60; L.visible = night; });
 
     // warm rim light from the promenade on the beach at night
-    st.cityGlow.intensity = 1.1; st.cityGlow.visible = shot === 'D' || shot === 'R';
+    st.cityGlow.intensity = shot === 'D' ? 2.4 : 1.4; st.cityGlow.visible = shot === 'D' || shot === 'R';
     st.cityGlow.target.position.set(NEST.x, beachY(NEST.x, NEST.z), NEST.z);
     st.cityGlow.position.set(NEST.x, beachY(NEST.x, NEST.z) + 9, NEST.z + 30);
     // the two volunteers' torches light the sand in front of them
@@ -620,7 +620,7 @@ function buildHatchlings(r, n) {
   const body = mergeGeometries([shellG, headG]);
   const flipG = new THREE.BoxGeometry(0.06, 0.006, 0.026); flipG.translate(0.03, 0, 0);
   { const fp = flipG.attributes.position; for (let i = 0; i < fp.count; i++) if (fp.getX(i) > 0.02) fp.setZ(i, fp.getZ(i) * 0.45 - 0.008); }
-  const shellM = new THREE.MeshStandardMaterial({ color: '#3a332b', roughness: 0.22, metalness: 0.1 });
+  const shellM = new THREE.MeshStandardMaterial({ color: '#2b2622', roughness: 0.3, metalness: 0.05 });
   const bodies = new THREE.InstancedMesh(body, shellM, n);
   const flips = new THREE.InstancedMesh(flipG, shellM, n * 4);
   bodies.frustumCulled = flips.frustumCulled = false;
