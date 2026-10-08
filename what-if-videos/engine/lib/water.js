@@ -20,6 +20,14 @@ export function buildWater(opts = {}) {
     uShore: { value: 0 },          // 1 = draw shallow tint + surf line from the terrain function
     uLevel: { value: o.level },
     uSwell: { value: 0 },          // height of rolling swell (m)
+    uSpecPow: { value: 420 },      // lower = wider light path (moon glitter path)
+    uFreeze: { value: 0 },         // 0 water .. 1 frozen sea ice
+    uPathStr: { value: 0 },        // smooth light path (moon/sun glitter) without per-pixel sparkle aliasing
+    uPathRough: { value: 0.12 },
+    uPathCol: { value: new THREE.Color('#dfe6ff') },
+    uChopDist: { value: 350 },
+    uFoamCol: { value: new THREE.Color(0.92, 0.94, 0.92) },
+    uSurfW: { value: 1.4 },        // width of the surf line, in metres of water depth
     uSwellDir: { value: new THREE.Vector2(0, 1) },
   };
   const uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib.fog, custom]);
@@ -49,7 +57,8 @@ export function buildWater(opts = {}) {
     fragmentShader: `
       uniform float uTime, uSpec, uChop, uFoam;
       uniform vec3 uDeep, uSky, uSkyTop, uSunDir, uSunCol, uRefl, uReflDir, uMurk, uShallow;
-      uniform float uShore, uLevel;
+      uniform float uShore, uLevel, uSpecPow, uFreeze, uPathStr, uPathRough, uChopDist;
+      uniform vec3 uPathCol, uFoamCol; uniform float uSurfW;
       ${o.terrainGLSL || 'float terrain(vec2 p){ return -10.0; }'}
       varying vec3 vWorld; varying float vCrest;
       uniform float uSwell; uniform vec2 uSwellDir;
@@ -78,7 +87,7 @@ export function buildWater(opts = {}) {
       void main(){
         vec3 V = normalize(cameraPosition - vWorld);
         float dist = length(cameraPosition - vWorld);
-        float chop = uChop / (1.0 + dist/350.0);
+        float chop = uChop / (1.0 + dist/uChopDist);
         vec2 g = grad(vWorld.xz);
         // fine ripples that only matter up close
         float nearW = 1.0 - smoothstep(15.0, 140.0, dist);
@@ -100,17 +109,38 @@ export function buildWater(opts = {}) {
         vec3 body = mix(uShallow, uDeep, smoothstep(0.0, 9.0, depth));
         body = mix(uDeep, body, uShore);
         vec3 col = mix(body, refl, fres);
-        float spec = pow(max(dot(R, uSunDir), 0.0), 420.0) * 4.0 + pow(max(dot(R, uSunDir), 0.0), 40.0)*0.15;
+        float spec = pow(max(dot(R, uSunDir), 0.0), uSpecPow) * 4.0 + pow(max(dot(R, uSunDir), 0.0), uSpecPow * 0.1)*0.15;
         col += uSunCol * spec * uSpec;
         col += uMurk;
+        if (uPathStr > 0.0) {
+          // glitter path: wave-slope lobe around the mirror direction, from the flat surface normal
+          vec3 Hh = normalize(V + uSunDir);
+          float ct = max(Hh.y, 1e-3);
+          float t2 = (1.0 - ct*ct) / (ct*ct);
+          float lobe = exp(-t2 / (uPathRough*uPathRough));
+          float sc = 260.0 / (dist + 260.0);
+          float spark = 0.35 + 1.3 * vn(vWorld.xz * 0.45 * sc + uTime * vec2(0.5, 1.1)) * vn(vWorld.xz * 1.1 * sc - uTime * vec2(0.8, 0.3));
+          col += uPathCol * lobe * spark * uPathStr;
+        }
         float foam = smoothstep(0.55, 0.8, vn(vWorld.xz*0.12 + uTime*0.1)) * uFoam;
         // surf line where the water meets the land
-        float surf = (1.0 - smoothstep(0.0, 1.4 + 0.8*vn(vWorld.xz*0.05 + uTime*0.2), depth)) * uShore;
+        float surf = (1.0 - smoothstep(0.0, uSurfW * (1.0 + 0.55*vn(vWorld.xz*0.05 + uTime*0.2)), depth)) * uShore;
         surf *= 0.6 + 0.4*sin(depth*6.0 - uTime*2.5 + vn(vWorld.xz*0.3)*4.0);
         foam = max(foam, clamp(surf, 0.0, 1.0));
         // whitecaps on swell crests
         foam = max(foam, smoothstep(0.55, 0.95, vCrest) * smoothstep(0.2, 1.5, uSwell) * (0.5 + 0.5*vn(vWorld.xz*0.2 + uTime*0.5)));
-        col = mix(col, vec3(0.92,0.94,0.92), foam*0.7);
+        col = mix(col, uFoamCol, foam*0.7);
+        if (uFreeze > 0.0) {
+          // sea ice: white plates with blue cracks, spreading from the shore outwards
+          float n1 = vn(vWorld.xz*0.02), n2 = vn(vWorld.xz*0.11);
+          float shore = 1.0 - clamp(-vWorld.z/4000.0, 0.0, 1.0);          // 1 at the shore, 0 far out
+          float th = 1.0 - uFreeze*1.15;
+          float edge = smoothstep(th, th + 0.08, shore + (n1 - 0.5)*0.12);
+          float crack = smoothstep(0.03, 0.0, abs(vn(vWorld.xz*0.045) - 0.5)) * 0.6 + smoothstep(0.02, 0.0, abs(n2 - 0.5)) * 0.3;
+          vec3 ice = mix(vec3(0.80, 0.86, 0.92), vec3(0.93, 0.95, 0.98), n2) - crack * vec3(0.25, 0.15, 0.05);
+          ice = mix(ice, refl, fres*0.25);
+          col = mix(col, ice, edge);
+        }
         gl_FragColor = vec4(col, 1.0);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>

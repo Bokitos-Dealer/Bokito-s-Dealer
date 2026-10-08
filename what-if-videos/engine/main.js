@@ -40,6 +40,8 @@ const ctx = {
   tint: null,         // { color, opacity, blend }
   vignette: 1,        // 0..1 strength of the edge darkening
   rain: null,         // { amount, angle, glass, tint } rain streaks + drops on the glass
+  snow: 0,            // falling snow overlay amount
+  grain: 0.075,       // film grain opacity
   grade: { brightness: 1, contrast: 1.04, saturate: 0.95, sepia: 0 },
   crack: 0,           // 0..1 crack progress
   onFrame: [],
@@ -119,9 +121,25 @@ let rainWasOn = false;
 function drawRain(frame, t) {
   const R = ctx.rain;
   const c = rainCv.getContext('2d');
-  if (!R || (R.amount <= 0.001 && (R.glass ?? 0) <= 0.001)) { if (rainWasOn) { c.clearRect(0, 0, W, H); rainWasOn = false; } return; }
+  const SN = ctx.snow || 0;
+  if ((!R || (R.amount <= 0.001 && (R.glass ?? 0) <= 0.001)) && SN <= 0.001) { if (rainWasOn) { c.clearRect(0, 0, W, H); rainWasOn = false; } return; }
   rainWasOn = true;
   c.clearRect(0, 0, W, H);
+  if (SN > 0.001) {
+    // snow: three depth layers drifting down, positions are a pure function of time
+    const sr = mulberry32(4242);
+    const n = Math.round(700 * SN);
+    for (let i = 0; i < n; i++) {
+      const layer = i % 3, z = [0.45, 0.75, 1.0][layer];
+      const x0 = sr() * W, y0 = sr() * H, sp = (60 + sr() * 70) * z * 1.6, sway = sr() * 6.28;
+      const y = (y0 + t * sp) % (H + 40) - 20;
+      const x = (x0 + Math.sin(t * 0.7 + sway) * 26 * z + t * 18 * z) % W;
+      const rad = (1.2 + sr() * 2.6) * z * (layer === 2 ? 1.6 : 1);
+      c.fillStyle = `rgba(245,248,255,${(0.35 + 0.5 * z).toFixed(2)})`;
+      c.beginPath(); c.arc(x, y, rad, 0, Math.PI * 2); c.fill();
+    }
+  }
+  if (!R || R.amount <= 0.001 && (R.glass ?? 0) <= 0.001) return;
   const rnd = mulberry32(frame * 104729 + 17);
   const ang = R.angle ?? 0.2, sx = Math.sin(ang), sy = Math.cos(ang);
   const tint = R.tint ?? '210,220,230';
@@ -169,7 +187,7 @@ function grain(frame) {
 
 function applyCamera(t) {
   const c = ctx.cam;
-  camera.fov = c.fov; camera.updateProjectionMatrix();
+  camera.fov = c.fov; camera.near = c.near ?? 1; camera.updateProjectionMatrix();
   camera.position.copy(c.pos);
   const hh = ctx.handheld, sh = ctx.shake;
   camera.position.x += fbm1(t * 0.31 + 3.1) * 0.25 * hh + fbm1(t * 9.0 + 1.3) * 0.9 * sh;
@@ -210,7 +228,8 @@ window.WI = {
     applyCamera(t);
     for (const f of ctx.onFrame) f(t);
     const o = overlay(t);
-    grain(frame);
+    ui.grain.style.opacity = ctx.grain.toFixed(3);
+    if (ctx.grain > 0) grain(frame);
     drawRain(frame, t);
     if (!o.black) renderer.render(scene, camera);
     return { t };

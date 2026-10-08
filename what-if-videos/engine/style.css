@@ -19,25 +19,25 @@ html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
 #ui { position: absolute; inset: 0; color: #fff; pointer-events: none; }
 
 #title { position: absolute; left: 90px; right: 90px; top: 470px; text-align: center; z-index: 0; }
-#title .t { font-family: 'Garamond', serif; font-weight: 400; font-size: 64px; line-height: 1.16; letter-spacing: -0.2px; text-wrap: balance;
-  text-shadow: 0 0 22px rgba(0,0,0,0.45), 0 0 60px rgba(0,0,0,0.35); }
+#title .t { font-family: 'Garamond', serif; font-weight: 500; font-size: 72px; line-height: 1.16; letter-spacing: -0.2px; text-wrap: balance;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.85), 0 0 22px rgba(0,0,0,0.65), 0 0 60px rgba(0,0,0,0.4); }
 #title::before, #hud::before, #caption::before { content: ''; position: absolute; z-index: -1; border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.16) 45%, rgba(0,0,0,0) 72%); }
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.46) 0%, rgba(0,0,0,0.28) 45%, rgba(0,0,0,0) 72%); }
 #title::before { left: -40px; right: -40px; top: -70px; bottom: -70px; }
 
-#hud { position: absolute; left: 64px; top: 892px; min-width: 420px; z-index: 0; }
+#hud { position: absolute; left: 64px; top: 872px; min-width: 440px; z-index: 0; }
 #hud::before { left: -90px; right: -60px; top: -60px; bottom: -60px; }
-#hud .label { font-family: 'InterW', sans-serif; font-weight: 600; font-size: 21px; letter-spacing: 0.2em; text-transform: uppercase;
+#hud .label { font-family: 'InterW', sans-serif; font-weight: 700; font-size: 25px; letter-spacing: 0.2em; text-transform: uppercase;
   text-shadow: 0 0 10px rgba(0,0,0,0.55); }
-#hud .value { font-family: 'Garamond', serif; font-weight: 500; font-size: 62px; line-height: 1.02; margin-top: 2px; white-space: nowrap;
-  font-variant-numeric: lining-nums tabular-nums; text-shadow: 0 0 16px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3); }
-#hud .sub { font-family: 'InterW', sans-serif; font-weight: 600; font-size: 15px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: rgba(255,255,255,0.62); margin-top: 12px; text-shadow: 0 0 8px rgba(0,0,0,0.6); white-space: nowrap; }
+#hud .value { font-family: 'Garamond', serif; font-weight: 500; font-size: 78px; line-height: 1.02; margin-top: 2px; white-space: nowrap;
+  font-variant-numeric: lining-nums tabular-nums; text-shadow: 0 2px 3px rgba(0,0,0,0.85), 0 0 18px rgba(0,0,0,0.7), 0 0 44px rgba(0,0,0,0.4); }
+#hud .sub { font-family: 'InterW', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(255,255,255,0.82); margin-top: 12px; text-shadow: 0 0 8px rgba(0,0,0,0.6); white-space: nowrap; }
 
-#caption { position: absolute; left: 50px; right: 50px; top: 1262px; text-align: center; z-index: 0; }
-#caption::before { left: 40px; right: 40px; top: -40px; bottom: -40px; }
-#caption span { font-family: 'Garamond', serif; font-style: italic; font-weight: 400; font-size: 49px; line-height: 1.18;
-  text-shadow: 0 0 14px rgba(0,0,0,0.6), 0 0 36px rgba(0,0,0,0.35); display: inline-block; text-wrap: balance; }
+#caption { position: absolute; left: 40px; right: 40px; top: 1240px; text-align: center; z-index: 0; }
+#caption::before { left: 0px; right: 0px; top: -55px; bottom: -55px; }
+#caption span { font-family: 'Garamond', serif; font-style: italic; font-weight: 500; font-size: 64px; line-height: 1.14;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.85), 0 0 30px rgba(0,0,0,0.6), 0 0 60px rgba(0,0,0,0.4); display: inline-block; text-wrap: balance; }
 
 #crack { position: absolute; inset: 0; width: 1080px; height: 1920px; pointer-events: none; opacity: 0; }
 #crack path { fill: none; stroke-linecap: round; stroke-linejoin: round; }

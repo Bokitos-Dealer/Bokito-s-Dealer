@@ -71,7 +71,7 @@ export function buildTrees(city, opts = {}) {
   return { group, spots };
 }
 
-export const WIND = { uWind: { value: 0 }, uWindDir: { value: new THREE.Vector2(1, 0) }, uTime: { value: 0 }, uGust: { value: 0.3 } };
+export const WIND = { uWind: { value: 0 }, uWindDir: { value: new THREE.Vector2(1, 0) }, uTime: { value: 0 }, uGust: { value: 0.3 }, uSnow: { value: 0 } };
 
 function instanced(geo, spots, r, palette) {
   if (!spots.length) return null;
@@ -107,12 +107,13 @@ function instanced(geo, spots, r, palette) {
           transformed += local * bend * 3.0;
           transformed.y -= bend * bend * hgt * 1.2;
         }`);
-    sh.fragmentShader = sh.fragmentShader.replace('#include <color_fragment>', `
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uSnow;').replace('#include <color_fragment>', `
       #if defined( USE_COLOR_ALPHA )
         diffuseColor *= vColor;
       #elif defined( USE_COLOR )
         diffuseColor.rgb *= vColor;
-      #endif`);
+      #endif
+      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.9, 0.92, 0.96), uSnow * 0.75);`);
     sh.vertexShader = sh.vertexShader.replace('#include <color_vertex>', `
       vColor = vec3(1.0);
       #ifdef USE_COLOR
@@ -123,7 +124,7 @@ function instanced(geo, spots, r, palette) {
         vColor = mix(color, color * instanceColor, isLeaf);
       #endif`);
   };
-  mat.customProgramCacheKey = () => 'tree-v2';
+  mat.customProgramCacheKey = () => 'tree-v3';
   im.castShadow = true; im.receiveShadow = true;
   im.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   im.frustumCulled = false; // instances move: bounds computed at start would be wrong

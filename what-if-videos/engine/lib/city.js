@@ -191,6 +191,9 @@ function makeFacadeMaterial() {
     uRoof: { value: new THREE.Color('#55534f') },
     uWarm: { value: 1.0 },
     uWallMul: { value: 1.0 },      // darken walls for night scenes
+    uSnow: { value: 0.0 },         // snow on roofs and ledges
+    uLodLo: { value: 0.11 },       // window filtering: cell size (in cells/pixel) where averaging starts..
+    uLodHi: { value: 0.3 },        // ..and where it is complete
   };
   mat.userData.uniforms = uniforms;
   mat.onBeforeCompile = (sh) => {
@@ -203,7 +206,7 @@ function makeFacadeMaterial() {
         vFac = uv; vWall = aWall; vWin = aWin; vSeed = aSeed; vRoof = aRoof;`);
     sh.fragmentShader = sh.fragmentShader
       .replace('#include <common>', `#include <common>
-        uniform float uTime, uNight, uLit, uWarm, uWallMul; uniform vec3 uGlassDark, uGlassSky, uRoof;
+        uniform float uTime, uNight, uLit, uWarm, uWallMul, uSnow, uLodLo, uLodHi; uniform vec3 uGlassDark, uGlassSky, uRoof;
         varying vec2 vFac; varying vec3 vWall; varying vec4 vWin; varying vec2 vSeed; varying float vRoof;
         float h12(vec2 p){ p = fract(p*vec2(123.34, 456.21)); p += dot(p, p+45.32); return fract(p.x*p.y); }`)
       .replace('#include <color_fragment>', `#include <color_fragment>
@@ -221,8 +224,8 @@ function makeFacadeMaterial() {
         float wy = smoothstep(ws.y*0.5 + aa, ws.y*0.5 - aa, abs(fc.y-wyc));
         // filter each axis separately once cells get small on screen: edge-on walls keep their floors
         vec2 fw = fwidth(vFac);
-        float lodX = smoothstep(0.11, 0.3, fw.x) * notRoof;
-        float lodY = smoothstep(0.11, 0.3, fw.y) * notRoof;
+        float lodX = smoothstep(uLodLo, uLodHi, fw.x) * notRoof;
+        float lodY = smoothstep(uLodLo, uLodHi, fw.y) * notRoof;
         float lod = max(lodX, lodY);
         wx = mix(wx, ws.x, lodX); wy = mix(wy, ws.y, lodY);
         float win = wx*wy*notRoof;
@@ -236,7 +239,10 @@ function makeFacadeMaterial() {
         if (ground > 0.5) glass = mix(uGlassDark, uGlassSky, 0.25) * 0.8;
         wallC *= uWallMul;
         vec3 roofC = uRoof * (0.8 + 0.4*h12(vSeed.xx));
-        diffuseColor.rgb = mix(mix(wallC, glass, win), roofC, vRoof);
+        roofC = mix(roofC, vec3(0.93, 0.95, 0.98), uSnow);
+        vec3 facadeC = mix(wallC, glass, win);
+        facadeC = mix(facadeC, vec3(0.9, 0.92, 0.96), uSnow * 0.5 * smoothstep(0.08, 0.0, fc.y) * notRoof); // snow on ledges
+        diffuseColor.rgb = mix(facadeC, roofC, vRoof);
       `)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         roughnessFactor = mix(roughnessFactor, 0.22, win);`)
@@ -258,7 +264,7 @@ function makeFacadeMaterial() {
           totalEmissiveRadiance += win * lit * lc * k * uNight;
         }`);
   };
-  mat.customProgramCacheKey = () => 'facade-v2';
+  mat.customProgramCacheKey = () => 'facade-v3';
   return mat;
 }
 
@@ -362,6 +368,16 @@ function buildGround(city, o, r) {
   }
   geo.computeVertexNormals();
   const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95 });
+  const gu = { uSnow: { value: 0 } };
+  mat.userData.uniforms = gu;
+  mat.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, gu);
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform float uSnow;')
+      .replace('#include <map_fragment>', `#include <map_fragment>
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.9, 0.92, 0.96), uSnow * (0.85 + 0.15*fract(sin(dot(vMapUv, vec2(91.3, 47.1)))*4375.5)));`);
+  };
+  mat.customProgramCacheKey = () => 'ground-v1';
   const mesh = new THREE.Mesh(geo, mat);
   mesh.receiveShadow = true;
   mesh.userData.bounds = { gx0, gz0, W, D };

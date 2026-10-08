@@ -458,9 +458,27 @@ def c_thunder(m, c):
     m.add(c['t'] + c.get('delay', 0), x / (np.abs(x).max() + 1e-9), c.get('level', 0.5), pan=c.get('pan', 0), verb=0.45)
 
 
+def c_creak(m, c):
+    """Ice under strain: low groans and sharp cracks."""
+    t0, t1 = c['t0'], c['t1']
+    r = np.random.default_rng(int(t0 * 10))
+    t = t0
+    while t < t1 - 0.5:
+        if r.random() < 0.55:
+            n = sec(r.uniform(0.6, 1.6)); tt = np.arange(n) / SR
+            f = r.uniform(70, 160) * (1 + 0.15 * np.sin(2 * np.pi * r.uniform(3, 9) * tt))
+            x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.hanning(n) * (0.6 + 0.4 * slow_noise(n, 30, int(t * 7)))
+            x = filt(x + filt(white(n), 'bp', [200, 900]) * 0.3 * np.hanning(n), 'lp', 1200)
+        else:
+            n = sec(r.uniform(0.3, 0.8)); tt = np.arange(n) / SR
+            x = filt(white(n), 'bp', [800, 7000]) * np.exp(-tt * 18) + np.sin(2 * np.pi * 90 * tt) * np.exp(-tt * 8) * 0.8
+        m.add(t, x / (np.abs(x).max() + 1e-9), c.get('level', 0.4) * r.uniform(0.5, 1.0), pan=float(r.uniform(-0.7, 0.7)), verb=0.5)
+        t += r.uniform(0.5, 1.4)
+
+
 CUES = dict(ambience=c_ambience, drone=c_drone, boom=c_boom, shimmer=c_shimmer, flicker=c_flicker, zap=c_zap,
             powerdown=c_powerdown, chime=c_chime, rumble=c_rumble, whoosh=c_whoosh, glass=c_glass, water=c_water,
-            heartbeat=c_heartbeat, rain=c_rain, thunder=c_thunder)
+            heartbeat=c_heartbeat, rain=c_rain, thunder=c_thunder, creak=c_creak)
 
 
 def main():
