@@ -220,10 +220,12 @@ function makeFacadeMaterial() {
         vec2 ws = vWin.xy; float wyc = 0.47;
         if (ground > 0.5) { ws = vec2(0.92, 0.70); wyc = 0.40; }
         if (vWin.z > 0.5) { ws = vec2(0.92, 0.84); wyc = 0.5; }
-        float wx = smoothstep(ws.x*0.5 + aa, ws.x*0.5 - aa, abs(fc.x-0.5));
-        float wy = smoothstep(ws.y*0.5 + aa, ws.y*0.5 - aa, abs(fc.y-wyc));
-        // filter each axis separately once cells get small on screen: edge-on walls keep their floors
+        // window edges soften over about one pixel, so small windows don't crawl as the camera moves
         vec2 fw = fwidth(vFac);
+        vec2 ea = max(vec2(aa), fw * 0.85);
+        float wx = smoothstep(ws.x*0.5 + ea.x, ws.x*0.5 - ea.x, abs(fc.x-0.5));
+        float wy = smoothstep(ws.y*0.5 + ea.y, ws.y*0.5 - ea.y, abs(fc.y-wyc));
+        // filter each axis separately once cells get small on screen: edge-on walls keep their floors
         float lodX = smoothstep(uLodLo, uLodHi, fw.x) * notRoof;
         float lodY = smoothstep(uLodLo, uLodHi, fw.y) * notRoof;
         float lod = max(lodX, lodY);
@@ -264,7 +266,7 @@ function makeFacadeMaterial() {
           totalEmissiveRadiance += win * lit * lc * k * uNight;
         }`);
   };
-  mat.customProgramCacheKey = () => 'facade-v3';
+  mat.customProgramCacheKey = () => 'facade-v4';
   return mat;
 }
 

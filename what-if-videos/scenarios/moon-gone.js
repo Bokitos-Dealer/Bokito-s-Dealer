@@ -156,7 +156,7 @@ export default {
     });
     scene.add(city.group);
     const fac = city.facade.userData.uniforms;
-    fac.uNight.value = 1.0; fac.uLit.value = 0.42; fac.uWallMul.value = 0.32; fac.uLodLo.value = 0.2; fac.uLodHi.value = 0.45;
+    fac.uNight.value = 1.0; fac.uLit.value = 0.42; fac.uWallMul.value = 0.32; fac.uLodLo.value = 0.2 / ctx.SCALE; fac.uLodHi.value = 0.45 / ctx.SCALE;  // same filtering per output pixel at any render scale
     fac.uGlassSky.value.set('#2a3552'); fac.uGlassDark.value.set('#0b0f17'); fac.uRoof.value.set('#3c3c3e');
     const groundU = city.ground.material.userData.uniforms;
 

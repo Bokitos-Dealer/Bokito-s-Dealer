@@ -10,7 +10,7 @@ const b = await chromium.launch({ args: ['--enable-unsafe-swiftshader', '--ignor
 const page = await b.newPage({ viewport: { width: 1080, height: 1920 } });
 page.on('pageerror', (e) => console.log('[page error]', e.message));
 page.on('console', (m) => { const t = m.text(); if (!t.includes('GL Driver') && !t.includes('toNonIndexed')) console.log('[page]', t); });
-await page.goto(`http://localhost:${srv.address().port}/engine/index.html?scale=0.75`);
+await page.goto(`http://localhost:${srv.address().port}/engine/index.html?scale=${process.env.SCALE || 0.75}`);
 await page.waitForFunction('window.WI_READY === true');
 await page.evaluate((id) => window.WI.init(id), id);
 const f = Math.round(parseFloat(sec) * 30);

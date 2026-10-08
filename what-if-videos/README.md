@@ -15,6 +15,7 @@ synthesised sound design (no samples), encoded with ffmpeg.
 | `solar-storm` | What if a solar superstorm hit tonight? |
 | `ice-melt` | What if all the ice on Earth melted? |
 | `hurricane` | What if the strongest hurricane ever recorded hit your city? |
+| `moon-gone` | What if the Moon suddenly disappeared? |
 
 Finished videos land in `output/<id>.mp4` (full 1080p master, ~12 Mbps) and `output/share/<id>-preview.mp4` (720p, under 30 MB).
 
@@ -36,6 +37,14 @@ node render.mjs ice-melt --encode                 # re-encode only (after changi
 
 Rendering uses software WebGL, about 1–2 s per frame (~40 min per episode on 4 cores).
 `--resume` skips frames already on disk, so an interrupted render picks up where it stopped.
+
+`--scale 2.0` renders the 3D at twice the output size and lets the browser downsample it (2×2 supersampling).
+It is about 4× slower but removes the shimmer of small city windows when the camera moves;
+`moon-gone` was rendered this way:
+
+```sh
+node render.mjs moon-gone --scale 2.0 --workers 3 --resume --then-encode
+```
 
 ## Your handle on the end card
 
