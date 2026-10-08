@@ -14,8 +14,8 @@ commentary). It renders a finished 1080×1920 MP4 with:
 - a coach character (an owl in big round glasses) that pops up on each rating banner and
   lip-syncs to the narrator: smug on good moves, shook on bad ones
 - background music under the commentary
-- dialogue subtitles in the empty band under the clip, with the word being spoken highlighted
-  (for viewers watching on mute or in a second language); swear words are masked on screen
+- the dialogue as small subtitles at the bottom of the picture, styled like a film's own
+  subtitles (for viewers watching on mute or in a second language); swear words are masked
 - the official chess.com sounds, used the way popular edits do: a plain move sound for normal
   moves, capture for the big ones, castling for openers, a chime when a great or brilliant card
   lands, and game-start when the Game Review opens

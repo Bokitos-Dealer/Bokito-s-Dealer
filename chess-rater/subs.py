@@ -1,10 +1,10 @@
-"""subs - burned-in dialogue subtitles for the space under the clip.
+"""subs - burned-in dialogue subtitles.
 
 The parts of the clip a video uses are transcribed once with faster-whisper (word timings,
 character names passed in as a hint so they're spelt right) and cached in .cache/subs/. The
-words are grouped into short phrases, and the renderer shows the current phrase under the clip
-with the word being spoken highlighted, the way TikTok captions look. Swear words are masked on
-screen ("b*llsh*t"); the audio is untouched.
+words are grouped into subtitles of a sentence or so, and the renderer shows them small at the
+bottom of the picture, like a film's own subtitles. Swear words are masked on screen
+("b*llsh*t"); the audio is untouched.
 """
 import hashlib
 import json

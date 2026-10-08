@@ -777,7 +777,7 @@ class Project:
         names.update(self.cfg.get("faces", {}).get("cast", {}))
         words = subs.transcribe(self.source, ranges, sorted(names), cfg.get("model", "medium.en"),
                                 os.path.join(HERE, ".cache", "subs"))
-        return words, subs.phrases(words, cfg.get("fix"))
+        return words, subs.phrases(words, cfg.get("fix"), max_chars=70, max_words=14)
 
     def speech_start(self, t, within=1.5):
         """Move a start time forward onto the start of the next spoken sentence, so a video never
@@ -1249,6 +1249,8 @@ class Renderer:
         d = int(p.cfg.get("badge_size", 96))
         cw, ch = self.cw, self.ch
         ui = [(0, 0, 300, 84), (0, ch - 84, 300, ch)]  # player tags (and the eval bar beside them)
+        if p.sub_phrases:  # and the subtitle area
+            ui.append((cw / 2 - 330, ch - self.SUB_BOTTOM - 90, cw / 2 + 330, ch - self.SUB_BOTTOM + 8))
 
         def area(a, b):
             return max(0, min(a[2], b[2]) - max(a[0], b[0])) * max(0, min(a[3], b[3]) - max(a[1], b[1]))
@@ -1438,6 +1440,8 @@ class Renderer:
             if ta > 0.01:
                 wt = self.player_tag(p.members("white", src_t), "white")
                 alpha_paste(clip, fade(wt, ta), (34, self.ch - 12 - wt.height))
+        if p.sub_phrases and sp.kind == "play" and not in_review:
+            self.draw_subs(clip, sp, src_t)
         for show in p.shows:
             if show.t0 <= t < show.t1:
                 self.draw_show(clip, show, t)
@@ -1453,12 +1457,42 @@ class Renderer:
                                 self.ch - 24, p.review_t + 0.6, p.duration + 1)
         out = self.base.copy()
         out.paste(clip.convert("RGB"), (0, p.clip_y))
-        if p.sub_phrases and sp.kind == "play" and not in_review:
-            self.draw_subs(out, sp, src_t)
         return out
 
-    def draw_subs(self, out, sp, src_t):
-        """Dialogue subtitles in the empty band under the clip, current word highlighted."""
+    SUB_BOTTOM = 84  # subtitle baseline sits this far above the clip's bottom edge, clear of the player tag
+
+    def subtitle(self, i, words):
+        """One subtitle, styled like the burned-in subtitles of a film: small white text with a thin
+        dark outline and a soft shadow, at most two balanced lines."""
+        key = ("subs", i, tuple(words))
+        if key in self.cache:
+            return self.cache[key]
+        fnt = font("Medium", 31)
+        texts = [self.p.sub_phrases[i]["words"][k]["w"] for k in words]
+        full = " ".join(texts)
+        lines = [full]
+        if fnt.getlength(full) > 620 and len(texts) > 1:  # two lines, split where they come out most even
+            best = min(range(1, len(texts)), key=lambda j: max(fnt.getlength(" ".join(texts[:j])),
+                                                              fnt.getlength(" ".join(texts[j:]))))
+            lines = [" ".join(texts[:best]), " ".join(texts[best:])]
+        line_h = 40
+        w = int(max(fnt.getlength(l) for l in lines)) + 24
+        h = line_h * len(lines) + 16
+        mask = Image.new("L", (w, h), 0)
+        d = ImageDraw.Draw(mask)
+        for li, line in enumerate(lines):
+            d.text(((w - fnt.getlength(line)) / 2, 6 + li * line_h), line, font=fnt, fill=255)
+        outline = mask.filter(ImageFilter.MaxFilter(5))
+        shadow = outline.filter(ImageFilter.GaussianBlur(3))
+        img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        img.putalpha(shadow.point(lambda v: v * 150 // 255))
+        img.alpha_composite(Image.merge("RGBA", (*[Image.new("L", (w, h), 0)] * 3, outline.point(lambda v: v * 200 // 255))))
+        img.alpha_composite(Image.merge("RGBA", (*[Image.new("L", (w, h), 255)] * 3, mask)))
+        self.cache[key] = img
+        return img
+
+    def draw_subs(self, clip, sp, src_t):
+        """The dialogue as small film-style subtitles at the bottom of the picture."""
         import bisect
         phrases = self.p.sub_phrases
         if not hasattr(self, "_sub_starts"):
@@ -1468,33 +1502,13 @@ class Renderer:
             return
         ph = phrases[i]
         nxt = phrases[i + 1]["s"] - 0.05 if i + 1 < len(phrases) else 1e9
-        if src_t > min(ph["e"] + 0.35, nxt):
+        if src_t > min(ph["e"] + 0.6, nxt):
             return
         words = [k for k, w in enumerate(ph["words"]) if sp.s0 - 0.03 <= w["s"] < sp.s1]  # only what's heard
         if not words:
             return
-        active = max([k for k in words if ph["words"][k]["s"] <= src_t + 0.03] or [words[0]])
-        key = ("subs", i, active, tuple(words))
-        if key not in self.cache:
-            fnt = font("Bold", 54)
-            texts = [ph["words"][k]["w"] for k in words]
-            lines = wrap_words(texts, fnt, 860)
-            line_h = 68
-            img = Image.new("RGBA", (920, line_h * len(lines) + 24), (0, 0, 0, 0))
-            d = ImageDraw.Draw(img)
-            space = fnt.getlength(" ")
-            for li, line in enumerate(lines):
-                widths = [fnt.getlength(texts[j]) for j in line]
-                x = (920 - (sum(widths) + space * (len(line) - 1))) / 2
-                for j, wl in zip(line, widths):
-                    color = (129, 182, 76, 255) if words[j] == active else (255, 255, 255, 255)
-                    d.text((x, 8 + li * line_h), texts[j], font=fnt, fill=color, stroke_width=4,
-                           stroke_fill=(0, 0, 0, 255))
-                    x += wl + space
-            self.cache[key] = img
-        img = self.cache[key]
-        cx = (W - SAFE_RIGHT) / 2 + 20
-        out.paste(img, (int(cx - img.width / 2), self.p.clip_y + self.ch + 34), img)
+        img = self.subtitle(i, words)
+        alpha_paste(clip, img, (self.cw / 2 - img.width / 2, self.ch - self.SUB_BOTTOM - img.height + 8))
 
     def close(self):
         self.frames.close()
