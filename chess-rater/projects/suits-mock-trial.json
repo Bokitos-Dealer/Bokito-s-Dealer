@@ -6,7 +6,8 @@
   },
   "card_width": 636,
   "music": {
-    "level_db": -16
+    "track": "Behind Enemy Lines",
+    "level_db": -17
   },
   "coach": {
     "enabled": true,

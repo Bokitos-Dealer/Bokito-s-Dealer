@@ -23,6 +23,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.parse
 import urllib.request
 import wave
 from dataclasses import dataclass, field
@@ -56,9 +57,11 @@ LEAD_IN = "Right."  # spoken first and cut off; the model reliably pauses after 
 # the series narrator: a deep, calm blend of two Kokoro voices
 SERIES_VOICE = "am_michael:0.6+am_onyx:0.4"
 SERIES_PITCH = 0.0
-# background music under the commentary: "Be Chillin" by Alexander Nakarada (FreePD, CC0 public domain)
-MUSIC_URL = ("https://archive.org/download/allfreepdmusicbykuronekony4n/content/drive/My%20Drive/Download/"
-             "all%20freepd%20music%20%28by%20kuronekony4n%29/Be%20Chillin.mp3")
+# background music under the commentary, from FreePD (CC0 public domain). The default is "Be Chillin"
+# by Alexander Nakarada; a project picks another FreePD track with "music": {"track": "..."}.
+MUSIC_BASE = ("https://archive.org/download/allfreepdmusicbykuronekony4n/content/drive/My%20Drive/Download/"
+              "all%20freepd%20music%20%28by%20kuronekony4n%29/")
+MUSIC_TRACK = "Be Chillin"
 COACH_DIR = os.path.join(HERE, "assets", "coach")
 
 POSITIVE = {"brilliant", "great", "best", "excellent", "good", "book"}
@@ -1278,13 +1281,15 @@ def music_bed(p, n, t_from, vo):
     if cfg is False or (isinstance(cfg, dict) and not cfg.get("enabled", True)):
         return None
     cfg = cfg if isinstance(cfg, dict) else {}
-    path = os.path.join(p.base, cfg["file"]) if cfg.get("file") else os.path.join(HERE, "music", "be-chillin.mp3")
+    track_name = cfg.get("track", MUSIC_TRACK)
+    path = (os.path.join(p.base, cfg["file"]) if cfg.get("file") else
+            os.path.join(HERE, "music", track_name.lower().replace(" ", "-") + ".mp3"))
     if not os.path.exists(path):
         if cfg.get("file"):
             sys.exit(f"music file not found: {path}")
-        print("downloading background music (one time)...")
+        print(f"downloading background music {track_name!r} (one time)...")
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        urllib.request.urlretrieve(MUSIC_URL, path + ".part")
+        urllib.request.urlretrieve(MUSIC_BASE + urllib.parse.quote(track_name + ".mp3"), path + ".part")
         os.replace(path + ".part", path)
     raw = run(["ffmpeg", "-v", "error", "-i", path, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
               capture_output=True).stdout

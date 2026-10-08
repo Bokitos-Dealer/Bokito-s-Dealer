@@ -34,7 +34,9 @@ Everything runs locally and needs no paid services. The voice-over uses
 The first render downloads the voice model (about 340 MB) into `models/`, the chess.com
 sound files into `sounds/`, and the background music into `music/`. The music is
 "Be Chillin" by Alexander Nakarada, released into the public domain (CC0) on FreePD, so it's
-free to use in posted videos. Use `"music": {"file": "my-track.mp3"}` for your own track,
+free to use in posted videos. Pick another FreePD track by name to fit the scene's mood, for
+example `"music": {"track": "Behind Enemy Lines"}` for a tense one (the mock-trial project uses
+it). Use `"music": {"file": "my-track.mp3"}` for your own track,
 `"level_db"` to set how far it sits under the voice (default −16 dB), or `"music": false` to
 turn it off. The sounds are fetched from chess.com's site and aren't stored in
 this repo. Set `"sfx": false` to turn them off, or point `"sounds"` at a folder with your own
