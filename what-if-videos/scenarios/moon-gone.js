@@ -45,7 +45,8 @@ const SHOTS = [
   [64.0, 'H'],   // the ice wall fills the frame: HERE
   [67.6, 'END'],
 ];
-const shotAt = (t) => { let s = SHOTS[0]; for (const sh of SHOTS) if (t >= sh[0]) s = sh; return s; };
+// the last shot holds through the fade to black ('END' only marks where it stops moving)
+const shotAt = (t) => { let s = SHOTS[0]; for (const sh of SHOTS) if (t >= sh[0] && sh[1] !== 'END') s = sh; return s; };
 const shotStart = (id) => SHOTS.find((s) => s[1] === id)[0];
 const shotEnd = (id) => { const i = SHOTS.findIndex((s) => s[1] === id); return SHOTS[i + 1][0]; };
 const FADE = [67.6, 69.2], END = 69.6;
@@ -300,7 +301,7 @@ export default {
 
   update(ctx, t, dt) {
     const st = this.st, [s0, shot] = shotAt(t);
-    const u = (t - s0) / (shotEnd(shot === 'END' ? 'H' : shot) - s0);
+    const u = clamp((t - s0) / (shotEnd(shot) - s0));
     const { sky, water, fac, sf } = st;
     const wu = water.uniforms;
     ctx.view = null;
