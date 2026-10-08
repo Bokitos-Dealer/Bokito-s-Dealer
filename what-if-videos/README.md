@@ -35,6 +35,15 @@ node render.mjs ice-melt --workers 2 --resume --then-encode   # full render → 
 node render.mjs ice-melt --encode                 # re-encode only (after changing audio or the end card)
 ```
 
+Text (title, HUD, captions, end card) can be rendered as its own transparent layer, so caption
+changes don't need a 3D re-render. `--encode` composites it automatically when `frames-text/` is complete:
+
+```sh
+node render.mjs moon-gone --scale 2.0 --layer scene --workers 3 --resume   # 3D only → output/<id>/frames
+node render.mjs moon-gone --layer text --scale 0.25 --resume               # text only → output/<id>/frames-text (minutes)
+node render.mjs moon-gone --encode                                          # audio + composite + encode
+```
+
 Rendering uses software WebGL, about 1–2 s per frame (~40 min per episode on 4 cores).
 `--resume` skips frames already on disk, so an interrupted render picks up where it stopped.
 
