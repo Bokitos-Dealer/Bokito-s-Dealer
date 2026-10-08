@@ -349,11 +349,11 @@ function buildUniverse() {
     const w = cellD(v.x / 7, v.y / 7, v.z / 7);
     if (r.next() > Math.exp(-w * 9)) continue;
     p.push(v.x, v.y, v.z);
-    const b = r.float(0.25, 0.85), warm = r.next();
+    const b = r.float(0.45, 1.0), warm = r.next();
     c.push(b * lerp(0.7, 1.0, warm), b * lerp(0.75, 0.85, warm), b * lerp(1.0, 0.75, warm));
   }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(c, 3));
-  const web = new THREE.Points(g, new THREE.PointsMaterial({ size: 3.4 * PX, sizeAttenuation: false, vertexColors: true, map: softDot(32), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
+  const web = new THREE.Points(g, new THREE.PointsMaterial({ size: 3.8 * PX, sizeAttenuation: false, vertexColors: true, map: softDot(32), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
   web.frustumCulled = false; scene.add(web);
   // the edge of what we can see: a faint glowing shell
   const shell = new THREE.Mesh(new THREE.SphereGeometry(R, 96, 48), new THREE.ShaderMaterial({
@@ -362,8 +362,11 @@ function buildUniverse() {
     fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 3.0); gl_FragColor = vec4(vec3(0.45,0.6,1.0) * f * 0.55, 1.0); }',
   }));
   scene.add(shell);
+  // our galaxy at the centre, where the previous shot left off; it shrinks to a speck as we pull out
+  const mw = new THREE.Sprite(new THREE.SpriteMaterial({ map: galaxyTexture(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
+  mw.scale.setScalar(1.2); scene.add(mw);
   const line = makeLine(scene);
-  return { scene, line, R };
+  return { scene, line, R, mw };
 }
 
 // ---------------------------------------------------------------- the director
@@ -474,6 +477,8 @@ export function buildCosmos(o) {
       sc.near.material.opacity = 1 - smooth(30, 90, dd);
       sc.line.set(sc.SUNPOS, P13dir(), len(t, KLY), camera, 5, 36);
     } else if (shot === 'P14') {
+      const dd = camera.position.length(), wpp = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / H;
+      sc.mw.scale.setScalar(Math.max(1.2, 150 * wpp * dd) * (1 - smooth(0.25, 0.6, U(t, 'P14'))) + 1e-6);
       sc.line.set(new THREE.Vector3(0, 0, 0), DIR.P14, len(t, GLY), camera, 5, 54);
     }
     return { scene: sc.scene, camera };

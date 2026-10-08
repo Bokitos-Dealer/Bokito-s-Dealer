@@ -47,7 +47,7 @@ const EV = [];
 EV.push({ k: 1, t0: 0.3, d: 1.35, kind: 'hand', press: true });
 [2.95, 3.4, 3.85, 4.3, 4.75].forEach((t, i) => EV.push({ k: 2 + i, t0: t, d: 0.45, kind: 'hand' }));
 EV.push({ k: 7, t0: 5.45, d: 1.15, kind: 'hand', strain: true, press: true });
-const FAIL = { k: 8, t0: 6.85, d: 1.05 };   // the 8th fold by hand: lifts a little, trembles, springs back
+const FAIL = { k: 8, t0: 7.05, d: 0.85 };   // the 8th fold by hand: lifts a little, trembles, springs back
 [8.6, 9.2, 9.8].forEach((t, i) => EV.push({ k: 8 + i, t0: t, d: 0.48, kind: 'flip' }));
 const flipsIn = (k0, times, d) => times.forEach((t, i) => EV.push({ k: k0 + i, t0: t, d, kind: 'flip' }));
 flipsIn(11, [11.35, 11.9, 12.45, 13.0], 0.45);
@@ -79,6 +79,13 @@ function foldsSmooth(t) {
     return i + smooth(0, 1, f);
   }
   return foldsDone(t);
+}
+
+// the stack's height including the fold in progress (smooth: cameras and eyes follow this, not the counter)
+function stackTopSmooth(t) {
+  const e = EV.find((x) => t >= x.t0 && t < x.t0 + x.d);
+  if (e && e.kind === 'flip') return BASE_Y + thick(e.k - 1 + easeInOut((t - e.t0) / e.d));
+  return BASE_Y + thick(foldsSmooth(t));
 }
 
 // ------------------------------------------------------------------ text
@@ -127,14 +134,14 @@ function deskFold(k) {
 function handFoldShape(e, p) {
   const F = deskFold(e.k);
   const rMin = 0.04 * F.T + 2e-5;
-  const r0 = Math.min(Math.max(0.16 * F.L, 1.5 * F.T), 0.28 * F.L);
+  const r0 = Math.min(Math.max(0.16 * F.L, 1.5 * F.T), 0.15 * F.L);
   let th;
   if (e.strain) {
     // lifts, stalls and trembles, then goes over with a push
     if (p < 0.1) th = 0;
-    else if (p < 0.42) th = 0.36 * easeOut((p - 0.1) / 0.32);
-    else if (p < 0.58) th = 0.36 + 0.025 * Math.sin((p - 0.42) * 90) * (1 - (p - 0.42) / 0.16);
-    else if (p < 0.8) th = 0.36 + 0.64 * easeInOut((p - 0.58) / 0.22);
+    else if (p < 0.34) th = 0.3 * easeOut((p - 0.1) / 0.24);
+    else if (p < 0.6) th = 0.3 + 0.022 * Math.sin((p - 0.34) * 95) * (1 - (p - 0.34) / 0.26);
+    else if (p < 0.8) th = 0.3 + 0.7 * easeInOut((p - 0.6) / 0.2);      // gives way and snaps over
     else th = 1;
   } else th = p < 0.12 ? 0 : p < 0.8 ? easeInOut((p - 0.12) / 0.68) : 1;
   const r = lerp(r0, rMin, smooth(0.5, 0.8, p));
@@ -228,7 +235,7 @@ function camAt(t) {
     }
     case 'P3': c.pos.set(lerp(-0.3, -0.285, e), lerp(0.075, 0.068, e), lerp(-0.19, -0.18, e)); c.look.set(-0.093, 0.014, -0.128); c.fov = 38; c.near = 0.004; c.far = 3000; c.camScale = 0.004; break;
     case 'P4': {
-      const top = BASE_Y + thick(Math.min(10, foldsSmooth(t)));
+      const top = Math.min(stackTopSmooth(t), BASE_Y + thick(10));
       c.pos.set(lerp(0.12, 0.1, e), lerp(0.05, 0.075, e), lerp(0.1, 0.09, e)); c.look.set(STACK_X - 0.02, lerp(0.03, Math.max(0.05, top * 0.6), e), STACK_Z - 0.02);
       c.fov = 40; c.near = 0.004; c.far = 3000; c.camScale = 0.006; break;
     }
@@ -353,7 +360,7 @@ export default {
     // ---- people: the folder (standing up from P5 on) and a few others in the park
     st.ppl = buildPeople({ max: 12, seed: 9 });
     scene.add(st.ppl.group);
-    const top = (t) => BASE_Y + thick(Math.min(foldsSmooth(t), 30));
+    const top = (t) => Math.min(stackTopSmooth(t), 40);
     st.me = st.ppl.add({
       x: 0.7, z: 0.1, h: Math.atan2(STACK_X - 0.7, STACK_Z - 0.1), scale: 0.95, skin: '#e0ac85', shirt: '#d9a23a', pants: '#2c3e50', hair: 'short', hairC: '#2e2018', longSleeve: true,
       poses: [[0, 'idle']], visible: (t) => t >= shotStart('P5'),
@@ -493,10 +500,15 @@ export default {
     const qB = handQuat(fB, B.n);
     st.handR.set({ pose: 'press', quat: qB, anchor: ['middle', B.P.clone().addScaledVector(B.n, 0.0095)], elbow: st.ELBOW_R });
     const posB = st.handR.root.position.clone();
-    const s = smooth(0.5 * Math.PI, 0.68 * Math.PI, theta);
-    const pos = posA.lerp(posB, s);
+    // blend the grip, but keep the contact point on the paper the whole time (the hand never lets go)
+    const s = smooth(0.3 * Math.PI, 0.75 * Math.PI, theta);
+    const quat = qA.clone().slerp(qB, s), pose = blendPose('pinch', 'press', s);
+    st.handR.set({ pose, quat, pos: V(0, 0, 0), elbow: st.ELBOW_R });
+    const lp = st.handR.local('pinch').lerp(st.handR.local('middle'), s).applyQuaternion(quat);
+    const target = A.P.clone().lerp(B.P.clone().addScaledVector(B.n, 0.0095), s);
+    const pos = target.sub(lp);
     if (tremble) pos.add(V(Math.sin(tremble * 61) * 0.0012, Math.sin(tremble * 47) * 0.0009, Math.cos(tremble * 53) * 0.0012));
-    return { pos, quat: qA.slerp(qB, s), pose: blendPose('pinch', 'press', s) };
+    return { pos, quat, pose };
   },
   // palm flat on the folded block, at fraction a along the crease
   pressR(k, a) {
@@ -556,7 +568,7 @@ export default {
       segs.push({ t0: reach1, t1: carry1, at: (t) => { const p = (t - e.t0) / e.d, s = handFoldShape(e, p); return this.carryR(e.k, s.theta, s.r, e.strain ? t : 0); } });
       const landed = (t) => this.carryR(e.k, Math.PI, handFoldShape(e, 1).r);
       if (e.press) {
-        const p0 = carry1 + e.d * 0.05, p1 = e.t0 + e.d + 0.25;
+        const p0 = carry1 + 0.2, p1 = e.t0 + e.d + 0.3;
         blendSeg(carry1, p0, landed, (t) => this.pressR(e.k, 0), 0.012);
         segs.push({ t0: p0, t1: p1, at: (t) => this.pressR(e.k, smooth(p0, p1, t)) });
         prevEnd = (t) => this.pressR(e.k, 1); prevT = p1;
@@ -565,9 +577,9 @@ export default {
     // the failed 8th fold: pinch, lift a little, tremble, let go
     const F0 = FAIL.t0, F1 = FAIL.t0 + FAIL.d;
     const failAt = (t) => { const s = failShape(t); return this.carryR(FAIL.k, s.theta, s.r, t); };
-    blendSeg(prevT, F0 + 0.05, prevEnd, (t) => failAt(F0), 0.02);
+    blendSeg(Math.min(prevT, F0 - 0.15), F0 + 0.08, prevEnd, (t) => failAt(F0), 0.02);
     segs.push({ t0: F0 + 0.05, t1: F0 + FAIL.d * 0.8, at: failAt });
-    blendSeg(F0 + FAIL.d * 0.8, F1 + 0.5, (t) => failAt(F0 + FAIL.d * 0.8), (t) => this.restR(t), 0.02);
+    blendSeg(F0 + FAIL.d * 0.8, F1 + 0.9, (t) => failAt(F0 + FAIL.d * 0.8), (t) => this.restR(t), 0.03);
     segs.sort((a, b) => a.t0 - b.t0);
     // make sure segments do not overlap: later ones win from their start
     for (let i = 0; i < segs.length - 1; i++) segs[i].t1 = Math.min(segs[i].t1, segs[i + 1].t0);

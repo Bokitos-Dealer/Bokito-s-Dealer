@@ -16,6 +16,7 @@ synthesised sound design (no samples), encoded with ffmpeg.
 | `ice-melt` | What if all the ice on Earth melted? |
 | `hurricane` | What if the strongest hurricane ever recorded hit your city? |
 | `moon-gone` | What if the Moon suddenly disappeared? |
+| `paper-fold` | What if you could fold paper 103 times? |
 
 Finished videos land in `output/<id>.mp4` (full 1080p master, ~12 Mbps) and `output/share/<id>-preview.mp4` (720p, under 30 MB).
 
@@ -24,6 +25,7 @@ Finished videos land in `output/<id>.mp4` (full 1080p master, ~12 Mbps) and `out
 ```sh
 npm install                      # three, fonts, playwright
 pip install numpy scipy          # audio synth
+python3 audio/fetch_assets.py    # recorded sound effects and music (Mixkit), not stored in git
 # needs ffmpeg and a Chromium that Playwright can find
 ```
 
@@ -46,6 +48,15 @@ node render.mjs moon-gone --encode                                          # au
 
 Rendering uses software WebGL, about 1–2 s per frame (~40 min per episode on 4 cores).
 `--resume` skips frames already on disk, so an interrupted render picks up where it stopped.
+`--chunks 30` splits the timeline into a queue that the `--workers` pull from, so a slow stretch
+(a dense city shot) doesn't leave the other workers idle.
+
+`paper-fold` was rendered in one pass, text included:
+
+```sh
+node render.mjs paper-fold --scale 1.5 --workers 3 --chunks 30 --resume
+node render.mjs paper-fold --encode
+```
 
 `--scale 2.0` renders the 3D at twice the output size and lets the browser downsample it (2×2 supersampling).
 It is about 4× slower but removes the shimmer of small city windows when the camera moves;
@@ -77,10 +88,16 @@ Copy a scenario in `scenarios/` and edit it. A scenario exports:
 - `title`, `endFact` (end-card fact, `<br>` for a line break), `duration`, `fadeOut`, `endAt`
 - `captions`: `[start, end, text]` — keep each under ~45 characters
 - `hud(t)`: returns `{ label, value, sub }` for time `t`
-- `audio`: cue list for `audio/synth.py` (ambience, drone, boom, zap, rain, thunder, water, glass, chime, …)
+- `labels(t)` (optional): `[{ x, y, text, big, side }]` pinned to points on screen (`THE MOON`, `HERE`)
+- `audio`: cue list for `audio/synth.py` (`sample` for recorded files, plus ambience, drone, boom, zap, rain, thunder, water, glass, chime, …)
 - `setup(ctx)`: build the scene with the engine helpers in `engine/lib/`
   (`buildCity`, `buildSky`, `buildWater`, `buildTrees`, `buildCars`, `buildPeople`, `buildBalcony`, `GlowLayer`, `Particles`)
-- `update(ctx, t, dt)`: animate; set `ctx.cam` (pos/look/fov), `ctx.shake`, `ctx.flash`, `ctx.crack`, `ctx.rain`
+- `update(ctx, t, dt)`: animate; set `ctx.cam` (pos/look/fov/near/far), `ctx.camScale`, `ctx.shake`, `ctx.flash`, `ctx.crack`, `ctx.rain`,
+  or `ctx.view = { scene, camera }` to draw a separate scene (space shots)
+
+Keep frames steady: nothing that changes randomly per frame (window lights, star twinkle, grain), no
+giant ground triangles in close-ups (use `radialGround`), shadow boxes fixed per shot, and point sizes
+scaled with `ctx.SCALE`.
 
 Animation must depend only on time and seeded randomness (`Rng`), never `Math.random`,
 so a render can be resumed or split across workers and still match.
