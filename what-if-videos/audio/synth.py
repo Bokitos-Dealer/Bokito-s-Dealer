@@ -476,9 +476,85 @@ def c_creak(m, c):
         t += r.uniform(0.5, 1.4)
 
 
+VOWELS = [(730, 1090, 2440), (270, 2290, 3010), (300, 870, 2240), (530, 1840, 2480), (570, 840, 2410), (660, 1720, 2410), (440, 1020, 2240)]
+
+
+def voice(n, r, f0, rate, breathy=0.35):
+    """One talker: a glottal buzz + breath through moving vowel formants, chopped into syllables."""
+    t = np.arange(n) / SR
+    f = f0 * (1 + 0.06 * slow_noise(n, 1.5, int(r.integers(1e6))) + 0.012 * np.sin(2 * np.pi * 5.5 * t))
+    buzz = signal.sawtooth(2 * np.pi * np.cumsum(f) / SR) * (1 - breathy) + white(n) * breathy
+    out = np.zeros(n)
+    seg = sec(1 / rate)
+    for i in range(0, n, seg):
+        j = min(n, i + seg)
+        F1, F2, F3 = VOWELS[int(r.integers(len(VOWELS)))]
+        part = buzz[i:j]
+        y = filt(part, 'bp', [F1 * 0.8, F1 * 1.25]) + filt(part, 'bp', [F2 * 0.85, F2 * 1.15]) * 0.6 + filt(part, 'bp', [F3 * 0.9, F3 * 1.1]) * 0.25
+        out[i:j] = y * np.hanning(j - i) ** 0.6
+    # speech comes in phrases with pauses
+    gate = np.clip(slow_noise(n, 0.7, int(r.integers(1e6))) * 2.2 + 0.4, 0, 1)
+    return out * gate
+
+
+def c_crowd(m, c):
+    """Babble of a crowd: many talkers at different distances."""
+    t0, t1 = c['t0'], c['t1']
+    n = sec(t1 - t0)
+    r = np.random.default_rng(c.get('seed', 11))
+    out = np.zeros((n, 2))
+    for k in range(c.get('voices', 18)):
+        f0 = r.uniform(95, 140) if r.random() < 0.5 else r.uniform(170, 260)
+        v = voice(n, r, f0, r.uniform(3.5, 6.0)) * r.uniform(0.3, 1.0)
+        pan = r.uniform(-0.9, 0.9)
+        out[:, 0] += v * np.cos((pan + 1) * np.pi / 4); out[:, 1] += v * np.sin((pan + 1) * np.pi / 4)
+    out += filt(pink(n), 'bp', [200, 2500])[:, None] * 0.08          # room tone under the voices
+    out = filt(out.T, 'lp', 3800).T
+    out = out / (np.abs(out).max() + 1e-9)
+    e = np.ones(n)
+    k = sec(min(0.8, (t1 - t0) / 3)); e[:k] = np.linspace(0, 1, k); e[-k:] = np.linspace(1, 0, k)
+    if 'swell' in c:
+        e *= env_keys(n, t0, c['swell'])
+    m.add(t0, out * e[:, None], c.get('level', 0.4), verb=0.25)
+
+
+def c_gasp(m, c):
+    """A crowd's sharp intake of breath, then a rising, wavering 'ooh'."""
+    t = c['t']
+    n = sec(2.6)
+    r = np.random.default_rng(c.get('seed', 5))
+    tt = np.arange(n) / SR
+    out = np.zeros((n, 2))
+    for k in range(22):
+        d = r.uniform(0, 0.25)
+        f0 = (r.uniform(110, 150) if r.random() < 0.5 else r.uniform(190, 280)) * (1 + 0.18 * np.clip((tt - d - 0.3) / 0.6, 0, 1))
+        buzz = signal.sawtooth(2 * np.pi * np.cumsum(f0) / SR) * 0.5 + white(n) * 0.5
+        oo = filt(buzz, 'bp', [260, 380]) + filt(buzz, 'bp', [760, 980]) * 0.5
+        inhale = filt(white(n), 'bp', [900, 4500]) * np.exp(-((tt - d - 0.12) / 0.09) ** 2) * 1.6
+        env = np.clip((tt - d - 0.25) / 0.35, 0, 1) ** 1.5 * np.exp(-np.clip(tt - d - 0.9, 0, None) * 1.6)
+        v = (oo * env + inhale) * r.uniform(0.4, 1.0)
+        pan = r.uniform(-0.9, 0.9)
+        out[:, 0] += v * np.cos((pan + 1) * np.pi / 4); out[:, 1] += v * np.sin((pan + 1) * np.pi / 4)
+    out = out / (np.abs(out).max() + 1e-9)
+    m.add(t, out, c.get('level', 0.5), verb=0.4)
+
+
+def c_siren(m, c):
+    """A distant civil-defence siren rising and falling."""
+    t0, t1 = c['t0'], c['t1']
+    n = sec(t1 - t0)
+    tt = np.arange(n) / SR
+    f = 420 + 260 * (0.5 - 0.5 * np.cos(2 * np.pi * tt / c.get('period', 6.0)))
+    x = signal.sawtooth(2 * np.pi * np.cumsum(f) / SR, 0.5) + 0.4 * signal.sawtooth(2 * np.pi * np.cumsum(f * 1.5) / SR, 0.5)
+    x = filt(x, 'lp', 1600) * (0.7 + 0.3 * slow_noise(n, 0.4, 3))
+    e = np.ones(n); k = sec(1.5); e[:k] = np.linspace(0, 1, k); e[-k:] = np.linspace(1, 0, k)
+    m.add(t0, x * e / (np.abs(x).max() + 1e-9), c.get('level', 0.25), pan=c.get('pan', 0.3), verb=0.7)
+
+
 CUES = dict(ambience=c_ambience, drone=c_drone, boom=c_boom, shimmer=c_shimmer, flicker=c_flicker, zap=c_zap,
             powerdown=c_powerdown, chime=c_chime, rumble=c_rumble, whoosh=c_whoosh, glass=c_glass, water=c_water,
-            heartbeat=c_heartbeat, rain=c_rain, thunder=c_thunder, creak=c_creak)
+            heartbeat=c_heartbeat, rain=c_rain, thunder=c_thunder, creak=c_creak,
+            crowd=c_crowd, gasp=c_gasp, siren=c_siren)
 
 
 def main():

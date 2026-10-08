@@ -44,7 +44,7 @@ async function openPage(srv) {
   return { browser, page, info };
 }
 
-const shot = (page, file) => page.screenshot({ path: file, type: 'jpeg', quality: 94, clip: { x: 0, y: 0, width: 1080, height: 1920 } });
+const shot = (page, file) => page.screenshot({ path: file, type: 'jpeg', quality: 94, timeout: 300000, clip: { x: 0, y: 0, width: 1080, height: 1920 } });
 
 async function preview(times) {
   const srv = await serve();
@@ -115,7 +115,7 @@ function encode(info) {
   const mp4 = path.join(ROOT, 'output', `${id}.mp4`);
   const e = spawnSync('ffmpeg', ['-v', 'error', '-y', '-framerate', String(info.fps), '-i', path.join(OUT, 'frames', '%05d.jpg'), '-i', wav,
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-maxrate', '12M', '-bufsize', '24M', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-r', String(info.fps),
-    '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-shortest', mp4], { stdio: 'inherit' });
+    '-af', 'loudnorm=I=-14:TP=-1.2:LRA=11', '-ar', '44100', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-shortest', mp4], { stdio: 'inherit' });
   if (e.status !== 0) throw new Error('ffmpeg failed');
   console.log('wrote', mp4);
   // small 720p copy (under ~30 MB) for previewing and sharing in chat
@@ -129,7 +129,9 @@ function encode(info) {
   console.log('wrote', path.join(share, `${id}-preview.mp4`));
 }
 
-if (opt('preview')) {
+if (opt('meta')) {
+  await meta();
+} else if (opt('preview')) {
   await preview(String(opt('preview')).split(',').map(Number));
 } else if (opt('encode')) {
   const info = await meta();

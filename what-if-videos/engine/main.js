@@ -18,6 +18,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled = true;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(56, W / H, 1, 40000);
@@ -44,6 +45,7 @@ const ctx = {
   grain: 0.075,       // film grain opacity
   grade: { brightness: 1, contrast: 1.04, saturate: 0.95, sepia: 0 },
   crack: 0,           // 0..1 crack progress
+  view: null,         // { scene, camera } to draw instead of the main scene (cutaways)
   onFrame: [],
   t: 0,
 };
@@ -231,7 +233,7 @@ window.WI = {
     ui.grain.style.opacity = ctx.grain.toFixed(3);
     if (ctx.grain > 0) grain(frame);
     drawRain(frame, t);
-    if (!o.black) renderer.render(scene, camera);
+    if (!o.black) renderer.render(ctx.view?.scene ?? scene, ctx.view?.camera ?? camera);
     return { t };
   },
 };
