@@ -14,6 +14,8 @@ commentary). It renders a finished 1080×1920 MP4 with:
 - a coach character (an owl in big round glasses) that pops up on each rating banner and
   lip-syncs to the narrator: smug on good moves, shook on bad ones
 - background music under the commentary
+- dialogue subtitles in the empty band under the clip, with the word being spoken highlighted
+  (for viewers watching on mute or in a second language); swear words are masked on screen
 - the official chess.com sounds, used the way popular edits do: a plain move sound for normal
   moves, capture for the big ones, castling for openers, a chime when a great or brilliant card
   lands, and game-start when the Game Review opens
@@ -113,11 +115,13 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   "voice": "am_michael:0.6+am_onyx:0.4",   // the series narrator: a deep blend of two Kokoro voices
   "pitch": 0,                     // semitones up or down (formants kept)
   "speed": 1.08,
+  "lang": "en-us",                // "en-gb" for a British accent (use a bm_ voice with it)
   "coach": {"enabled": true, "size": 220},  // the owl on the rating banners
   "music": {"level_db": -16},     // background music under the commentary
   "coach_intro": true,            // voice-over opens like the chess.com coach: "In Here is a great move!"
   "sfx_volume": 0.7,              // chess.com sounds: move/capture on badges, check on bad cards, game start/end
   "crop": "auto",                 // trims letterbox bars; or [w, h, x, y]; or false
+  "subtitles": {"fix": {"fix.": "Fifth."}},  // correct a misheard word; false turns subtitles off
   "players": {
     "white": {"name": "Rachel Zane", "short": "Rachel",
               "avatar": {"t": 106.8, "x": 0.34, "y": 0.47, "size": 0.5}},  // face crop from the clip
@@ -127,8 +131,8 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
     "louis": {"name": "Louis Litt", "short": "Louis", "team": "black", "joins": 203.7,
               "avatar": {"t": 230.4, "x": 0.365, "y": 0.21, "size": 0.36}}
   },
-  "hook": {                       // optional cold open: plays up to a card move, then rewinds
-    "from": 187.45,
+  "hook": {                       // optional cold open: plays up to a card move, then cuts back
+    "from": 187.45,               // 2-5 s before the payoff; it's moved onto the next spoken sentence
     "move": "The Kiss",           // name of a move that has a "comment"
     "vo": "The Kiss is brilliant! But how did Rachel get here? Let's review the game."
   },
@@ -185,7 +189,18 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   seconds per minute of footage the first time and is cached after that.
 - **`voice`** can be one Kokoro voice (`"am_fenrir"`) or a weighted blend
   (`"am_michael:0.6+am_onyx:0.4"`). Leave out `voice` and `pitch` to get the series narrator.
-  Keep the same voice across videos so the account has one recognisable host.
+  Keep the same voice across videos so the account has one recognisable host. British voices
+  are `bm_george`, `bm_lewis`, `bm_daniel` and `bm_fable`; use them with `"lang": "en-gb"`.
+- **Subtitles** need `faster-whisper`. The dialogue is transcribed once per clip (about a minute
+  per minute of footage with the default `medium.en` model, cached after that), with the
+  characters' names given as a hint so they're spelt right. Speech recognition still mishears the
+  odd word, so read the subtitles in a preview and correct words with `subtitles.fix` (the key is
+  the word as transcribed, including its punctuation). `"subtitles": {"model": "small.en"}` is
+  about twice as fast and a little less accurate.
+- **The hook** decides whether people stay: TikTok's analytics showed most viewers of a 4:49 video
+  leaving in the first second. Start it 2-5 s before the payoff line. The video opens on the first
+  word of the next sentence after `hook.from` (never on silence or the tail of someone's line),
+  and `--timeline` warns when the run-up to the card is longer than 6 s.
 - **The coach** sprites are in `assets/coach/`. To restyle the character, edit
   `tools/coach_sprites.cjs` (plain SVG) and run `node tools/coach_sprites.cjs` (needs Playwright).
 - **Timing**: the freeze lasts as long as the voice-over, so keep each comment short: one or two
@@ -210,7 +225,11 @@ is a great move!"), so the comment shouldn't repeat it. After that, make it funn
 short lines with a clear attitude, Gen Z slang and a bit of swearing. For example: *"She said his
 mind is amazing, and he hit her with thanks? Bro, that's dry as hell."* or *"Two seconds ago he
 was defending Jenny. Now he's kissing back. Bro is cooked."* Mild words (damn, hell) are fine.
-Heavy swearing can get a video's reach limited on TikTok.
+Heavy swearing can get a video's reach limited on TikTok. Most viewers so far are in the UK and
+18-24, so British slang lands well alongside the American Gen Z words: *bottled it* (choked),
+*rinsed* / *violated* (destroyed), *peak* (unlucky, bad), *bare* (a lot), *proper*, *mate*,
+*absolute scenes*, *the audacity*, *he's done for*. Use spellings people expect in the UK on
+screen (colour, realise).
 Check every quote and speaker against the clip. The scout transcript and contact sheet are
 there for that.
 
@@ -219,8 +238,15 @@ there for that.
 - The output is 1080×1920, 30 fps, H.264 + AAC, loudness-normalised for social apps. It
   uploads straight to TikTok, Reels and Shorts.
 - Cards and badges keep clear of the right-hand like/comment/share buttons.
-- The hook matters most: open on the most surprising move, and make the title name someone
-  people know.
+- The hook matters most: open on the most surprising move, 2-5 s before the payoff, and make
+  the title name someone people know.
+- Length: about 1:30-3:00. A 4:49 video kept viewers for 49 s on average and 6% watched to the
+  end; TikTok pushes videos that people finish, and over a minute still counts for the Creator
+  Rewards programme. Cut the slow parts, or split a long scene into Part 1 and Part 2.
+- Comments: end the caption (and the outro) with a question that invites a reply, for example
+  "Was the vanilla cake answer brilliant or a blunder?", and pin your own comment with the next
+  scene's name.
+- When to post: most viewers are in the UK, so post around 18:00-21:00 UK time.
 - **Copyright:** clips from shows under copyright (like *Suits*) can get muted, taken down or
   earn strikes, even with commentary over them. Public-domain films (for example *Charade*,
   *His Girl Friday* and *Night of the Living Dead*) and footage you have rights to are safe.

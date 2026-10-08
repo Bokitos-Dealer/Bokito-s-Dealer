@@ -9,6 +9,7 @@
     "track": "Behind Enemy Lines",
     "level_db": -17
   },
+  "subtitles": {"fix": {"fix.": "Fifth."}},
   "coach": {
     "enabled": true,
     "size": 220

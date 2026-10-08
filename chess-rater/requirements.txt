@@ -3,5 +3,5 @@ numpy>=1.24
 kokoro-onnx>=0.4   # local AI voice-over (model files download on first run, ~340 MB)
 soundfile>=0.12
 opencv-python-headless>=4.8   # face tracking for the automatic name labels
-# optional, for scout.py transcripts:
-# faster-whisper>=1.0
+# dialogue subtitles and scout.py transcripts:
+faster-whisper>=1.0

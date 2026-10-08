@@ -625,6 +625,7 @@ class Project:
         self.models_dir = models_dir or os.path.join(HERE, "models")
         self.voice = Voice(cfg, models_dir or os.path.join(HERE, "models"), voice_enabled,
                            os.path.join(HERE, ".cache", "tts"))
+        self.words, self.sub_phrases = self.transcribe()
         self.build()
         self.face_tracks = self.find_faces() if self.auto_labels else []
 
@@ -673,7 +674,9 @@ class Project:
             hook_move = self.find_move(hook["move"])
             prior = [m["eval"] for m in self.moves if m["t"] < hook["from"] and "eval" in m]
             self.evals.append((0.0, prior[-1] if prior else 0.0, False))
-            play(hook["from"], hook_move["t"], "hook")
+            start = self.speech_start(float(hook["from"]))
+            self.hook_runup = hook_move["t"] - start
+            play(start, hook_move["t"], "hook")
             card_hold(hook_move, "hook", hook.get("vo", ""), blur=True)
             self.evals.append((t, 0.0, False))  # hard cut back to the start, like the example edits
         else:
@@ -752,6 +755,42 @@ class Project:
         if cls in ("best", "great", "brilliant", "mistake", "blunder"):
             return "capture"
         return "move-self" if move["side"] == "white" else "move-opponent"
+
+    def transcribe(self):
+        """Dialogue words (for subtitles and for starting the hook on speech), or [] when subtitles
+        are off or faster-whisper isn't installed."""
+        cfg = self.cfg.get("subtitles", {})
+        if cfg is False:
+            return [], []
+        cfg = cfg if isinstance(cfg, dict) else {}
+        import subs
+        if not subs.available():
+            print("! faster-whisper is not installed: no subtitles (pip install faster-whisper)")
+            return [], []
+        ranges = [list(r) for r in self.segments]
+        hook = self.cfg.get("hook")
+        if hook:
+            ranges.append([float(hook["from"]), self.find_move(hook["move"])["t"]])
+        names = set()
+        for pl in self.players.values():
+            names.update([pl["name"], pl.get("short", pl["name"])])
+        names.update(self.cfg.get("faces", {}).get("cast", {}))
+        words = subs.transcribe(self.source, ranges, sorted(names), cfg.get("model", "medium.en"),
+                                os.path.join(HERE, ".cache", "subs"))
+        return words, subs.phrases(words, cfg.get("fix"))
+
+    def speech_start(self, t, within=1.5):
+        """Move a start time forward onto the start of the next spoken sentence, so a video never
+        opens on silence or on the tail end of someone's line."""
+        ws = self.words
+        for i, w in enumerate(ws):
+            if w["s"] < t - 0.05:
+                continue
+            if w["s"] - t > within:
+                break
+            if i == 0 or ws[i - 1]["w"].endswith((".", "?", "!")) or w["s"] - ws[i - 1]["e"] > 0.5:
+                return max(t, w["s"] - 0.04)
+        return t
 
     def find_faces(self):
         """Tracked, named faces for the labels (see faces.py); [] if OpenCV isn't installed."""
@@ -1414,7 +1453,48 @@ class Renderer:
                                 self.ch - 24, p.review_t + 0.6, p.duration + 1)
         out = self.base.copy()
         out.paste(clip.convert("RGB"), (0, p.clip_y))
+        if p.sub_phrases and sp.kind == "play" and not in_review:
+            self.draw_subs(out, sp, src_t)
         return out
+
+    def draw_subs(self, out, sp, src_t):
+        """Dialogue subtitles in the empty band under the clip, current word highlighted."""
+        import bisect
+        phrases = self.p.sub_phrases
+        if not hasattr(self, "_sub_starts"):
+            self._sub_starts = [ph["s"] for ph in phrases]
+        i = bisect.bisect_right(self._sub_starts, src_t + 0.05) - 1
+        if i < 0:
+            return
+        ph = phrases[i]
+        nxt = phrases[i + 1]["s"] - 0.05 if i + 1 < len(phrases) else 1e9
+        if src_t > min(ph["e"] + 0.35, nxt):
+            return
+        words = [k for k, w in enumerate(ph["words"]) if sp.s0 - 0.03 <= w["s"] < sp.s1]  # only what's heard
+        if not words:
+            return
+        active = max([k for k in words if ph["words"][k]["s"] <= src_t + 0.03] or [words[0]])
+        key = ("subs", i, active, tuple(words))
+        if key not in self.cache:
+            fnt = font("Bold", 54)
+            texts = [ph["words"][k]["w"] for k in words]
+            lines = wrap_words(texts, fnt, 860)
+            line_h = 68
+            img = Image.new("RGBA", (920, line_h * len(lines) + 24), (0, 0, 0, 0))
+            d = ImageDraw.Draw(img)
+            space = fnt.getlength(" ")
+            for li, line in enumerate(lines):
+                widths = [fnt.getlength(texts[j]) for j in line]
+                x = (920 - (sum(widths) + space * (len(line) - 1))) / 2
+                for j, wl in zip(line, widths):
+                    color = (129, 182, 76, 255) if words[j] == active else (255, 255, 255, 255)
+                    d.text((x, 8 + li * line_h), texts[j], font=fnt, fill=color, stroke_width=4,
+                           stroke_fill=(0, 0, 0, 255))
+                    x += wl + space
+            self.cache[key] = img
+        img = self.cache[key]
+        cx = (W - SAFE_RIGHT) / 2 + 20
+        out.paste(img, (int(cx - img.width / 2), self.p.clip_y + self.ch + 34), img)
 
     def close(self):
         self.frames.close()
@@ -1588,6 +1668,10 @@ def print_timeline(p):
         kind = "CARD" if s.card else "note"
         print(f"  {s.t0:7.2f}-{s.t1:7.2f}  {kind}{' (hook)' if s.blur else ''}  #{m['_n']:<2} {m['side']:5s} "
               f"{m['class']:10s} {m['name']}")
+    runup = getattr(p, "hook_runup", None)
+    if runup is not None and runup > 6:
+        print(f"note: the hook takes {runup:.1f}s to reach its card; most viewers decide in the first 1-3 s, "
+              f"so start it closer to the payoff (under ~6 s)")
 
 
 def main():
