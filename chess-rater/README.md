@@ -164,6 +164,15 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   `leaves` (clip time) when they drop out of the scene, and their avatar leaves the team's tag.
   Random extras get a label only: `NPC 1`, `NPC 2`, and so on. A judge or referee who only
   rules on things is labelled as the arbiter ("Jessica (Arbiter)") and doesn't get moves.
+- **`face_labels`**: set `"face_labels": true` and the name tags follow faces instead of
+  sitting where `labels` put them. Every face is found and recognised (`faces.py`, OpenCV's
+  YuNet and SFace; `pip install opencv-python-headless`, models download on first use), so each
+  person keeps their tag as they move, and the tag disappears while someone is fully covered or
+  turned away. Names come from the player avatars, from `labels` (now only a rough "who is
+  where" per shot), and from `"cast": {"Receptionist": [{"t": 247.0, "x": 0.47, "y": 0.32}]}`
+  for anyone else worth naming. Everyone left gets `NPC 1`, `NPC 2`, ..., the same number each
+  time they come back. Tiny background faces don't get a tag. The first render of a clip scans
+  it (about a minute per two minutes of footage) and caches the result in `.cache/faces/`.
 - **Labels and badges** shouldn't sit under the top player tag (about the top-left quarter of
   the width and the top 15% of the clip). Move them lower or further right there.
 - **`voice`** can be one Kokoro voice (`"am_fenrir"`) or a weighted blend

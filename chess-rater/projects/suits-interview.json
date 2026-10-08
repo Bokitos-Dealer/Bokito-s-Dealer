@@ -49,6 +49,7 @@
     "result": "1-0 · Mike gets the job",
     "vo": "Good game! Mike walked in with a briefcase full of weed and walked out with a job."
   },
+  "face_labels": true,
   "labels": [
     [191.07, 196.4, "Mike", 0.44, 0.18],
     [191.07, 196.4, "NPC 1", 0.54, 0.44],

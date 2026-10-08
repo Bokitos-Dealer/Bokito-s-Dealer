@@ -618,9 +618,27 @@ class Project:
                 sys.exit(f"move {m.get('name')}: unknown class {m['class']!r}; use one of {', '.join(CLASSES)}")
         self.labels = [l if isinstance(l, dict) else dict(zip(("from", "to", "text", "x", "y"), l))
                        for l in cfg.get("labels", [])]
+        self.faces = self.load_faces() if cfg.get("face_labels") else None
         self.voice = Voice(cfg, models_dir or os.path.join(HERE, "models"), voice_enabled,
                            os.path.join(HERE, ".cache", "tts"))
         self.build()
+
+    def load_faces(self):
+        """Name tags that follow faces (faces.py); the hand-placed labels become naming hints."""
+        import faces
+        hints = []
+        for pl in self.players.values():
+            av = pl.get("avatar")
+            if isinstance(av, dict):
+                hints.append((pl.get("short", pl["name"]), av["t"], av["t"], av["x"], av["y"], True))
+        for name, spots in self.cfg.get("cast", {}).items():
+            for s in spots:
+                hints.append((name, s["t"], s["t"], s["x"], s["y"], True))
+        for lb in self.labels:
+            hints.append((lb["text"], lb["from"], lb["to"], lb["x"], lb["y"], False))
+        ranges = [[max(0.0, a - 0.5), min(self.src_dur, b + 0.5)] for a, b in self.segments]
+        return faces.load(self.source, self.crop, ranges, hints, os.path.join(HERE, "models"),
+                          os.path.join(HERE, ".cache", "faces"))
 
     # ---- timeline construction
     def build(self):
@@ -1189,7 +1207,19 @@ class Renderer:
             img = img.filter(ImageFilter.GaussianBlur(blur))
         clip = img.convert("RGBA")
 
-        if not in_review:
+        if not in_review and p.faces:
+            placed = [(0, 0, self.cw * 0.3, self.ch * 0.15)]  # the top player tag
+            for name, fx, fy, fw, fh in sorted(p.faces.at(src_t), key=lambda f: -f[4]):  # biggest first
+                li = self.label(name)
+                x = clamp(fx * self.cw - li.width / 2, 4, self.cw - li.width - 4)
+                for y in (fy * self.ch - li.height + 6, (fy + fh) * self.ch - 6):  # above the head, else under the chin
+                    box = (x + 8, y + 8, x + li.width - 8, y + li.height - 8)
+                    if y >= 4 and y + li.height <= self.ch - 4 and not any(
+                            box[0] < b[2] and b[0] < box[2] and box[1] < b[3] and b[1] < box[3] for b in placed):
+                        placed.append(box)
+                        alpha_paste(clip, li, (x, y))
+                        break
+        elif not in_review:
             for lb in p.labels:
                 if lb["from"] <= src_t < lb["to"]:
                     li = self.label(lb["text"])
