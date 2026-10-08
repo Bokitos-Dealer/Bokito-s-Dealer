@@ -2,7 +2,7 @@
 //   node render.mjs <scenario> --preview 2,10,30      still frames + contact sheet
 //   node render.mjs <scenario> [--from 0] [--to 80]   render frames to output/<id>/frames
 //   node render.mjs <scenario> --encode               synth audio + encode output/<id>.mp4
-// Options: --scale 0.75 (3D resolution vs 1080x1920), --workers 2
+// Options: --scale 0.75 (3D resolution vs 1080x1920), --workers 2, --chunks 24 (work queue for the workers)
 import { chromium } from 'playwright';
 import http from 'http';
 import fs from 'fs';
@@ -152,16 +152,17 @@ if (opt('meta')) {
   const info = await meta();
   const from = parseFloat(opt('from', '0')), to = parseFloat(opt('to', String(info.duration)));
   if (workers > 1 && !opt('child')) {
-    const span = (to - from) / workers;
-    const kids = [];
-    for (let w = 0; w < workers; w++) {
-      const a = from + span * w, b = w === workers - 1 ? to : from + span * (w + 1) - 1 / info.fps;
-      kids.push(new Promise((res) => {
-        const k = spawn(process.execPath, [fileURLToPath(import.meta.url), id, '--from', a.toFixed(4), '--to', b.toFixed(4), '--scale', scale, '--layer', layer, '--child', ...(opt('resume') ? ['--resume'] : [])], { stdio: 'inherit' });
-        k.on('exit', res);
-      }));
-    }
-    await Promise.all(kids);
+    // split into --chunks pieces (default one per worker) and let the workers pull them from a queue,
+    // so a slow stretch of the timeline doesn't leave the other workers idle
+    const nChunks = Math.max(workers, parseInt(opt('chunks', String(workers)), 10));
+    const span = (to - from) / nChunks;
+    const jobs = [];
+    for (let w = 0; w < nChunks; w++) jobs.push([from + span * w, w === nChunks - 1 ? to : from + span * (w + 1) - 1 / info.fps]);
+    const run = ([a, b]) => new Promise((res) => {
+      const k = spawn(process.execPath, [fileURLToPath(import.meta.url), id, '--from', a.toFixed(4), '--to', b.toFixed(4), '--scale', scale, '--layer', layer, '--child', ...(opt('resume') ? ['--resume'] : [])], { stdio: 'inherit' });
+      k.on('exit', res);
+    });
+    await Promise.all(Array.from({ length: workers }, async () => { while (jobs.length) await run(jobs.shift()); }));
   } else {
     await renderRange(from, to);
   }

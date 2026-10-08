@@ -53,6 +53,7 @@ const FADE = [40.8, 42.0], END = 42.4;
 const HERE = 38.2;
 
 const MOON_DIR = new THREE.Vector3(0.12, 0.165, -1).normalize();
+const SKY_GLOW_DIR = new THREE.Vector3(0.2, 1, 0.35).normalize();
 const SUN_DAY = new THREE.Vector3(-0.35, 0.62, -0.7).normalize();
 const NEST = { x: 42, z: -24 };
 // torch holders [x, z] and where their beams land
@@ -350,7 +351,8 @@ export default {
       scene(ctx).fog.color.set(m ? '#18233f' : '#070a13');
       st.hemi.color.set(m ? '#3a4d80' : '#141c33'); st.hemi.groundColor.set('#0a0a0e'); st.hemi.intensity = m ? 0.7 : 0.45;
       st.key.color.set('#a9bce8'); st.key.intensity = m ? 0.9 : 0.16;   // after: only sky glow and the city
-      st.key.position.copy(MOON_DIR).multiplyScalar(300);
+      // once the Moon is gone the faint key is skyglow from overhead (no moon glint left on the wet sand)
+      st.key.position.copy(moonUp ? MOON_DIR : SKY_GLOW_DIR).multiplyScalar(300);
       fac.uNight.value = 1; fac.uLit.value = 0.45; fac.uWallMul.value = 0.35;
       wu.uDeep.value.set('#050a16'); wu.uSky.value.set(m ? '#2c3d66' : '#0b1222'); wu.uSkyTop.value.set(m ? '#1a2850' : '#070b16');
       wu.uSunDir.value.copy(MOON_DIR); wu.uSpec.value = 0; wu.uShallow.value.set('#0d2430');
@@ -469,7 +471,7 @@ export default {
     // keep the shadow box around what the camera looks at
     const focus = c.look.clone(); if (focus.distanceTo(c.pos) > 60) focus.copy(c.pos).addScaledVector(focus.sub(c.pos).normalize(), 40);
     st.key.target.position.copy(focus);
-    st.key.position.copy(focus).addScaledVector(night ? MOON_DIR : SUN_DAY, 200);
+    st.key.position.copy(focus).addScaledVector(night ? (moonUp ? MOON_DIR : SKY_GLOW_DIR) : SUN_DAY, 200);
     const sb = ['C', 'T', 'W', 'G'].includes(shot) ? 120 : 45;
     Object.assign(st.key.shadow.camera, { left: -sb, right: sb, top: sb, bottom: -sb, near: 10, far: 500 });
     st.key.shadow.camera.updateProjectionMatrix();
