@@ -192,11 +192,14 @@ def build_tracks(samples):
 
 def _hint_dist(tr, a, b, x, y):
     """How far a hint at (x, y) during a..b is from a track's face, on average over the time they
-    overlap; the point can be on the face or just above the head, where a tag sits."""
-    pts = [p for p in tr.pts if a <= p[0] <= b]
-    if len(pts) < min(3, len(tr.pts)):  # a face from the shot before or after
+    overlap: 0 when the point is on the face or in the strip above the head where a tag sits."""
+    if b - a < 1.0 / SAMPLE_FPS:  # a single moment: the nearest sample
+        pts = [p for p in tr.pts if abs(p[0] - a) <= 0.6 / SAMPLE_FPS]
+    else:
+        pts = [p for p in tr.pts if a <= p[0] <= b]
+    if not pts or len(pts) < min(3, len(tr.pts), round((b - a) * SAMPLE_FPS)):  # the shot before or after
         return None
-    return float(np.mean([min(np.hypot(x - px - pw / 2, y - py - ph / 2), np.hypot(x - px - pw / 2, y - py + 0.04))
+    return float(np.mean([np.hypot(max(px - x, 0, x - px - pw), max(py - 0.1 - y, 0, y - py - ph))
                           for _, px, py, pw, ph in pts]))
 
 
@@ -211,7 +214,7 @@ def _face_h(tr):
 def _clear(tr):
     """Big enough and not cut off by the frame edge, so its fingerprint can be trusted."""
     x, y, w, h = np.median(np.array(tr.pts)[:, 1:], axis=0)
-    return h >= 0.08 and y > 0.01 and x > 0.005 and x + w < 0.995
+    return h >= 0.08 and (h >= 0.25 or (y > 0.01 and x > 0.005 and x + w < 0.995))
 
 
 def name_tracks(tracks, hints):
@@ -220,7 +223,7 @@ def name_tracks(tracks, hints):
     conf = {}
     for name, a, b, x, y, strong in hints:
         if strong:
-            ds = [(d, tr) for tr in tracks if (d := _hint_dist(tr, a, b, x, y)) is not None and d < 0.2]
+            ds = [(d, tr) for tr in tracks if (d := _hint_dist(tr, a, b, x, y)) is not None and d < 0.12]
             if ds:
                 tr = min(ds, key=lambda dt: dt[0])[1]
                 tr.name, conf[id(tr)] = name, 3.0
@@ -240,7 +243,7 @@ def name_tracks(tracks, hints):
         for hi, (name, x, y) in enumerate(group):
             for tr in tracks:
                 d = _hint_dist(tr, a, b, x, y)
-                if d is None or d >= 0.2:
+                if d is None or d >= 0.12:
                     continue
                 sim = max((float(tr.emb() @ r) for r in refs.get(name, [])), default=0.0)
                 if name in refs and sim < 0.2 and _clear(tr) and np.median(tr.turns) < 0.4:
@@ -257,21 +260,25 @@ def name_tracks(tracks, hints):
     for tr in tracks:
         if tr.name is None and id(tr) in votes:
             v = votes[id(tr)]
-            tr.name, conf[id(tr)] = max(v, key=v.get), 2.0
+            tr.name = max(v, key=v.get)
+            sim = max((float(tr.emb() @ r) for r in refs.get(tr.name, [])), default=0.0)
+            conf[id(tr)] = 1.15 + (sim if _clear(tr) else min(sim, 0.2))
     # people named somewhere are recognised everywhere else by their fingerprint; small or
     # cut-off faces give unreliable fingerprints, so they neither teach nor get matched
-    refs = {}
+    strong = refs
+    refs = {n: list(rs) for n, rs in strong.items()}
     for tr in tracks:
-        if tr.name and not tr.name.startswith("NPC") and _clear(tr):
-            refs.setdefault(tr.name, []).append(tr.emb())
+        if tr.name and id(tr) in votes and not tr.name.startswith("NPC") and _clear(tr):
+            if tr.name not in strong or max(float(tr.emb() @ r) for r in strong[tr.name]) > SAME_PERSON:
+                refs.setdefault(tr.name, []).append(tr.emb())
     for tr in sorted(tracks, key=_face_h, reverse=True):
-        if tr.name or not refs or not _clear(tr):
+        if tr.name or not refs or not _clear(tr) or _face_h(tr) < 0.15:
             continue
         e = tr.emb()
         scores = {n: max(float(e @ r) for r in rs) for n, rs in refs.items()}
         n = max(scores, key=scores.get)
         if scores[n] > SAME_PERSON:
-            tr.name, conf[id(tr)] = n, scores[n]
+            tr.name, conf[id(tr)] = n, 1.0 + scores[n]
             refs[n].append(e)
     # one tag per person at a time: the most certain track keeps the name, the rest are extras
     kept = []
@@ -280,6 +287,19 @@ def name_tracks(tracks, hints):
             tr.name = None
         else:
             kept.append(tr)
+    # someone who was covered for a moment comes back where they were: same name
+    for tr in sorted(tracks, key=lambda t: t.t0):
+        if tr.name:
+            continue
+        _, x, y, w, h = tr.pts[0]
+        for o in tracks:
+            if o.name and o.shot == tr.shot and 0 < tr.t0 - o.t1 < 2.5 and not any(
+                    k.name == o.name and _overlap(k, tr) for k in tracks if k is not o):
+                _, ox, oy, ow, oh = o.pts[-1]
+                if np.hypot(x + w / 2 - ox - ow / 2, y + h / 2 - oy - oh / 2) < max(h, oh) and 0.6 < h / oh < 1.6 \
+                        and float(tr.emb() @ o.emb()) > 0.25:
+                    tr.name = o.name
+                    break
     # everyone left is an extra: group look-alikes, number them in order of appearance
     npcs = {}
     for tr in tracks:

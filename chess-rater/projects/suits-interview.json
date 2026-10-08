@@ -50,6 +50,10 @@
     "vo": "Good game! Mike walked in with a briefcase full of weed and walked out with a job."
   },
   "face_labels": true,
+  "cast": {
+    "Mike": [{"t": 195.0, "x": 0.37, "y": 0.37}],
+    "Doorman": [{"t": 243.5, "x": 0.44, "y": 0.2}, {"t": 247.5, "x": 0.46, "y": 0.21}]
+  },
   "labels": [
     [191.07, 196.4, "Mike", 0.44, 0.18],
     [191.07, 196.4, "NPC 1", 0.54, 0.44],
