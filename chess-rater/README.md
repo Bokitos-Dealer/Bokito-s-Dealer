@@ -76,6 +76,11 @@ upload (4:22, also ending in the end card) as `clips/suits-mock-trial.mp4` the s
 Benjamin plays for Mike's side only in the opening scene, and Jessica is labelled as the
 arbiter.
 
+`projects/suits-interview.json` rates Mike's interview with Harvey from the pilot, from 3:11 of
+the official "Mike Ross Interview with Harvey Specter" clip (8:53) saved as
+`clips/suits-interview.mp4`. Donna plays for Harvey's side at the door, and the Louis scene in
+the middle is cut out.
+
 ## Making a new video
 
 1. **Pick a scene.** The best ones are 1–3 minutes of back-and-forth between two sides: a
@@ -148,6 +153,10 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   Black. Use `"1-0"` or `"0-1"` for checkmate. Moves without `eval` leave the bar where it is.
 - **`t`** for a card should sit just after the line ends and before the next shot cut, so
   the freeze lands on the right face. The scout transcript gives the end time of every word.
+  Keep it at least a couple of frames (0.07 s) before the cut, or the freeze can grab the
+  first frame of the next shot.
+- **`review.hold_at`** picks the frame held under the Game Review (a clip time). Use it when
+  the clip ends in a transition into an end card.
 - **`card`** is `"right"` (the default) or `"left"`. Cards sit along the bottom of the clip, and
   a left card briefly hides the bottom player tag. Pick the side that keeps faces visible.
 - **Other characters**: anyone from the main storyline who joins in goes under `players` with a

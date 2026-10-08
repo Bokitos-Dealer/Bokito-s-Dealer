@@ -712,7 +712,8 @@ class Project:
             self.clips.append(Clip(at, audio, duck=True))
             end = max(end, at + len(audio) / SR + 1.2)
         if end > t:
-            hold(self.segments[-1][1], end - t, "review")
+            # the Game Review sits over a still of the last frame, or of "hold_at" when the clip ends in a transition
+            hold(float(review.get("hold_at", self.segments[-1][1])), end - t, "review")
         for sp in self.spans:
             if sp.t0 >= self.review_t - 1e-6 and sp.phase == "main":
                 sp.phase = "review"
