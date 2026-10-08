@@ -33,6 +33,7 @@ const SHOTS = [
   [7.0, 'B2'],   // closer: a family reacts
   [10.4, 'C'],   // high and wide: the dark seafront
   [17.4, 'T'],   // next day: the tide comes in (time-lapse)
+  [21.0, 'T2'],  // the kid stands on the old seaweed line; the water stops far below
   [24.6, 'E'],   // space: the tidal bulge shrinks to the Sun's share
   [28.0, 'D'],   // sand level: hatchlings emerge and head for the lights
   [35.2, 'R'],   // volunteers with torches collect lost hatchlings
@@ -56,9 +57,18 @@ const NEST = { x: 42, z: -24 };
 // torch holders [x, z] and where their beams land
 const TORCH = [[NEST.x - 1.2, NEST.z + 4.5, NEST.x - 0.4, NEST.z + 6.5], [NEST.x - 2.8, NEST.z + 7.5, NEST.x - 1.6, NEST.z + 9.4]];
 const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const dur = (sec) => {
+  const p = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+  if (sec < 60) return p(Math.max(1, Math.floor(sec)), 'second');
+  if (sec < 3600) return p(Math.floor(sec / 60), 'minute');
+  return p(Math.floor(sec / 3600), 'hour');
+};
+// the kid who points at the Moon comes back: on the beach the next day, and with the volunteers
+const KID = { kid: true, shirt: '#f4d03f', pants: '#2c3e50', hair: 'cap', hairC: '#c0392b', skin: '#e0ac85', longSleeve: false };
+const KID_T = { x: 12, z: -18.2 };     // on the old high-tide line
 
 // tide (metres relative to mean sea level) during the time-lapse shot
-const T0 = shotStart('T'), T1 = shotEnd('T');
+const T0 = shotStart('T'), T1 = shotEnd('T2');
 const tideNow = (t) => lerp(-0.8, 0.8, easeInOut(clamp((t - T0 - 0.6) / (T1 - T0 - 1.6))));
 // ice wall position (z of its front face) from the moment it appears
 const wallZ = (t) => {
@@ -82,50 +92,56 @@ export default {
   endAt: END,
   crackAt: [540, 820],
   captions: [
+    // act 1: the night
     [3.6, 6.9, 'The Moon is simply gone.'],
     [7.1, 10.3, 'No explosion. No sound.'],
-    [10.6, 13.8, 'The first thing you notice is the dark.'],
-    [14.0, 17.2, 'Every night is now a moonless night.'],
-    [17.6, 20.9, 'The next day, the tide comes in.'],
+    [10.6, 13.8, 'Every night is now a moonless night.'],
+    [14.0, 17.2, 'And the darkness is the smallest problem.'],
+    // act 2: the first weeks
+    [17.6, 20.8, 'The next day, the tide comes in.'],
     [21.1, 24.4, 'It stops at less than half the height.'],
     [24.8, 27.9, 'Only the Sun is pulling on the ocean now.'],
     [28.2, 31.5, 'Weeks later, sea turtles hatch.'],
     [31.7, 35.0, 'They crawl toward the brightest horizon.'],
     [35.4, 38.6, 'Without moonlight on the sea, more get lost.'],
-    [39.0, 42.3, 'But the biggest change is slower.'],
+    // act 3: deep time
+    [39.0, 42.3, 'But the biggest change is too slow to see.'],
     [42.5, 45.8, "The Moon kept Earth's tilt steady."],
     [46.0, 49.4, 'Without it, the tilt starts to wander.'],
     [49.8, 53.1, 'How far, scientists still debate.'],
     [53.3, 56.6, 'But tilt changes help trigger ice ages.'],
+    // act 4: the ice
     [57.0, 60.2, 'Bigger swings could mean colder ones.'],
     [60.6, 63.9, 'In the last ice age, the ice reached New York.'],
   ],
   hud(t) {
+    const since = 'Since the Moon vanished';
     if (t < VANISH) {
       const g = (t > 1.42 && t < 1.56) || t > 1.78;
       return { label: 'The Moon', value: g ? glitch('384,400 km', t) : '384,400 km', sub: t > 1.78 ? 'signal lost' : 'distance from earth' };
     }
-    if (t < shotStart('C')) { const s = Math.floor(t - VANISH); return { label: 'The Moon', value: 'GONE', sub: `00:00:${String(s).padStart(2, '0')} · midnight` }; }
+    if (t < shotStart('C')) return { label: since, value: dur(t - VANISH), sub: 'midnight' };
     if (t < shotStart('T')) {
-      const k = smooth(shotStart('C') + 0.3, shotStart('C') + 2.2, t);
-      const lux = Math.exp(lerp(Math.log(0.25), Math.log(0.0025), k));
-      return { label: 'Moonlight', value: `${lux < 0.01 ? lux.toFixed(4) : lux.toFixed(2)} lux`, sub: k > 0.99 ? 'nights about 100× darker' : 'full moon' };
+      // the clock speeds up through the first night
+      const k = clamp((t - shotStart('C')) / (shotStart('T') - shotStart('C')));
+      const secs = Math.exp(lerp(Math.log(shotStart('C') - VANISH), Math.log(6 * 3600), Math.pow(k, 1.3)));
+      return { label: since, value: dur(secs), sub: 'moonlight: 0.0025 lux · 100× darker' };
     }
     if (t < shotStart('E')) {
       const lv = tideNow(t);
-      const hrs = clamp((t - T0) / (T1 - T0)) * 6.2;
-      return { label: 'High tide', value: `${lv >= 0 ? '+' : '−'}${Math.abs(lv).toFixed(1)} m`, sub: `normally +1.9 m · ${hrs.toFixed(1)} h` };
+      return { label: since, value: '1 day', sub: `high tide ${lv >= 0 ? '+' : '−'}${Math.abs(lv).toFixed(1)} m · normally +1.9 m` };
     }
     if (t < shotStart('D')) {
       const k = smooth(shotStart('E') + 0.6, shotStart('E') + 2.4, t);
-      return { label: 'Tide-raising force', value: `${Math.round(lerp(100, 31, k))}%`, sub: k > 0.99 ? 'the sun alone' : 'sun + moon' };
+      return { label: since, value: '1 day', sub: `pull on the oceans: ${Math.round(lerp(100, 31, k))}%` };
     }
-    if (t < shotStart('X1')) return { label: 'Since the Moon vanished', value: '6 weeks', sub: 'sea turtles hatching' };
+    if (t < shotStart('X1')) return { label: since, value: '6 weeks', sub: t < shotStart('R') ? 'sea turtles hatching' : 'fewer reach the sea' };
     if (t < shotStart('G')) {
-      const yrs = t < 42 ? 0 : Math.pow(10, lerp(3, 7.3, clamp((t - 42) / (shotStart('G') - 42))));
-      return { label: "Earth's tilt", value: `${tiltAt(t).toFixed(1)}°`, sub: yrs < 1 ? 'steady' : `+${fmt(yrs)} years` };
+      // years race by: 10 years to 2 million
+      const yrs = Math.pow(10, lerp(1, 6.3, Math.pow(clamp((t - shotStart('X1')) / (shotStart('G') - shotStart('X1'))), 0.9)));
+      return { label: since, value: `${fmt(yrs)} years`, sub: `earth's tilt ${tiltAt(t).toFixed(1)}°` };
     }
-    if (t < HERE) return { label: 'Ice sheet', value: `${Math.max(0, (wallZ(t) + 38) / 1000).toFixed(1)} km`, sub: 'advancing' };
+    if (t < HERE) return { label: 'Ice sheet', value: `${Math.max(0, (wallZ(t) + 38) / 1000).toFixed(1)} km`, sub: 'advancing · 2 million years on' };
     return { label: 'The ice', value: 'HERE', sub: '' };
   },
   audio: [
@@ -148,6 +164,7 @@ export default {
     { type: 'crowd', t0: shotStart('T'), t1: shotStart('E'), level: 0.45, voices: 14, seed: 4 },
     { type: 'riser', t0: shotStart('E') - 1.4, t1: shotStart('E'), level: 0.22 },
     { type: 'drone', t0: shotStart('E'), t1: shotStart('D'), root: 43, chord: [0, 7, 12], level: 0.45, fin: 0.3 },
+    { type: 'whoosh', t: shotStart('D') - 0.3, level: 0.3 },
     { type: 'water', t0: shotStart('D'), t1: shotStart('X1'), level: 0.5 },
     { type: 'ambience', t0: shotStart('D'), t1: shotStart('X1'), kind: 'night-quiet', level: 0.6 },
     { type: 'pulse', t0: shotStart('D') + 3.5, t1: shotStart('X1') - 0.2, bpm: [60, 72], level: 0.36 },
@@ -155,6 +172,7 @@ export default {
     { type: 'braam', t: shotStart('X1'), level: 0.45, root: 29 },
     { type: 'drone', t0: shotStart('X1'), t1: shotStart('W'), root: 41, chord: [0, 5, 12, 15], level: 0.34, swell: [[38.8, 0.2], [46, 0.5], [49.6, 0.35]] },
     { type: 'pulse', t0: 42.3, t1: shotStart('W'), bpm: [56, 74], level: 0.3 },
+    { type: 'whoosh', t: shotStart('W') - 0.3, level: 0.35 },
     { type: 'ambience', t0: shotStart('W'), t1: HERE, kind: 'wind', level: 0.55 },
     { type: 'creak', t0: shotStart('W') + 2, t1: HERE, level: 0.5 },
     { type: 'riser', t0: shotStart('G') - 1.6, t1: shotStart('G'), level: 0.3 },
@@ -176,6 +194,7 @@ export default {
   async setup(ctx) {
     const { scene, renderer } = ctx;
     const st = this.st = {};
+    window.__st = st;   // handle for dev probes
     const r = new Rng(384400);
     renderer.toneMappingExposure = 1.0;
     renderer.shadowMap.enabled = true;
@@ -225,7 +244,7 @@ export default {
     st.key = new THREE.DirectionalLight('#a9bce8', 0.5);
     st.key.castShadow = true;
     st.key.shadow.mapSize.set(2048, 2048);
-    st.key.shadow.bias = -0.0005; st.key.shadow.normalBias = 0.03; st.key.shadow.radius = 2.5;
+    st.key.shadow.bias = -0.0002; st.key.shadow.normalBias = 0.012; st.key.shadow.radius = 2.5;
     scene.add(st.hemi, st.key, st.key.target);
     st.cityGlow = new THREE.DirectionalLight('#ffb878', 0);      // warm light from the seafront, for the beach at night
     scene.add(st.cityGlow, st.cityGlow.target);
@@ -247,6 +266,22 @@ export default {
     // ---- beach props for the day scene: umbrellas and towels
     st.umbrellas = buildUmbrellas(new Rng(8));
     scene.add(st.umbrellas.group);
+
+    // ---- seaweed and shells left along the old high-tide line
+    {
+      const rr = new Rng(19), n = 700;
+      const g = new THREE.IcosahedronGeometry(0.15, 0); g.scale(1.6, 0.3, 0.9);
+      const im = new THREE.InstancedMesh(g, new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.9, flatShading: true }), n);
+      const M = new THREE.Matrix4(), zW = (SF.MSL + 1.9 - SF.wallY) / SF.slope;
+      for (let i = 0; i < n; i++) {
+        const x = rr.float(-140, 160), z = zW + rr.gauss() * 0.8, sc = rr.float(0.5, 1.3);
+        M.compose(new THREE.Vector3(x, beachY(x, z) + 0.02, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, rr.float(0, 6.28), 0)), new THREE.Vector3(sc, sc, sc));
+        im.setMatrixAt(i, M);
+        im.setColorAt(i, new THREE.Color(rr.pick(['#5b5a2e', '#4c5e2a', '#6e5c36', '#566b33', '#e8dfcf'])));
+      }
+      im.receiveShadow = true;
+      st.wrack = im; scene.add(im);
+    }
 
     // ---- hatchlings
     st.turtles = buildHatchlings(new Rng(31), 60);
@@ -342,12 +377,12 @@ export default {
 
     // ------------------------------------------------ sea level, beach, snow, ice
     let level = SF.MSL - 0.3;
-    if (shot === 'T') level = SF.MSL + tideNow(t);
+    if (shot === 'T' || shot === 'T2') level = SF.MSL + tideNow(t);
     if (['D', 'R'].includes(shot)) level = SF.MSL - 0.6;
     water.level = level;
-    sf.beachU.uWetY.value = level + (shot === 'T' ? 0.15 : 0.35);
+    sf.beachU.uWetY.value = level + (shot === 'T' || shot === 'T2' ? 0.15 : 0.35);
     sf.beachU.uWrackY.value = SF.MSL + 1.9;
-    sf.beachU.uWrack.value = ['T', 'D', 'R'].includes(shot) ? 1 : 0.5;
+    sf.beachU.uWrack.value = ['T', 'T2', 'D', 'R'].includes(shot) ? 1 : 0.5;
     const snow = shot === 'W' ? smooth(shotStart('W') + 0.5, shotStart('W') + 4.5, t) : winter ? 1 : 0;
     sf.snowU.uSnow.value = snow; fac.uSnow.value = snow; st.city.ground.material.userData.uniforms && (st.city.ground.material.userData.uniforms.uSnow.value = snow);
     wu.uFreeze.value = shot === 'W' ? 0.75 * smooth(shotStart('W') + 2.5, shotStart('W') + 6.5, t) : winter ? 0.75 : 0;
@@ -357,7 +392,8 @@ export default {
     // ------------------------------------------------ actors
     st.ppl.update(t);
     st.veh.update(t);
-    st.umbrellas.group.visible = shot === 'T';
+    st.umbrellas.group.visible = shot === 'T' || shot === 'T2';
+    st.wrack.visible = !winter;
     st.turtles.group.visible = shot === 'D' || shot === 'R';
     if (st.turtles.group.visible) st.turtles.update(t - shotStart('D'));
     st.glacier.visible = ['G', 'F', 'H'].includes(shot);
@@ -452,8 +488,14 @@ function camShot(ctx, shot, u, t) {
     case 'T':
     case 'W': {      // over the road, looking across the promenade and down the beach to the sea (same frame both seasons)
       c.pos.set(lerp(-24, -18, e), lerp(15, 14, e), lerp(19, 18, e));
-      c.look.set(lerp(6, 10, e), -6.5, -55);
+      c.look.set(lerp(6, 10, e), -7, -95);
       c.fov = 50; ctx.handheld = 0.15;
+      break;
+    }
+    case 'T2': {     // beside the kid on the old high-tide line, looking down the beach at the water far below
+      c.pos.set(KID_T.x + lerp(1.3, 1.0, e), beachY(KID_T.x, KID_T.z) + lerp(2.4, 2.2, e), KID_T.z + lerp(6.2, 5.4, e));
+      c.look.set(KID_T.x - 4, beachY(KID_T.x, KID_T.z - 20) + 0.5, KID_T.z - 26);
+      c.fov = 48; ctx.handheld = 0.3;
       break;
     }
     case 'D': {      // on the sand behind the nest, looking at the lights
@@ -521,8 +563,8 @@ function castPeople(r) {
   }
   // the family in close-up (B2): parent with a phone, a kid pointing, another adult with hands on head
   const fam = [
-    { x: 7.9, z: 1.3, h: Math.PI - 0.15, poses: [[0, 'phone'], [VANISH + 0.3, 'phoneLow', 0.4], [8.6, 'shrug', 0.5]], phone: () => true, shirt: '#2e86c1' },
-    { x: 8.65, z: 1.15, h: Math.PI + 0.1, kid: true, poses: [[0, 'point'], [VANISH + 0.4, 'lookUp', 0.3], [7.6, 'point', 0.4]], shirt: '#f4d03f' },
+    { x: 7.9, z: 1.3, h: Math.PI - 0.15, poses: [[0, 'phone'], [VANISH + 0.3, 'phoneLow', 0.4], [8.6, 'shrug', 0.5]], phone: () => true, shirt: '#2e86c1', skin: '#e0ac85', hair: 'short', hairC: '#2e2018' },
+    Object.assign({}, KID, { x: 8.65, z: 1.15, h: Math.PI + 0.1, poses: [[0, 'point'], [VANISH + 0.4, 'lookUp', 0.3], [7.6, 'point', 0.4]] }),
     { x: 9.35, z: 1.4, h: Math.PI + 0.25, poses: [[0, 'lookUp'], [VANISH + 0.5, 'handsHead', 0.35], [9.4, 'idle', 0.6]], shirt: '#c0392b', hair: 'long', turn: (t) => -0.7 * smooth(8.0, 8.8, t) },
   ];
   for (const f of fam) P.add(Object.assign({ visible: nightCrowd }, f));
@@ -551,7 +593,7 @@ function castPeople(r) {
   }
 
   // ---- the day at the beach (tide shot): sunbathers, umbrellas, walkers along the water
-  const dayBeach = on('T');
+  const dayBeach = on('T', 'T2');
   const yb = (x, z) => beachY(x, z);
   for (let i = 0; i < 70; i++) {
     const x = r.float(-60, 70), z = r.float(-15, -4);
@@ -571,7 +613,13 @@ function castPeople(r) {
     P.add({ path: [[x0 - dir * 200, z], [x0 + dir * 200, z]], v, t0: T0 - 120, poses: [[0, 'auto']], visible: dayBeach, longSleeve: false });
   }
 
-  // ---- volunteers with torches (R)
+  // ---- the kid on the old seaweed line, pointing at the water far below (T2), parent beside
+  P.add(Object.assign({}, KID, { x: KID_T.x, z: KID_T.z, h: Math.PI + 0.2, yAt: yb, poses: [[0, 'idle'], [21.5, 'pointFwd', 0.5]], visible: on('T2') }));
+  P.add({ x: KID_T.x - 1.1, z: KID_T.z + 0.4, h: Math.PI - 0.1, yAt: yb, poses: [[0, 'idle'], [22.6, 'shrug', 0.6]], visible: on('T2'), shirt: '#2e86c1', skin: '#e0ac85', hair: 'short', hairC: '#2e2018', longSleeve: false });
+
+  // ---- volunteers with torches (R); the kid and the parent are among them
+  P.add(Object.assign({}, KID, { x: NEST.x - 3.6, z: NEST.z + 2.6, h: 0.5, yAt: yb, poses: [[0, 'torch']], torch: (t) => shotAt(t)[1] === 'R', visible: on('R'), longSleeve: true }));
+  P.add({ x: NEST.x - 2.6, z: NEST.z + 3.4, h: 0.2, yAt: yb, poses: [[0, 'crouch']], visible: on('R'), shirt: '#2e86c1', skin: '#e0ac85', hair: 'short', hairC: '#2e2018', longSleeve: true });
   const vol = on('R', 'D');
   const VX = NEST.x, VZ = NEST.z;
   [[VX - 1.2, VZ + 4.5, 0.3, 'torch'], [VX + 1.6, VZ + 6.2, -0.5, 'crouch'], [VX - 2.8, VZ + 7.5, 0.6, 'torch'], [VX + 0.4, VZ + 9.5, Math.PI, 'crouch']].forEach(([x, z, h, pose], k) => {

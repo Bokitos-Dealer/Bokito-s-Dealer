@@ -7,6 +7,9 @@ import { crackSVG } from './lib/fx.js';
 const params = new URLSearchParams(location.search);
 const W = 1080, H = 1920;
 const SCALE = parseFloat(params.get('scale') || '0.75');
+// 'all' draws everything; 'scene' leaves out the text (title, HUD, captions, end card);
+// 'text' draws only the text on a transparent page, to be composited over the scene later.
+const LAYER = params.get('layer') || 'all';
 const FPS = 30;
 
 const canvas = document.getElementById('gl');
@@ -50,6 +53,12 @@ const ctx = {
   t: 0,
 };
 window.ctx = ctx;
+
+if (LAYER === 'scene') { ui.title.parentElement.style.display = 'none'; ui.end.style.display = 'none'; }
+if (LAYER === 'text') {
+  for (const el of [canvas, ui.tint, ui.grain, ui.flash, ui.crack, ui.fade, document.getElementById('vignette'), document.getElementById('rain')]) el.style.display = 'none';
+  for (const el of [document.documentElement, document.body, document.getElementById('stage')]) el.style.background = 'transparent';
+}
 
 let S = null, cur = -1, crackBuilt = false;
 let brand = { handle: '@yourhandle', name: '' };
@@ -223,6 +232,13 @@ window.WI = {
   },
   // Advance the simulation to `frame` (must not go backwards), then draw it.
   goto(frame, draw = true) {
+    if (LAYER === 'text') {
+      // text depends only on time: no simulation, no 3D
+      if (!draw) return null;
+      const t = frame / FPS;
+      overlay(t);
+      return { t };
+    }
     if (frame < cur) throw new Error('cannot rewind');
     while (cur < frame) { cur++; step(cur); }
     if (!draw) return null;

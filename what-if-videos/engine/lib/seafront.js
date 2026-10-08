@@ -124,20 +124,21 @@ export function buildSeafront(opts = {}) {
       float bh(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
       float bn(vec2 p){ vec2 i=floor(p), f=fract(p); vec2 u=f*f*(3.0-2.0*f); return mix(mix(bh(i),bh(i+vec2(1,0)),u.x), mix(bh(i+vec2(0,1)),bh(i+vec2(1,1)),u.x), u.y); }`)
       .replace('#include <color_fragment>', `#include <color_fragment>
-        float wet = smoothstep(uWetY + 0.12, uWetY - 0.05, vWp.y);
+        float wet = 1.0 - smoothstep(uWetY - 0.05, uWetY + 0.12, vWp.y);
         diffuseColor.rgb *= mix(1.0, 0.62, wet);
         diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.9, 0.93, 1.0), wet);
         // seaweed and shells left by the old, higher tides
         float wn = bn(vWp.xz * vec2(0.35, 1.4)) * 0.5 + bn(vWp.xz * 1.3) * 0.5;
-        float wr = smoothstep(0.11, 0.02, abs(vWp.y - uWrackY - (wn - 0.5) * 0.1)) * smoothstep(0.25, 0.5, wn) * uWrack;
-        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.2, 0.19, 0.11), wr * 0.9);
-        // and the old wet zone below it, a little darker than the dry sand
-        diffuseColor.rgb *= 1.0 - 0.1 * uWrack * smoothstep(uWrackY + 0.05, uWrackY - 0.2, vWp.y) * (1.0 - wet);
+        float wd = abs(vWp.y - uWrackY - (wn - 0.5) * 0.14);
+        float wr = (1.0 - smoothstep(0.06, 0.2, wd)) * (0.55 + 0.45 * smoothstep(0.2, 0.6, wn)) * uWrack;
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.13, 0.12, 0.07), wr);
+        // and the old wet zone below it, darker than the dry sand: where the sea used to reach
+        diffuseColor.rgb *= 1.0 - 0.2 * uWrack * (1.0 - smoothstep(uWrackY - 0.25, uWrackY + 0.02, vWp.y)) * (1.0 - wet);
         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.9, 0.93, 0.97), uSnow * (0.85 + 0.15 * bn(vWp.xz * 0.7)));
         diffuseColor.rgb *= 1.0 - uDark;`)
-      .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n roughnessFactor = mix(roughnessFactor, 0.35, smoothstep(uWetY + 0.12, uWetY - 0.05, vWp.y) * (1.0 - uSnow));');
+      .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n roughnessFactor = mix(roughnessFactor, 0.35, (1.0 - smoothstep(uWetY - 0.05, uWetY + 0.12, vWp.y)) * (1.0 - uSnow));');
   };
-  beachMat.customProgramCacheKey = () => 'beach-v1';
+  beachMat.customProgramCacheKey = () => 'beach-v3';
   const beach = new THREE.Mesh(bg, beachMat);
   beach.receiveShadow = true;
   group.add(beach);

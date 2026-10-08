@@ -18,6 +18,9 @@ if (!id) { console.log('usage: node render.mjs <scenario> [--preview t,t] [--fro
 const OUT = path.join(ROOT, 'output', id);
 fs.mkdirSync(OUT, { recursive: true });
 const scale = opt('scale', '0.75');
+const layer = opt('layer', 'all');                    // all | scene | text
+const FRAMES = layer === 'text' ? 'frames-text' : 'frames';
+const EXT = layer === 'text' ? 'png' : 'jpg';
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg' };
 function serve() {
@@ -38,13 +41,15 @@ async function openPage(srv) {
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   page.on('console', (m) => { const t = m.text(); if (!t.includes('GL Driver') && !t.includes('GPU stall')) console.log('[page]', t); });
   page.on('pageerror', (e) => console.log('[page error]', e.message));
-  await page.goto(`http://localhost:${srv.address().port}/engine/index.html?scale=${scale}`);
+  await page.goto(`http://localhost:${srv.address().port}/engine/index.html?scale=${scale}&layer=${layer}`);
   await page.waitForFunction('window.WI_READY === true');
   const info = await page.evaluate((id) => window.WI.init(id), id);
   return { browser, page, info };
 }
 
-const shot = (page, file) => page.screenshot({ path: file, type: 'jpeg', quality: 94, timeout: 300000, clip: { x: 0, y: 0, width: 1080, height: 1920 } });
+const shot = (page, file) => file.endsWith('.png')
+  ? page.screenshot({ path: file, type: 'png', omitBackground: true, timeout: 300000, clip: { x: 0, y: 0, width: 1080, height: 1920 } })
+  : page.screenshot({ path: file, type: 'jpeg', quality: 94, timeout: 300000, clip: { x: 0, y: 0, width: 1080, height: 1920 } });
 
 async function preview(times) {
   const srv = await serve();
@@ -81,15 +86,15 @@ async function renderRange(from, to) {
   const srv = await serve();
   const { browser, page, info } = await openPage(srv);
   fs.writeFileSync(path.join(OUT, 'meta.json'), JSON.stringify(info, null, 2));
-  const dir = path.join(OUT, 'frames');
+  const dir = path.join(OUT, FRAMES);
   fs.mkdirSync(dir, { recursive: true });
   const f0 = Math.round(from * info.fps), f1 = Math.min(info.frames - 1, Math.round(to * info.fps));
   if (f0 > 0) await page.evaluate((f) => window.WI.goto(f, false), f0 - 1);
   const t0 = Date.now();
   const resume = !!opt('resume');
   for (let f = f0; f <= f1; f++) {
-    const file = path.join(dir, `${String(f).padStart(5, '0')}.jpg`);
-    if (resume && fs.existsSync(file) && fs.statSync(file).size > 10000) { await page.evaluate((f) => window.WI.goto(f, false), f); continue; }
+    const file = path.join(dir, `${String(f).padStart(5, '0')}.${EXT}`);
+    if (resume && fs.existsSync(file) && fs.statSync(file).size > (EXT === 'png' ? 1000 : 10000)) { await page.evaluate((f) => window.WI.goto(f, false), f); continue; }
     await page.evaluate((f) => window.WI.goto(f), f);
     await shot(page, file);
     if ((f - f0) % 60 === 0 || f === f1) {
@@ -113,7 +118,13 @@ function encode(info) {
   const r = spawnSync('python3', ['-I', path.join(ROOT, 'audio', 'synth.py'), path.join(OUT, 'meta.json'), wav], { stdio: 'inherit' });
   if (r.status !== 0) throw new Error('audio synth failed');
   const mp4 = path.join(ROOT, 'output', `${id}.mp4`);
-  const e = spawnSync('ffmpeg', ['-v', 'error', '-y', '-framerate', String(info.fps), '-i', path.join(OUT, 'frames', '%05d.jpg'), '-i', wav,
+  const textDir = path.join(OUT, 'frames-text');
+  const withText = fs.existsSync(textDir) && fs.readdirSync(textDir).length >= info.frames;
+  const vin = ['-framerate', String(info.fps), '-i', path.join(OUT, 'frames', '%05d.jpg')];
+  if (withText) vin.push('-framerate', String(info.fps), '-i', path.join(textDir, '%05d.png'));
+  const vfx = withText ? ['-filter_complex', '[0:v][1:v]overlay=format=auto[v]', '-map', '[v]', '-map', '2:a'] : [];
+  console.log(withText ? 'compositing the text layer' : 'single layer');
+  const e = spawnSync('ffmpeg', ['-v', 'error', '-y', ...vin, '-i', wav, ...vfx,
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-maxrate', '12M', '-bufsize', '24M', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-r', String(info.fps),
     '-af', 'loudnorm=I=-14:TP=-1.2:LRA=11', '-ar', '44100', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-shortest', mp4], { stdio: 'inherit' });
   if (e.status !== 0) throw new Error('ffmpeg failed');
@@ -146,7 +157,7 @@ if (opt('meta')) {
     for (let w = 0; w < workers; w++) {
       const a = from + span * w, b = w === workers - 1 ? to : from + span * (w + 1) - 1 / info.fps;
       kids.push(new Promise((res) => {
-        const k = spawn(process.execPath, [fileURLToPath(import.meta.url), id, '--from', a.toFixed(4), '--to', b.toFixed(4), '--scale', scale, '--child', ...(opt('resume') ? ['--resume'] : [])], { stdio: 'inherit' });
+        const k = spawn(process.execPath, [fileURLToPath(import.meta.url), id, '--from', a.toFixed(4), '--to', b.toFixed(4), '--scale', scale, '--layer', layer, '--child', ...(opt('resume') ? ['--resume'] : [])], { stdio: 'inherit' });
         k.on('exit', res);
       }));
     }

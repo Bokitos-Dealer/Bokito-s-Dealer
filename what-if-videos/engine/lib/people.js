@@ -51,6 +51,7 @@ const POSES = {
   phone: (ph, t, s) => ({ armR: 2.15 + 0.03 * Math.sin(t * 2 + s), armRr: 0.28, head: -0.42, torso: -0.05 }),            // filming the sky
   phoneLow: (ph, t, s) => ({ armR: 1.15, armRr: 0.3, armL: 0.6, armLr: -0.2, head: 0.45 }),                                // looking at the screen
   point: (ph, t, s) => ({ armR: 2.5, armRr: 0.05, head: -0.5, torso: -0.06 }),
+  pointFwd: (ph, t, s) => ({ armR: 1.45 + 0.04 * Math.sin(t * 2 + s), armRr: -0.55, head: 0.05, torsoYaw: -0.15 }),          // pointing at something far ahead
   armsUp: (ph, t, s) => ({ armL: 2.8 + 0.25 * Math.sin(t * 7 + s), armR: 2.8 + 0.25 * Math.sin(t * 7 + s + 2), armLr: 0.25, armRr: -0.25, head: -0.3 }),
   handsHead: (ph, t, s) => ({ armL: 2.3, armR: 2.3, armLr: -0.75, armRr: 0.75, head: -0.2 }),                              // shock
   shrug: (ph, t, s) => ({ armL: 0.55, armR: 0.55, armLr: 0.5, armRr: -0.5, head: 0.08 }),
