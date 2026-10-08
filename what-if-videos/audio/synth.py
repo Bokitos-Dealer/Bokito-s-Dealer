@@ -170,7 +170,9 @@ def c_ambience(m, c):
         out += bubbles(n, 0.25)
     out = out / (np.abs(out).max() + 1e-9)
     e = np.ones(n)
-    k = sec(min(1.5, (t1 - t0) / 3)); e[:k] = np.linspace(0, 1, k); e[-k:] = np.linspace(1, 0, k)
+    k = sec(min(1.5, (t1 - t0) / 3)); e[-k:] = np.linspace(1, 0, k)
+    ki = sec(c.get('fin', min(1.5, (t1 - t0) / 3)))
+    if ki > 0: e[:ki] = np.linspace(0, 1, ki)
     if 'swell' in c:
         e *= env_keys(n, t0, c['swell'])
     m.add(t0, out * e[:, None], lvl, verb=0.15)
@@ -259,7 +261,7 @@ def c_drone(m, c):
     x *= lfo(n, 0.07, 0.12)
     st = np.stack([x, np.roll(x, sec(0.013))], axis=1)
     st = st / (np.abs(st).max() + 1e-9)
-    m.add(t0, fade(st, 2.0, 1.5), c.get('level', 0.35), verb=0.5)
+    m.add(t0, fade(st, c.get('fin', 2.0), 1.5), c.get('level', 0.35), verb=0.5)
 
 
 def c_boom(m, c):
@@ -512,7 +514,9 @@ def c_crowd(m, c):
     out = filt(out.T, 'lp', 3800).T
     out = out / (np.abs(out).max() + 1e-9)
     e = np.ones(n)
-    k = sec(min(0.8, (t1 - t0) / 3)); e[:k] = np.linspace(0, 1, k); e[-k:] = np.linspace(1, 0, k)
+    k = sec(min(0.8, (t1 - t0) / 3)); e[-k:] = np.linspace(1, 0, k)
+    ki = sec(c.get('fin', min(0.8, (t1 - t0) / 3)))
+    if ki > 0: e[:ki] = np.linspace(0, 1, ki)
     if 'swell' in c:
         e *= env_keys(n, t0, c['swell'])
     m.add(t0, out * e[:, None], c.get('level', 0.4), verb=0.25)
@@ -551,18 +555,89 @@ def c_siren(m, c):
     m.add(t0, x * e / (np.abs(x).max() + 1e-9), c.get('level', 0.25), pan=c.get('pan', 0.3), verb=0.7)
 
 
+
+def c_riser(m, c):
+    """Tension riser: a filtered noise sweep and a gliding tone that cut off at t1."""
+    t0, t1 = c['t0'], c['t1']
+    n = sec(t1 - t0)
+    t = np.arange(n) / SR
+    k = t / (t1 - t0)
+    env = k ** c.get('curve', 2.2)
+    f = 140 * (c.get('ratio', 6) ** k)
+    tone = (np.sin(2 * np.pi * np.cumsum(f) / SR) + 0.5 * np.sin(2 * np.pi * np.cumsum(f * 1.5) / SR)) * 0.35
+    x = white(n)
+    lo = filt(x, 'bp', [400, 1500]); hi = filt(x, 'bp', [2500, 8000])
+    noise = lo * (1 - k) + hi * k
+    y = (noise + tone) * env
+    y[-sec(0.01):] *= np.linspace(1, 0, sec(0.01))
+    m.add(t0, y / (np.abs(y).max() + 1e-9), c.get('level', 0.35), verb=0.25)
+
+
+def c_braam(m, c):
+    """A huge low brass-like hit: detuned saws through a filter that opens then closes."""
+    d = c.get('dur', 4.5)
+    n = sec(d)
+    t = np.arange(n) / SR
+    root = c.get('root', 33)
+    x = np.zeros(n)
+    for iv, a in ((0, 1.0), (7, 0.6), (12, 0.7), (-12, 0.8)):
+        for det in (-0.006, 0.0, 0.007):
+            x += saw(mtof(root + iv) * (1 + det), n) * a
+    cut = 180 + 2200 * np.exp(-t * 1.1) * np.clip(t / 0.06, 0, 1)
+    # time-varying low-pass: process in short blocks
+    out = np.zeros(n); blk = sec(0.02); zi = None
+    for i in range(0, n, blk):
+        j = min(n, i + blk)
+        sos = signal.butter(2, min(cut[i], SR / 2 - 100), 'lp', fs=SR, output='sos')
+        if zi is None: zi = signal.sosfilt_zi(sos) * 0
+        out[i:j], zi = signal.sosfilt(sos, x[i:j], zi=zi)
+    env = np.clip(t / 0.02, 0, 1) * np.exp(-t * c.get('decay', 0.7))
+    y = np.tanh(out * env * 0.5) + np.sin(2 * np.pi * mtof(root - 12) * t) * env * 0.6
+    m.add(c['t'], np.stack([y, np.roll(y, sec(0.011))], axis=1) / (np.abs(y).max() + 1e-9), c.get('level', 0.6), verb=0.45)
+
+
+def c_pulse(m, c):
+    """Low tom pulses whose tempo climbs from bpm0 to bpm1: a ticking-clock tension bed."""
+    t0, t1 = c['t0'], c['t1']
+    b0, b1 = c.get('bpm', [70, 140])
+    t = t0
+    while t < t1:
+        k = (t - t0) / (t1 - t0)
+        n = sec(0.5); tt = np.arange(n) / SR
+        f = 48 + 60 * np.exp(-tt * 30)
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 9) + filt(white(n), 'bp', [1500, 5000]) * np.exp(-tt * 70) * 0.25
+        m.add(t, x, c.get('level', 0.4) * (0.55 + 0.45 * k), verb=0.12)
+        t += 60 / (b0 + (b1 - b0) * k ** 1.4)
+
+
+def c_ring(m, c):
+    """Ear ringing after a shock."""
+    d = c.get('dur', 1.8)
+    n = sec(d); t = np.arange(n) / SR
+    x = (np.sin(2 * np.pi * 3900 * t) + 0.6 * np.sin(2 * np.pi * 4130 * t)) * np.clip(t / 0.08, 0, 1) * np.clip((d - t) / (d * 0.7), 0, 1) ** 1.5
+    m.add(c['t'], x * 0.5, c.get('level', 0.1), verb=0.1)
+
+
 CUES = dict(ambience=c_ambience, drone=c_drone, boom=c_boom, shimmer=c_shimmer, flicker=c_flicker, zap=c_zap,
             powerdown=c_powerdown, chime=c_chime, rumble=c_rumble, whoosh=c_whoosh, glass=c_glass, water=c_water,
             heartbeat=c_heartbeat, rain=c_rain, thunder=c_thunder, creak=c_creak,
-            crowd=c_crowd, gasp=c_gasp, siren=c_siren)
+            crowd=c_crowd, gasp=c_gasp, siren=c_siren, riser=c_riser, braam=c_braam, pulse=c_pulse, ring=c_ring)
 
 
 def main():
     meta = json.load(open(sys.argv[1]))
     dur = meta['duration']
-    m = Mix(dur)
+    m = Mix(dur)          # everything that can be ducked
+    free = Mix(dur)       # hits that must punch through a duck
+    ducks = []
     for c in meta['audio']:
-        CUES[c['type']](m, c)
+        if c['type'] == 'duck':
+            ducks.append(c); continue
+        CUES[c['type']](free if c.get('free') else m, c)
+    for c in ducks:
+        g = env_keys(m.n, 0, c['keys'])[:, None]
+        m.dry *= g; m.send *= g
+    m.dry += free.dry; m.send += free.send
     ir = reverb_ir()
     wet = np.stack([signal.fftconvolve(m.send[:, k], ir[:, k])[: m.n] for k in range(2)], axis=1)
     out = m.dry + wet * 0.6

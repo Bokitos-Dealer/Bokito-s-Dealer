@@ -14,7 +14,18 @@ import { GlowLayer, makeSoftTexture, Particles, makeSmokeTexture } from '../engi
 import { Rng, smooth, clamp, lerp, easeInOut, easeOut, fbm1 } from '../engine/lib/rng.js';
 
 // ---------------------------------------------------------------- timeline
-const VANISH = 2.0;
+const VANISH = 2.2;
+// the Moon stutters twice before it goes
+const flick = (t) => (t > 1.42 && t < 1.52) ? 0.22 : (t > 1.78 && t < 1.85) ? 0.3 : (t > 1.93 && t < 1.97) ? 0.6 : 1;
+// HUD digits scramble while it stutters
+const glitch = (txt, t) => {
+  const f = Math.floor(t * 30);
+  return [...txt].map((ch, i) => {
+    if (!/[0-9]/.test(ch)) return ch;
+    const h = Math.sin((f + 1) * 12.9898 + i * 78.233) * 43758.5453, v = h - Math.floor(h);
+    return v < 0.4 ? ch : String(Math.floor(v * 10));
+  }).join('');
+};
 // shots: [start, id]
 const SHOTS = [
   [0.0, 'A'],    // over the crowd's shoulders: the full Moon over the sea
@@ -65,7 +76,7 @@ export default {
   title: 'What if the Moon suddenly disappeared?',
   endFact: 'The Moon is slowly drifting away from Earth,<br>about 3.8 cm every year.',
   duration: 80,
-  titleIn: [0, 0.01],
+  titleIn: [-1, -0.5],
   titleOut: [3.0, 3.6],
   fadeOut: FADE,
   endAt: END,
@@ -90,7 +101,10 @@ export default {
     [60.6, 63.9, 'In the last ice age, the ice reached New York.'],
   ],
   hud(t) {
-    if (t < VANISH) return { label: 'The Moon', value: '384,400 km', sub: 'distance from earth' };
+    if (t < VANISH) {
+      const g = (t > 1.42 && t < 1.56) || t > 1.78;
+      return { label: 'The Moon', value: g ? glitch('384,400 km', t) : '384,400 km', sub: t > 1.78 ? 'signal lost' : 'distance from earth' };
+    }
     if (t < shotStart('C')) { const s = Math.floor(t - VANISH); return { label: 'The Moon', value: 'GONE', sub: `00:00:${String(s).padStart(2, '0')} · midnight` }; }
     if (t < shotStart('T')) {
       const k = smooth(shotStart('C') + 0.3, shotStart('C') + 2.2, t);
@@ -115,29 +129,48 @@ export default {
     return { label: 'The ice', value: 'HERE', sub: '' };
   },
   audio: [
-    { type: 'ambience', t0: 0, t1: shotStart('C') + 0.5, kind: 'night-city', level: 0.5, fadeOut: 0.6 },
-    { type: 'water', t0: 0, t1: shotStart('T'), level: 0.35 },
-    { type: 'drone', t0: 0.2, t1: shotStart('T'), root: 50, chord: [0, 3, 7, 12], level: 0.3, swell: [[0.2, 0.25], [VANISH, 0.6], [8, 0.4], [16, 0.3]] },
-    { type: 'boom', t: VANISH, level: 0.45, low: true },
-    { type: 'crowd', t0: 0, t1: shotStart('C') + 0.8, level: 0.55, voices: 22, swell: [[0, 1], [VANISH, 1], [VANISH + 0.25, 0.25], [VANISH + 2.5, 0.85], [shotStart('C'), 0.7]] },
-    { type: 'gasp', t: VANISH + 0.05, level: 0.6 },
-    { type: 'crowd', t0: shotStart('T'), t1: shotStart('E'), level: 0.3, voices: 14, seed: 4 },
-    { type: 'crowd', t0: shotStart('F') - 0.5, t1: HERE, level: 0.5, voices: 26, seed: 9 },
-    { type: 'siren', t0: shotStart('G'), t1: HERE + 0.4, level: 0.28, period: 5.5 },
+    // ---- the hook: build, stutter, the Moon goes, everything drops out
+    { type: 'ambience', t0: 0, t1: shotStart('C') + 0.5, kind: 'night-city', level: 0.5, fin: 0.03 },
+    { type: 'water', t0: 0, t1: shotStart('T'), level: 0.5 },
+    { type: 'pulse', t0: shotStart('C') + 0.3, t1: shotStart('T') - 0.3, bpm: [58, 64], level: 0.32 },
+    { type: 'crowd', t0: 0, t1: shotStart('C') + 0.8, level: 0.6, voices: 22, fin: 0.03, swell: [[0, 1], [1.42, 1], [1.6, 0.5], [VANISH, 0.45], [VANISH + 2.6, 0.85], [shotStart('C'), 0.7]] },
+    { type: 'drone', t0: 0, t1: shotStart('T'), root: 50, chord: [0, 3, 7, 12], level: 0.32, fin: 0.05, swell: [[0, 0.45], [VANISH, 0.95], [VANISH + 0.1, 0.2], [7, 0.45], [16, 0.3]] },
+    { type: 'pulse', t0: 0.05, t1: VANISH - 0.12, bpm: [78, 124], level: 0.55 },
+    { type: 'riser', t0: 0.25, t1: VANISH, level: 0.3 },
+    { type: 'duck', keys: [[0, 1], [VANISH - 0.02, 1], [VANISH + 0.03, 0.05], [VANISH + 0.9, 0.08], [VANISH + 1.7, 0.75], [VANISH + 2.5, 1], [80, 1]] },
+    { type: 'boom', t: VANISH, level: 0.75, low: true, free: true },
+    { type: 'braam', t: VANISH, level: 0.6, root: 31, decay: 1.5, free: true },
+    { type: 'ring', t: VANISH + 0.08, level: 0.1, free: true },
+    { type: 'gasp', t: VANISH + 0.8, level: 0.6, free: true },
+    // ---- the days after
     { type: 'whoosh', t: shotStart('T') - 0.4, level: 0.4 },
-    { type: 'ambience', t0: shotStart('T'), t1: shotStart('E'), kind: 'coast', gulls: 1, level: 0.6 },
-    { type: 'drone', t0: shotStart('E'), t1: shotStart('D'), root: 43, chord: [0, 7, 12], level: 0.3 },
-    { type: 'water', t0: shotStart('D'), t1: shotStart('X1'), level: 0.3 },
-    { type: 'ambience', t0: shotStart('D'), t1: shotStart('X1'), kind: 'night-quiet', level: 0.4 },
-    { type: 'whoosh', t: shotStart('X1') - 0.3, level: 0.4 },
+    { type: 'ambience', t0: shotStart('T'), t1: shotStart('E'), kind: 'coast', gulls: 1, level: 0.85 },
+    { type: 'crowd', t0: shotStart('T'), t1: shotStart('E'), level: 0.45, voices: 14, seed: 4 },
+    { type: 'riser', t0: shotStart('E') - 1.4, t1: shotStart('E'), level: 0.22 },
+    { type: 'drone', t0: shotStart('E'), t1: shotStart('D'), root: 43, chord: [0, 7, 12], level: 0.45, fin: 0.3 },
+    { type: 'water', t0: shotStart('D'), t1: shotStart('X1'), level: 0.5 },
+    { type: 'ambience', t0: shotStart('D'), t1: shotStart('X1'), kind: 'night-quiet', level: 0.6 },
+    { type: 'pulse', t0: shotStart('D') + 3.5, t1: shotStart('X1') - 0.2, bpm: [60, 72], level: 0.36 },
+    // ---- the slow change, then the ice
+    { type: 'braam', t: shotStart('X1'), level: 0.45, root: 29 },
     { type: 'drone', t0: shotStart('X1'), t1: shotStart('W'), root: 41, chord: [0, 5, 12, 15], level: 0.34, swell: [[38.8, 0.2], [46, 0.5], [49.6, 0.35]] },
+    { type: 'pulse', t0: 42.3, t1: shotStart('W'), bpm: [56, 74], level: 0.3 },
     { type: 'ambience', t0: shotStart('W'), t1: HERE, kind: 'wind', level: 0.55 },
     { type: 'creak', t0: shotStart('W') + 2, t1: HERE, level: 0.5 },
-    { type: 'rumble', t0: shotStart('G'), t1: HERE + 0.6, level: 0.75 },
+    { type: 'riser', t0: shotStart('G') - 1.6, t1: shotStart('G'), level: 0.3 },
+    { type: 'braam', t: shotStart('G'), level: 0.6, root: 28 },
+    { type: 'pulse', t0: shotStart('G'), t1: HERE - 0.05, bpm: [72, 156], level: 0.55 },
+    { type: 'rumble', t0: shotStart('G'), t1: HERE + 0.6, level: 0.6 },
+    { type: 'siren', t0: shotStart('G'), t1: HERE + 0.4, level: 0.28, period: 5.5 },
+    { type: 'crowd', t0: shotStart('F') - 0.5, t1: HERE, level: 0.5, voices: 26, seed: 9 },
     { type: 'drone', t0: shotStart('G'), t1: FADE[1], root: 36, chord: [0, 1, 7, 12], level: 0.42, swell: [[56.8, 0.3], [64, 1.0], [67, 0.5]] },
-    { type: 'glass', t: HERE, level: 0.8 },
-    { type: 'boom', t: HERE, level: 0.75, low: true },
-    { type: 'chime', t: END, level: 0.5 },
+    { type: 'riser', t0: HERE - 2.4, t1: HERE, level: 0.42 },
+    { type: 'glass', t: HERE, level: 0.8, free: true },
+    { type: 'boom', t: HERE, level: 0.8, low: true, free: true },
+    { type: 'braam', t: HERE, level: 0.5, root: 26, free: true },
+    { type: 'ring', t: HERE + 0.1, level: 0.08, free: true },
+    { type: 'duck', keys: [[0, 1], [HERE - 0.02, 1], [HERE + 0.05, 0.25], [FADE[1], 0.15], [END, 1], [80, 1]] },
+    { type: 'chime', t: END, level: 0.5, free: true },
   ],
 
   async setup(ctx) {
@@ -244,9 +277,9 @@ export default {
     const winter = ['W', 'G', 'F', 'H'].includes(shot);
     const moonUp = t < VANISH;
     if (night) {
-      const m = moonUp ? 1 : 0;
-      sky.uniforms.uZenith.value.set(m ? '#0d1a3a' : '#060a16');
-      sky.uniforms.uHorizon.value.set(m ? '#2a3d68' : '#121b30');
+      const m = moonUp ? flick(t) : 0;
+      sky.uniforms.uZenith.value.set(moonUp ? '#0d1a3a' : '#060a16');
+      sky.uniforms.uHorizon.value.set(moonUp ? '#2a3d68' : '#121b30');
       sky.uniforms.uBelow.value.set('#05070c');
       sky.uniforms.uSunDisk.value = 0; sky.uniforms.uSunGlow.value = 0;
       sky.starU.uStars.value = m ? 0.45 : 1.0;
@@ -303,7 +336,8 @@ export default {
     if (moonVis) {
       const camP = ctx.camera.position;
       st.moon.position.copy(camP).addScaledVector(MOON_DIR, 9000); st.moon.scale.setScalar(1100);
-      st.moonGlow.position.copy(st.moon.position); st.moonGlow.scale.setScalar(5200); st.moonGlow.material.opacity = 0.55;
+      st.moonGlow.position.copy(st.moon.position); st.moonGlow.scale.setScalar(5200); st.moonGlow.material.opacity = 0.55 * flick(t);
+      st.moon.material.opacity = flick(t);
     }
 
     // ------------------------------------------------ sea level, beach, snow, ice
@@ -390,9 +424,11 @@ function camShot(ctx, shot, u, t) {
   const e = easeInOut(u);
   switch (shot) {
     case 'A': {      // over the shoulders of the crowd at the railing, the Moon high over the sea
-      c.pos.set(0.6, 2.2, lerp(6.6, 5.9, e));
-      c.look.set(0.6 + 12, 2.2 + 23, -260);
+      const k = easeOut(clamp(t / 2.3));
+      c.pos.set(1.9 + 0.3 * k, lerp(1.62, 2.6, k), lerp(6.6, 5.0, k) - 0.25 * Math.max(0, t - 2.3));
+      c.look.set(1.9 + 12, lerp(1.62 + 15, 2.6 + 22, k), -260);
       c.fov = 50; ctx.handheld = 0.25;
+      ctx.shake = t > VANISH ? 0.55 * Math.exp(-(t - VANISH) * 3.5) : 0;
       break;
     }
     case 'B1': {     // from the beach side, low, looking up at the crowd along the railing
@@ -511,7 +547,7 @@ function castPeople(r) {
   // sitting on benches
   for (const b of this.st.sf.benches.slice(25, 46)) {
     if (r.chance(0.4)) continue;
-    for (const dx of [-0.45, 0.45]) if (r.chance(0.7)) P.add({ x: b.x + dx, z: b.z - 0.05, h: Math.PI, poses: [[0, 'sit'], [react(r), 'sit'], [react(r) + 1, 'sit']], visible: nightCrowd, headYaw: () => 0, extra: (t, po) => { po.head += -0.4 * smooth(VANISH, VANISH + 0.6, t); } });
+    for (const dx of [-0.45, 0.45]) if (r.chance(0.7)) P.add({ hide: (t) => shotAt(t)[1] === 'A' && Math.abs(b.x - 0.8) < 12, x: b.x + dx, z: b.z - 0.05, h: Math.PI, poses: [[0, 'sit'], [react(r), 'sit'], [react(r) + 1, 'sit']], visible: nightCrowd, headYaw: () => 0, extra: (t, po) => { po.head += -0.4 * smooth(VANISH, VANISH + 0.6, t); } });
   }
 
   // ---- the day at the beach (tide shot): sunbathers, umbrellas, walkers along the water
