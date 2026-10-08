@@ -137,7 +137,7 @@ export function buildWater(opts = {}) {
           float th = 1.0 - uFreeze*1.15;
           float edge = smoothstep(th, th + 0.08, shore + (n1 - 0.5)*0.12);
           float crack = smoothstep(0.03, 0.0, abs(vn(vWorld.xz*0.045) - 0.5)) * 0.6 + smoothstep(0.02, 0.0, abs(n2 - 0.5)) * 0.3;
-          vec3 ice = mix(vec3(0.66, 0.77, 0.86), vec3(0.9, 0.93, 0.97), smoothstep(0.25, 0.75, n2 * 0.6 + vn(vWorld.xz*0.006) * 0.6)) - crack * vec3(0.3, 0.18, 0.06);
+          vec3 ice = mix(vec3(0.26, 0.4, 0.5), vec3(0.74, 0.8, 0.87), smoothstep(0.42, 0.82, n2 * 0.6 + vn(vWorld.xz*0.006) * 0.6)) - crack * vec3(0.18, 0.12, 0.05);
           ice = mix(ice, refl, fres*0.25);
           col = mix(col, ice, edge);
         }

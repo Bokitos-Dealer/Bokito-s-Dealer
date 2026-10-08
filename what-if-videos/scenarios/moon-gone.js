@@ -14,9 +14,9 @@ import { GlowLayer, makeSoftTexture, Particles, makeSmokeTexture } from '../engi
 import { Rng, smooth, clamp, lerp, easeInOut, easeOut, fbm1 } from '../engine/lib/rng.js';
 
 // ---------------------------------------------------------------- timeline
-const VANISH = 2.2;
+const VANISH = 1.3;
 // the Moon stutters twice before it goes
-const flick = (t) => (t > 1.42 && t < 1.52) ? 0.22 : (t > 1.78 && t < 1.85) ? 0.3 : (t > 1.93 && t < 1.97) ? 0.6 : 1;
+const flick = (t) => (t > 0.6 && t < 0.69) ? 0.22 : (t > 0.94 && t < 1.0) ? 0.3 : (t > 1.1 && t < 1.14) ? 0.6 : 1;
 // HUD digits scramble while it stutters
 const glitch = (txt, t) => {
   const f = Math.floor(t * 30);
@@ -29,28 +29,28 @@ const glitch = (txt, t) => {
 // shots: [start, id]
 const SHOTS = [
   [0.0, 'A'],    // over the crowd's shoulders: the full Moon over the sea
-  [3.4, 'B1'],   // from the sea side: the crowd at the railing filming it
-  [7.0, 'B2'],   // closer: a family reacts
-  [10.4, 'C'],   // high and wide: the dark seafront
-  [17.4, 'T'],   // next day: the tide comes in (time-lapse)
-  [21.0, 'T2'],  // the kid stands on the old seaweed line; the water stops far below
-  [24.6, 'E'],   // space: the tidal bulge shrinks to the Sun's share
-  [28.0, 'D'],   // sand level: hatchlings emerge and head for the lights
-  [35.2, 'R'],   // volunteers with torches collect lost hatchlings
-  [38.8, 'X1'],  // space: Earth and its axis
-  [45.9, 'X2'],  // space, closer: the axis wanders
-  [49.6, 'W'],   // the same beach, colder winters: snow, the sea freezes
-  [56.8, 'G'],   // from the ice: the ice sheet behind the skyline
-  [60.4, 'F'],   // on the frozen beach: people run, the ice swallows the hotels
-  [64.0, 'H'],   // the ice wall fills the frame: HERE
-  [67.6, 'END'],
+  [2.4, 'B1'],   // from the sea side: the crowd at the railing filming it
+  [4.4, 'B2'],   // closer: a family reacts
+  [6.4, 'C'],    // the dark seafront
+  [9.0, 'T'],    // next day: the tide comes in (time-lapse)
+  [12.0, 'T2'],  // the kid stands on the old seaweed line; the water stops far below
+  [14.6, 'E'],   // space: the tidal bulge shrinks to the Sun's share
+  [17.2, 'D'],   // sand level: hatchlings emerge and head for the lights
+  [20.0, 'R'],   // volunteers with torches collect lost hatchlings
+  [22.4, 'X1'],  // space: Earth and its axis
+  [25.4, 'X2'],  // space, closer: the axis wanders
+  [28.4, 'W'],   // the same beach, colder winters: snow, the sea freezes
+  [31.8, 'G'],   // from the ice: the ice sheet behind the skyline
+  [34.6, 'F'],   // on the frozen beach: people run, the ice swallows the hotels
+  [37.6, 'H'],   // the ice wall fills the frame: HERE
+  [40.8, 'END'],
 ];
 // the last shot holds through the fade to black ('END' only marks where it stops moving)
 const shotAt = (t) => { let s = SHOTS[0]; for (const sh of SHOTS) if (t >= sh[0] && sh[1] !== 'END') s = sh; return s; };
 const shotStart = (id) => SHOTS.find((s) => s[1] === id)[0];
 const shotEnd = (id) => { const i = SHOTS.findIndex((s) => s[1] === id); return SHOTS[i + 1][0]; };
-const FADE = [67.6, 69.2], END = 69.6;
-const HERE = 64.6;
+const FADE = [40.8, 42.0], END = 42.4;
+const HERE = 38.2;
 
 const MOON_DIR = new THREE.Vector3(0.12, 0.165, -1).normalize();
 const SUN_DAY = new THREE.Vector3(-0.35, 0.62, -0.7).normalize();
@@ -58,6 +58,7 @@ const NEST = { x: 42, z: -24 };
 // torch holders [x, z] and where their beams land
 const TORCH = [[NEST.x - 1.2, NEST.z + 4.5, NEST.x - 0.4, NEST.z + 6.5], [NEST.x - 2.8, NEST.z + 7.5, NEST.x - 1.6, NEST.z + 9.4]];
 const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const S = (file, t, o = {}) => Object.assign({ type: 'sample', file, t }, o);
 const dur = (sec) => {
   const p = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
   if (sec < 60) return p(Math.max(1, Math.floor(sec)), 'second');
@@ -79,41 +80,33 @@ const wallZ = (t) => {
   return lerp(70, -38, easeOut(clamp((t - shotStart('H')) / 2.6)));
 };
 // Earth's obliquity shown in the space shots
-const TILT = [[38.8, 23.4], [42.0, 23.4], [44.5, 25.9], [46.5, 21.8], [49.0, 27.3], [80, 27.3]];
+const TILT = [[22.4, 23.4], [23.6, 23.4], [25.0, 25.9], [26.6, 21.8], [28.2, 27.3], [80, 27.3]];
 const tiltAt = (t) => { for (let i = 0; i < TILT.length - 1; i++) { const [a, va] = TILT[i], [b, vb] = TILT[i + 1]; if (t <= b) return lerp(va, vb, easeInOut(clamp((t - a) / (b - a)))); } return 27.3; };
 
 export default {
   id: 'moon-gone',
   title: 'What if the Moon suddenly disappeared?',
   endFact: 'The Moon is slowly drifting away from Earth,<br>about 3.8 cm every year.',
-  duration: 80,
+  duration: 48,
   titleIn: [-1, -0.5],
-  titleOut: [3.0, 3.6],
+  titleOut: [2.05, 2.4],
   fadeOut: FADE,
   endAt: END,
   crackAt: [540, 820],
   captions: [
-    // act 1: the night
-    [3.6, 6.9, 'The Moon is simply gone.'],
-    [7.1, 10.3, 'No explosion. No sound.'],
-    [10.6, 13.8, 'Every night is now a moonless night.'],
-    [14.0, 17.2, 'And the darkness is the smallest problem.'],
-    // act 2: the first weeks
-    [17.6, 20.8, 'The next day, the tide comes in.'],
-    [21.1, 24.4, 'It stops at less than half the height.'],
-    [24.8, 27.9, 'Only the Sun is pulling on the ocean now.'],
-    [28.2, 31.5, 'Weeks later, sea turtles hatch.'],
-    [31.7, 35.0, 'They crawl toward the brightest horizon.'],
-    [35.4, 38.6, 'Without moonlight on the sea, more get lost.'],
-    // act 3: deep time
-    [39.0, 42.3, 'But the biggest change is too slow to see.'],
-    [42.5, 45.8, "The Moon kept Earth's tilt steady."],
-    [46.0, 49.4, 'Without it, the tilt starts to wander.'],
-    [49.8, 53.1, 'How far, scientists still debate.'],
-    [53.3, 56.6, 'But tilt changes help trigger ice ages.'],
-    // act 4: the ice
-    [57.0, 60.2, 'Bigger swings could mean colder ones.'],
-    [60.6, 63.9, 'In the last ice age, the ice reached New York.'],
+    [2.5, 4.3, 'The Moon is gone.'],
+    [4.5, 6.3, 'No explosion. No sound.'],
+    [6.5, 8.9, 'Every night is now a moonless night.'],
+    [9.1, 11.9, 'The next day, the tide comes in…'],
+    [12.1, 14.5, '…and stops at less than half the height.'],
+    [14.7, 17.1, 'Only the Sun is pulling on the ocean now.'],
+    [17.3, 19.9, 'Weeks later, sea turtles hatch.'],
+    [20.1, 22.3, 'In the dark, more crawl toward the city lights.'],
+    [22.5, 25.3, 'But the real danger is slower.'],
+    [25.5, 28.3, "Without the Moon, Earth's tilt could start to wander."],
+    [28.5, 31.7, 'Winters could grow longer and colder.'],
+    [31.9, 34.5, 'And the ice sheets could return.'],
+    [34.7, 37.5, 'In the last ice age, ice reached New York.'],
   ],
   hud(t) {
     const since = 'Since the Moon vanished';
@@ -146,50 +139,60 @@ export default {
     return { label: 'The ice', value: 'HERE', sub: '' };
   },
   audio: [
-    // ---- the hook: build, stutter, the Moon goes, everything drops out
-    { type: 'ambience', t0: 0, t1: shotStart('C') + 0.5, kind: 'night-city', level: 0.5, fin: 0.03 },
-    { type: 'water', t0: 0, t1: shotStart('T'), level: 0.5 },
-    { type: 'pulse', t0: shotStart('C') + 0.3, t1: shotStart('T') - 0.3, bpm: [58, 64], level: 0.32 },
-    { type: 'crowd', t0: 0, t1: shotStart('C') + 0.8, level: 0.6, voices: 22, fin: 0.03, swell: [[0, 1], [1.42, 1], [1.6, 0.5], [VANISH, 0.45], [VANISH + 2.6, 0.85], [shotStart('C'), 0.7]] },
-    { type: 'drone', t0: 0, t1: shotStart('T'), root: 50, chord: [0, 3, 7, 12], level: 0.32, fin: 0.05, swell: [[0, 0.45], [VANISH, 0.95], [VANISH + 0.1, 0.2], [7, 0.45], [16, 0.3]] },
-    { type: 'pulse', t0: 0.05, t1: VANISH - 0.12, bpm: [78, 124], level: 0.55 },
-    { type: 'riser', t0: 0.25, t1: VANISH, level: 0.3 },
-    { type: 'duck', keys: [[0, 1], [VANISH - 0.02, 1], [VANISH + 0.03, 0.05], [VANISH + 0.9, 0.08], [VANISH + 1.7, 0.75], [VANISH + 2.5, 1], [80, 1]] },
-    { type: 'boom', t: VANISH, level: 0.75, low: true, free: true },
-    { type: 'braam', t: VANISH, level: 0.6, root: 31, decay: 1.5, free: true },
-    { type: 'ring', t: VANISH + 0.08, level: 0.1, free: true },
-    { type: 'gasp', t: VANISH + 0.8, level: 0.6, free: true },
-    // ---- the days after
-    { type: 'whoosh', t: shotStart('T') - 0.4, level: 0.4 },
-    { type: 'ambience', t0: shotStart('T'), t1: shotStart('E'), kind: 'coast', gulls: 1, level: 0.85 },
-    { type: 'crowd', t0: shotStart('T'), t1: shotStart('E'), level: 0.45, voices: 14, seed: 4 },
-    { type: 'riser', t0: shotStart('E') - 1.4, t1: shotStart('E'), level: 0.22 },
-    { type: 'drone', t0: shotStart('E'), t1: shotStart('D'), root: 43, chord: [0, 7, 12], level: 0.45, fin: 0.3 },
-    { type: 'whoosh', t: shotStart('D') - 0.3, level: 0.3 },
-    { type: 'water', t0: shotStart('D'), t1: shotStart('X1'), level: 0.5 },
-    { type: 'ambience', t0: shotStart('D'), t1: shotStart('X1'), kind: 'night-quiet', level: 0.6 },
-    { type: 'pulse', t0: shotStart('D') + 3.5, t1: shotStart('X1') - 0.2, bpm: [60, 72], level: 0.36 },
-    // ---- the slow change, then the ice
-    { type: 'braam', t: shotStart('X1'), level: 0.45, root: 29 },
-    { type: 'drone', t0: shotStart('X1'), t1: shotStart('W'), root: 41, chord: [0, 5, 12, 15], level: 0.34, swell: [[38.8, 0.2], [46, 0.5], [49.6, 0.35]] },
-    { type: 'pulse', t0: 42.3, t1: shotStart('W'), bpm: [56, 74], level: 0.3 },
-    { type: 'whoosh', t: shotStart('W') - 0.3, level: 0.35 },
-    { type: 'ambience', t0: shotStart('W'), t1: HERE, kind: 'wind', level: 0.55 },
-    { type: 'creak', t0: shotStart('W') + 2, t1: HERE, level: 0.5 },
-    { type: 'riser', t0: shotStart('G') - 1.6, t1: shotStart('G'), level: 0.3 },
-    { type: 'braam', t: shotStart('G'), level: 0.6, root: 28 },
-    { type: 'pulse', t0: shotStart('G'), t1: HERE - 0.05, bpm: [72, 156], level: 0.55 },
-    { type: 'rumble', t0: shotStart('G'), t1: HERE + 0.6, level: 0.6 },
-    { type: 'siren', t0: shotStart('G'), t1: HERE + 0.4, level: 0.28, period: 5.5 },
-    { type: 'crowd', t0: shotStart('F') - 0.5, t1: HERE, level: 0.5, voices: 26, seed: 9 },
-    { type: 'drone', t0: shotStart('G'), t1: FADE[1], root: 36, chord: [0, 1, 7, 12], level: 0.42, swell: [[56.8, 0.3], [64, 1.0], [67, 0.5]] },
-    { type: 'riser', t0: HERE - 2.4, t1: HERE, level: 0.42 },
-    { type: 'glass', t: HERE, level: 0.8, free: true },
-    { type: 'boom', t: HERE, level: 0.8, low: true, free: true },
-    { type: 'braam', t: HERE, level: 0.5, root: 26, free: true },
-    { type: 'ring', t: HERE + 0.1, level: 0.08, free: true },
-    { type: 'duck', keys: [[0, 1], [HERE - 0.02, 1], [HERE + 0.05, 0.25], [FADE[1], 0.15], [END, 1], [80, 1]] },
-    { type: 'chime', t: END, level: 0.5, free: true },
+    // ---- the hook: crowd, heartbeat, riser, two glitches, then the Moon goes and everything drops out
+    S('sfx/446.wav', 0, { dur: 2.4, offset: 5, level: 0.55 }),
+    S('sfx/1206.wav', 0, { dur: 6.4, offset: 10, level: 0.35 }),
+    S('sfx/497.wav', 0, { dur: VANISH, level: 0.85, fout: 0.05 }),
+    S('sfx/790.wav', VANISH, { align: 2.4, level: 0.9 }),
+    S('sfx/1022.wav', 0.6, { level: 0.35 }),
+    S('sfx/1022.wav', 0.94, { level: 0.3, pan: 0.3 }),
+    { type: 'duck', keys: [[0, 1], [VANISH - 0.02, 1], [VANISH + 0.03, 0.04], [VANISH + 0.8, 0.06], [2.4, 1], [48, 1]] },
+    S('sfx/788.mp3', VANISH, { align: 2.1, level: 1.0, free: true }),
+    S('sfx/2297.wav', VANISH, { align: 0.8, level: 0.6, free: true }),
+    { type: 'ring', t: VANISH + 0.05, level: 0.08, free: true },
+    S('sfx/964.wav', VANISH + 0.55, { align: 0.3, level: 0.55, pan: -0.3, free: true }),
+    S('sfx/966.wav', VANISH + 0.62, { align: 0.2, level: 0.5, pan: 0.35, free: true }),
+    S('sfx/965.wav', VANISH + 0.75, { align: 0.4, level: 0.35, pan: 0.1, free: true }),
+    // ---- the music enters on the first cut and builds to the ice
+    // offset 40.1 puts the track's big entrance (69.5 s in) on the ice-sheet reveal at 31.8
+    S('music/614.mp3', 2.4, { offset: 40.1, dur: HERE - 2.4 + 0.05, level: 0.6, keys: [[2.4, 0.75], [9, 0.75], [22.4, 0.85], [31.8, 0.9], [48, 0.9]], fin: 0.3, fout: 0.04 }),
+    // ---- the night
+    S('sfx/1492.wav', 2.4, { align: 1.0, level: 0.5 }),
+    S('sfx/455.wav', 2.4, { dur: 4.2, offset: 10, level: 1.6 }),
+    S('sfx/2678.wav', 2.4, { dur: 6.6, offset: 20, level: 1.0 }),
+    // ---- the next day
+    S('sfx/1486.wav', 9.0, { align: 0.6, level: 0.4 }),
+    S('sfx/1193.wav', 9.0, { dur: 5.6, offset: 8, level: 1.3, fin: 0.1 }),
+    S('sfx/1185.wav', 9.0, { dur: 5.6, offset: 4, level: 0.7, fin: 0.1 }),
+    S('sfx/1492.wav', 14.6, { align: 1.0, level: 0.5 }),
+    S('sfx/653.mp3', 14.6, { dur: 2.6, offset: 30, level: 0.6, fin: 0.3 }),
+    // ---- weeks later: the turtles
+    S('sfx/1195.wav', 17.2, { dur: 5.2, offset: 2, level: 0.8, fin: 0.2 }),
+    S('sfx/1789.wav', 17.2, { dur: 5.2, offset: 5, level: 2.2, fin: 0.2 }),
+    // ---- the slow danger
+    S('sfx/2915.wav', 22.4, { align: 0.7, level: 0.9 }),
+    S('sfx/653.mp3', 22.4, { dur: 6.0, offset: 40, level: 0.6, fin: 0.2 }),
+    S('sfx/494.wav', 22.6, { dur: 5.8, offset: 3, level: 0.45 }),
+    // ---- winter, then the ice
+    S('sfx/2408.wav', 28.4, { align: 3.6, level: 0.6 }),
+    S('sfx/1153.wav', 28.4, { dur: 10.0, offset: 30, level: 0.9, keys: [[28.4, 0.6], [31.8, 1], [48, 1]] }),
+    S('sfx/724.wav', 31.8, { align: 1.7, level: 0.8 }),
+    S('sfx/1651.wav', 32.0, { dur: 6.2, offset: 3, level: 0.35, fin: 1.0 }),
+    S('sfx/1718.wav', 31.8, { dur: 6.4, offset: 1, level: 0.9 }),
+    S('sfx/1296.wav', 33.5, { level: 0.8 }),
+    S('sfx/351.wav', 34.6, { dur: 3.6, level: 0.55 }),
+    S('sfx/376.wav', 34.6, { dur: 3.6, offset: 5, level: 0.35 }),
+    S('sfx/493.wav', 34.0, { dur: 4.2, level: 0.7 }),
+    S('sfx/632.wav', HERE - 0.2, { align: 25.9, offset: 22, dur: 3.9, level: 0.6, fout: 0.03 }),
+    // ---- HERE: impact, glass, debris; then near-silence into the end card
+    // a fifth of a second of near-silence right before the hit
+    { type: 'duck', keys: [[0, 1], [HERE - 0.22, 1], [HERE - 0.18, 0.05], [HERE + 0.05, 0.15], [END, 0.1], [END + 0.2, 1], [48, 1]] },
+    S('sfx/788.mp3', HERE, { align: 2.1, level: 1.0, free: true }),
+    S('sfx/1703.wav', HERE, { align: 0.1, dur: 3.6, level: 0.8, fout: 1.4, free: true }),
+    S('sfx/759.wav', HERE, { level: 0.9, free: true }),
+    { type: 'ring', t: HERE + 0.05, level: 0.07, free: true },
+    { type: 'chime', t: END, level: 0.4, free: true },
+    S('sfx/1153.wav', END - 0.4, { dur: 48 - END + 0.4, offset: 60, level: 0.18, fin: 1.0, fout: 1.2, free: true }),
   ],
 
   async setup(ctx) {
@@ -203,6 +206,7 @@ export default {
     ctx.handheld = 0.3;
     ctx.vignette = 0.7;
     scene.fog = new THREE.Fog('#141c33', 400, 5000);
+    ctx.post = { ao: { radius: 0.9, intensity: 1.0, samples: 12 }, bloom: { strength: 0.5, radius: 0.55, threshold: 0.82 }, env: 0.3 };
 
     // ---- city: grid starts at the coast road (z = 22) and runs inland (+z)
     const city = buildCity({
@@ -228,6 +232,7 @@ export default {
     // ---- sky, Moon, stars
     const sky = st.sky = buildSky({ seed: 12, clouds: 20, cloudAlt: [900, 1600], stars: 3500 });
     scene.add(sky.group);
+    sky.group.traverse((o) => { o.userData.noAO = true; });
     const moonTex = await new THREE.TextureLoader().loadAsync('/assets/moon.png'); moonTex.colorSpace = THREE.SRGBColorSpace;
     st.moon = new THREE.Sprite(new THREE.SpriteMaterial({ map: moonTex, transparent: true, depthWrite: false, fog: false, color: '#fff7ea' }));
     st.moonGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: makeSoftTexture(), transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending, color: '#8796c4' }));
@@ -239,6 +244,7 @@ export default {
     const wu = water.uniforms;
     wu.uShore.value = 1; wu.uChop.value = 0.45; wu.uChopDist.value = 700; wu.uSurfW.value = 0.5;
     scene.add(water.mesh);
+    water.mesh.userData.noAO = true;
 
     // ---- lights
     st.hemi = new THREE.HemisphereLight('#2b3a63', '#0d0d12', 0.6);
@@ -284,6 +290,26 @@ export default {
       st.wrack = im; scene.add(im);
     }
 
+    // ---- winter: pressure ridges where the sea ice meets the beach
+    {
+      const rr = new Rng(23), n = 650, lvl = SF.MSL - 0.3;
+      const im = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.4 }), n);
+      const M = new THREE.Matrix4();
+      for (let i = 0; i < n; i++) {
+        const x = rr.float(-170, 190);
+        let z = (lvl - SF.wallY) / SF.slope;
+        for (let k = 0; k < 6; k++) z -= (beachY(x, z) - lvl) / SF.slope;   // the shoreline at this x
+        z += rr.float(-5, 1.5);
+        const hgt = rr.float(0.15, 0.9);
+        M.compose(new THREE.Vector3(x, lvl + hgt * 0.15, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rr.float(-0.7, 0.7), rr.float(0, 3.14), rr.float(-0.5, 0.5))),
+          new THREE.Vector3(rr.float(0.6, 2.4), hgt, rr.float(0.5, 1.8)));
+        im.setMatrixAt(i, M);
+        im.setColorAt(i, new THREE.Color().setHSL(0.55, rr.float(0.2, 0.4), rr.float(0.74, 0.93)));
+      }
+      im.castShadow = im.receiveShadow = true;
+      st.ridges = im; scene.add(im);
+    }
+
     // ---- hatchlings
     st.turtles = buildHatchlings(new Rng(31), 60);
     scene.add(st.turtles.group);
@@ -294,6 +320,7 @@ export default {
     scene.add(st.glacier);
     st.dust = new Particles(260, { map: makeSmokeTexture(9) });
     scene.add(st.dust.mesh);
+    st.dust.mesh.userData.noAO = true;
 
     // ---- space cutaways (their own scene)
     st.space = buildSpace(new Rng(77));
@@ -349,11 +376,11 @@ export default {
       for (const s of sf.shops) s.material.emissiveIntensity = 0;
     } else {
       // clear summer day
-      sky.uniforms.uZenith.value.set('#3f78c0'); sky.uniforms.uHorizon.value.set('#cfe1ee'); sky.uniforms.uBelow.value.set('#a9b8c4');
+      sky.uniforms.uZenith.value.set('#2a68c2'); sky.uniforms.uHorizon.value.set('#9ccbef'); sky.uniforms.uBelow.value.set('#a9b8c4');
       sky.uniforms.uSunDisk.value = 1; sky.uniforms.uSunGlow.value = 0.6; sky.uniforms.uSunDir.value.copy(SUN_DAY);
       sky.starU.uStars.value = 0;
       sky.cloudTint(new THREE.Color('#ffffff'), 0.9);
-      scene(ctx).fog.color.set('#c9dbe8');
+      scene(ctx).fog.color.set('#b2d1ea');
       st.hemi.color.set('#d9e9ff'); st.hemi.groundColor.set('#9a8b72'); st.hemi.intensity = 1.15;
       st.key.color.set('#fff1dc'); st.key.intensity = 2.6; st.key.position.copy(SUN_DAY).multiplyScalar(300);
       fac.uNight.value = 0; fac.uWallMul.value = 1;
@@ -364,7 +391,10 @@ export default {
       sf.beachU.uDark.value = 0;
       for (const s of sf.shops) s.material.emissiveIntensity = 0;
     }
-    scene(ctx).fog.near = winter ? 350 : 500; scene(ctx).fog.far = winter ? 4200 : 6000;
+    scene(ctx).fog.near = winter ? 350 : night ? 500 : 900; scene(ctx).fog.far = winter ? 4200 : night ? 6000 : 9000;
+    // image-based ambient light and glow, per look
+    ctx.scene.environmentIntensity = night ? 0.2 : winter ? 0.28 : 0.42;
+    ctx.bloom = night ? { strength: 0.65, radius: 0.55, threshold: 0.78 } : winter ? { strength: 0.06, radius: 0.3, threshold: 0.98 } : { strength: 0.18, radius: 0.4, threshold: 0.92 };
 
     // the Moon
     const moonVis = moonUp && night;
@@ -384,10 +414,10 @@ export default {
     sf.beachU.uWetY.value = level + (shot === 'T' || shot === 'T2' ? 0.15 : 0.35);
     sf.beachU.uWrackY.value = SF.MSL + 1.9;
     sf.beachU.uWrack.value = ['T', 'T2', 'D', 'R'].includes(shot) ? 1 : 0.5;
-    const snow = shot === 'W' ? smooth(shotStart('W') + 0.5, shotStart('W') + 4.5, t) : winter ? 1 : 0;
+    const snow = winter ? 1 : 0;
     sf.snowU.uSnow.value = snow; fac.uSnow.value = snow; st.city.ground.material.userData.uniforms && (st.city.ground.material.userData.uniforms.uSnow.value = snow);
-    wu.uFreeze.value = shot === 'W' ? 0.75 * smooth(shotStart('W') + 2.5, shotStart('W') + 6.5, t) : winter ? 0.75 : 0;
-    ctx.snow = shot === 'W' ? 0.6 * smooth(shotStart('W'), shotStart('W') + 1.5, t) : winter ? 0.45 : 0;
+    wu.uFreeze.value = winter ? 0.75 : 0;
+    ctx.snow = shot === 'W' ? 0.55 : winter ? 0.45 : 0;
     wu.uTime.value = t; fac.uTime.value = t;
 
     // ------------------------------------------------ actors
@@ -395,6 +425,7 @@ export default {
     st.veh.update(t);
     st.umbrellas.group.visible = shot === 'T' || shot === 'T2';
     st.wrack.visible = !winter;
+    st.ridges.visible = winter;
     st.turtles.group.visible = shot === 'D' || shot === 'R';
     if (st.turtles.group.visible) st.turtles.update(t - shotStart('D'));
     st.glacier.visible = ['G', 'F', 'H'].includes(shot);
@@ -449,6 +480,7 @@ export default {
     if (shot === 'E' || shot === 'X1' || shot === 'X2') {
       st.space.update(t, shot, u);
       ctx.view = { scene: st.space.scene, camera: st.space.camera };
+      ctx.bloom = { strength: 0.45, radius: 0.6, threshold: 0.72 };
     }
   },
 };
@@ -461,8 +493,8 @@ function camShot(ctx, shot, u, t) {
   const e = easeInOut(u);
   switch (shot) {
     case 'A': {      // over the shoulders of the crowd at the railing, the Moon high over the sea
-      const k = easeOut(clamp(t / 2.3));
-      c.pos.set(1.9 + 0.3 * k, lerp(1.62, 2.6, k), lerp(6.6, 5.0, k) - 0.25 * Math.max(0, t - 2.3));
+      const k = easeOut(clamp(t / 1.5));
+      c.pos.set(1.9 + 0.3 * k, lerp(1.62, 2.6, k), lerp(6.6, 5.0, k) - 0.25 * Math.max(0, t - 1.5));
       c.look.set(1.9 + 12, lerp(1.62 + 15, 2.6 + 22, k), -260);
       c.fov = 50; ctx.handheld = 0.25;
       ctx.shake = t > VANISH ? 0.55 * Math.exp(-(t - VANISH) * 3.5) : 0;
@@ -486,8 +518,13 @@ function camShot(ctx, shot, u, t) {
       c.fov = 52; ctx.handheld = 0.15;
       break;
     }
-    case 'T':
-    case 'W': {      // over the road, looking across the promenade and down the beach to the sea (same frame both seasons)
+    case 'W': {      // out on the frozen sea among the skaters, looking back at the snowed-in beach and city
+      c.pos.set(lerp(-4, 1, e), SF.MSL - 0.3 + lerp(1.3, 1.6, e), lerp(-100, -95, e));
+      c.look.set(lerp(12, 14, e), lerp(4, 6, e), 20);
+      c.fov = 50; c.near = 0.1; ctx.handheld = 0.35;
+      break;
+    }
+    case 'T': {      // over the road, looking across the promenade and down the beach to the sea (same frame both seasons)
       c.pos.set(lerp(-24, -18, e), lerp(15, 14, e), lerp(19, 18, e));
       c.look.set(lerp(6, 10, e), -7, -95);
       c.fov = 50; ctx.handheld = 0.15;
@@ -500,8 +537,8 @@ function camShot(ctx, shot, u, t) {
       break;
     }
     case 'D': {      // on the sand behind the nest, looking at the lights
-      c.pos.set(NEST.x - 1.1 + u * 0.5, beachY(NEST.x, NEST.z - 1.4) + 0.75 - u * 0.1, NEST.z - 1.3 + u * 0.9);
-      c.look.set(NEST.x + 1.2, beachY(NEST.x, NEST.z + 2) + 0.25, NEST.z + 2.6);
+      c.pos.set(NEST.x - 0.6 + u * 0.4, beachY(NEST.x, NEST.z - 1.5) + 1.05 - u * 0.12, NEST.z - 1.6 + u * 0.8);
+      c.look.set(NEST.x + 0.7, beachY(NEST.x, NEST.z + 2) + 0.12, NEST.z + 2.4);
       c.fov = 46; c.near = 0.03; ctx.handheld = 0.1;
       break;
     }
@@ -564,9 +601,9 @@ function castPeople(r) {
   }
   // the family in close-up (B2): parent with a phone, a kid pointing, another adult with hands on head
   const fam = [
-    { x: 7.9, z: 1.3, h: Math.PI - 0.15, poses: [[0, 'phone'], [VANISH + 0.3, 'phoneLow', 0.4], [8.6, 'shrug', 0.5]], phone: () => true, shirt: '#2e86c1', skin: '#e0ac85', hair: 'short', hairC: '#2e2018' },
-    Object.assign({}, KID, { x: 8.65, z: 1.15, h: Math.PI + 0.1, poses: [[0, 'point'], [VANISH + 0.4, 'lookUp', 0.3], [7.6, 'point', 0.4]] }),
-    { x: 9.35, z: 1.4, h: Math.PI + 0.25, poses: [[0, 'lookUp'], [VANISH + 0.5, 'handsHead', 0.35], [9.4, 'idle', 0.6]], shirt: '#c0392b', hair: 'long', turn: (t) => -0.7 * smooth(8.0, 8.8, t) },
+    { x: 7.9, z: 1.3, h: Math.PI - 0.15, poses: [[0, 'phone'], [VANISH + 0.3, 'phoneLow', 0.4], [5.4, 'shrug', 0.5]], phone: () => true, shirt: '#2e86c1', skin: '#e0ac85', hair: 'short', hairC: '#2e2018' },
+    Object.assign({}, KID, { x: 8.65, z: 1.15, h: Math.PI + 0.1, poses: [[0, 'point'], [VANISH + 0.4, 'lookUp', 0.3], [4.8, 'point', 0.4]] }),
+    { x: 9.35, z: 1.4, h: Math.PI + 0.25, poses: [[0, 'lookUp'], [VANISH + 0.5, 'handsHead', 0.35], [6.0, 'idle', 0.6]], shirt: '#c0392b', hair: 'long', turn: (t) => -0.7 * smooth(4.9, 5.6, t) },
   ];
   for (const f of fam) P.add(Object.assign({ visible: nightCrowd }, f));
   // walkers on the promenade who stop and look up
@@ -615,8 +652,8 @@ function castPeople(r) {
   }
 
   // ---- the kid on the old seaweed line, pointing at the water far below (T2), parent beside
-  P.add(Object.assign({}, KID, { x: KID_T.x, z: KID_T.z, h: Math.PI + 0.2, yAt: yb, poses: [[0, 'idle'], [21.5, 'pointFwd', 0.5]], visible: on('T2') }));
-  P.add({ x: KID_T.x - 1.1, z: KID_T.z + 0.4, h: Math.PI - 0.1, yAt: yb, poses: [[0, 'idle'], [22.6, 'shrug', 0.6]], visible: on('T2'), shirt: '#2e86c1', skin: '#e0ac85', hair: 'short', hairC: '#2e2018', longSleeve: false });
+  P.add(Object.assign({}, KID, { x: KID_T.x, z: KID_T.z, h: Math.PI + 0.2, yAt: yb, poses: [[0, 'idle'], [12.3, 'pointFwd', 0.4]], visible: on('T2') }));
+  P.add({ x: KID_T.x - 1.1, z: KID_T.z + 0.4, h: Math.PI - 0.1, yAt: yb, poses: [[0, 'idle'], [13.0, 'shrug', 0.5]], visible: on('T2'), shirt: '#2e86c1', skin: '#e0ac85', hair: 'short', hairC: '#2e2018', longSleeve: false });
 
   // ---- volunteers with torches (R); the kid and the parent are among them
   P.add(Object.assign({}, KID, { x: NEST.x - 3.6, z: NEST.z + 2.6, h: 0.5, yAt: yb, poses: [[0, 'torch']], torch: (t) => shotAt(t)[1] === 'R', visible: on('R'), longSleeve: true }));
@@ -635,11 +672,13 @@ function castPeople(r) {
   // ---- winter: people in coats on the frozen beach and skaters on the sea ice
   const coats = ['#1b2631', '#4a235a', '#7b241c', '#1f3a5f', '#212f3c', '#6e2c00', '#0e6251'];
   const iceY = SF.MSL - 0.3 + 0.02;
-  for (let i = 0; i < 40; i++) {
-    const cx = r.float(-50, 60), cz = r.float(-130, -70), rad = r.float(4, 14), w = r.float(0.25, 0.45) * (r.chance(0.5) ? 1 : -1), ph = r.float(0, 6.28);
+  for (let i = 0; i < 44; i++) {
+    const near = i < 22;
+    const cx = near ? r.float(-7, 11) : r.float(-60, 70), cz = near ? r.float(-86, -68) : r.float(-140, -75), rad = near ? r.float(3, 7) : r.float(4, 14);
+    const w = r.float(0.35, 0.6) * (r.chance(0.5) ? 1 : -1) * (near ? 1.2 : 1), ph = r.float(0, 6.28);
     P.add({
       at: (t) => { const a = ph + w * t; return { x: cx + Math.cos(a) * rad, z: cz + Math.sin(a) * rad, h: Math.atan2(-Math.sin(a) * Math.sign(w), Math.cos(a) * Math.sign(w)), moving: 1, dist: Math.abs(w) * rad * t }; },
-      y: iceY, poses: [[0, 'skate']], stride: 2.4, visible: (t) => shotAt(t)[1] === 'W' && t > shotStart('W') + 4.0, shirt: r.pick(coats), longSleeve: true,
+      y: iceY, poses: [[0, 'skate']], stride: 2.4, visible: on('W', 'G'), shirt: r.pick(coats), longSleeve: true, kid: r.chance(0.25),
     });
   }
   for (let i = 0; i < 40; i++) {
@@ -700,16 +739,29 @@ function buildUmbrellas(r) {
 
 function buildHatchlings(r, n) {
   const group = new THREE.Group();
-  const shellG = new THREE.SphereGeometry(1, 14, 8); shellG.scale(0.045, 0.02, 0.055); shellG.translate(0, 0.018, 0);
-  const headG = new THREE.SphereGeometry(0.015, 8, 6); headG.translate(0, 0.018, 0.064);
-  const body = mergeGeometries([shellG, headG]);
-  const flipG = new THREE.BoxGeometry(0.06, 0.006, 0.026); flipG.translate(0.03, 0, 0);
-  { const fp = flipG.attributes.position; for (let i = 0; i < fp.count; i++) if (fp.getX(i) > 0.02) fp.setZ(i, fp.getZ(i) * 0.45 - 0.008); }
-  const shellM = new THREE.MeshStandardMaterial({ color: '#2b2622', roughness: 0.3, metalness: 0.05 });
+  // flat, slightly pointed carapace with a pale margin; round head; short tail
+  const shellG = new THREE.SphereGeometry(1, 18, 9); shellG.scale(0.04, 0.012, 0.05); shellG.translate(0, 0.013, 0);
+  { const sp = shellG.attributes.position, col = [];
+    for (let i = 0; i < sp.count; i++) {
+      const z = sp.getZ(i); if (z < 0) sp.setX(i, sp.getX(i) * (1 + z / 0.05 * 0.35));   // taper toward the tail
+      const rim = Math.hypot(sp.getX(i) / 0.04, z / 0.05), k = Math.pow(Math.min(1, rim), 6) * (sp.getY(i) < 0.016 ? 1 : 0.4);
+      col.push(lerp(0.022, 0.13, k), lerp(0.02, 0.115, k), lerp(0.018, 0.1, k));
+    }
+    shellG.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); }
+  const headG = new THREE.SphereGeometry(0.013, 10, 7); headG.scale(0.95, 0.85, 1.25); headG.translate(0, 0.015, 0.056);
+  const tailG = new THREE.ConeGeometry(0.005, 0.016, 5); tailG.rotateX(-Math.PI / 2); tailG.translate(0, 0.01, -0.054);
+  for (const g of [headG, tailG]) g.setAttribute('color', new THREE.Float32BufferAttribute(new Array(g.attributes.position.count).fill(0).flatMap(() => [0.035, 0.03, 0.027]), 3));
+  const body = mergeGeometries([shellG, headG, tailG]);
+  // flipper: a tapered paddle with a pale tip
+  const flipG = new THREE.BoxGeometry(0.06, 0.004, 0.022, 3, 1, 1); flipG.translate(0.03, 0, 0);
+  { const fp = flipG.attributes.position, col = [];
+    for (let i = 0; i < fp.count; i++) { const x = fp.getX(i); fp.setZ(i, fp.getZ(i) * (1 - x / 0.06 * 0.6)); const pale = x > 0.045 ? 1 : 0; col.push(pale ? 0.22 : 0.03, pale ? 0.2 : 0.027, pale ? 0.17 : 0.024); }
+    flipG.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); }
+  const shellM = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.62, metalness: 0.0 });
   const bodies = new THREE.InstancedMesh(body, shellM, n);
   const flips = new THREE.InstancedMesh(flipG, shellM, n * 4);
   bodies.frustumCulled = flips.frustumCulled = false;
-  bodies.castShadow = true;
+  bodies.castShadow = flips.castShadow = true;
   group.add(bodies, flips);
   // the nest: a shallow pit with a rim of disturbed sand
   const pit = new THREE.Mesh(new THREE.CircleGeometry(0.45, 20).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#8a7656', roughness: 1 }));
@@ -719,9 +771,10 @@ function buildHatchlings(r, n) {
   for (let i = 0; i < n; i++) {
     const seaward = r.chance(0.15);
     const ang = seaward ? Math.PI + r.float(-0.5, 0.5) : r.float(-0.5, 0.5);
-    list.push({ x: NEST.x + r.gauss() * 0.22, z: NEST.z + r.gauss() * 0.2, ang, v: r.float(0.08, 0.14), start: r.float(-2, 6), ph: r.float(0, 6), wob: r.float(0.1, 0.35), s: r.float(1.5, 1.9) });
+    list.push({ x: NEST.x + r.gauss() * 0.7, z: NEST.z + r.gauss() * 0.5, ang, v: r.float(0.09, 0.15), start: r.float(-3, 2), ph: r.float(0, 6), wob: r.float(0.1, 0.35), s: r.float(1.2, 1.5) });
   }
   const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), E = new THREE.Euler(), P = new THREE.Vector3(), Sc = new THREE.Vector3(), F = new THREE.Matrix4();
+  const FQ = new THREE.Quaternion(), FE = new THREE.Euler(), FS = new THREE.Vector3(), FP = new THREE.Vector3();
   return {
     group,
     update(t) {
@@ -737,10 +790,13 @@ function buildHatchlings(r, n) {
         Q.setFromEuler(E); P.set(x, gy, z); Sc.setScalar(h.s);
         M.compose(P, Q, Sc); bodies.setMatrixAt(i, M);
         const stroke = Math.sin(age * 9 + h.ph) * (t > h.start ? 1 : 0.3);
-        [[0.03, 0.03, 1], [-0.03, 0.03, -1], [0.025, -0.035, 1], [-0.025, -0.035, -1]].forEach(([fx, fz, side], k) => {
+        [[0.028, 0.025, 1], [-0.028, 0.025, -1], [0.022, -0.033, 1], [-0.022, -0.033, -1]].forEach(([fx, fz, side], k) => {
           const swing = (k < 2 ? 0.7 : 0.4) * stroke * (k % 2 ? -1 : 1);
-          F.makeRotationY((side > 0 ? -0.3 : Math.PI + 0.3) + swing);
-          F.setPosition(fx, 0.012, fz);
+          // front flippers reach slightly forward, rear ones trail backward
+          const yaw = side > 0 ? (k < 2 ? -0.25 : 0.6) : (k < 2 ? Math.PI + 0.25 : Math.PI - 0.6);
+          FQ.setFromEuler(FE.set(0, yaw + swing, 0));
+          FS.set(k < 2 ? 1.15 : 0.55, 1, k < 2 ? 1 : 0.8);
+          F.compose(FP.set(fx, 0.01, fz), FQ, FS);
           flips.setMatrixAt(i * 4 + k, new THREE.Matrix4().multiplyMatrices(M, F));
         });
       });
@@ -829,13 +885,22 @@ function buildSpace(r) {
   const earthTilt = new THREE.Group(); scene.add(earthTilt);
   const earth = new THREE.Mesh(new THREE.SphereGeometry(10, 64, 32), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.85 }));
   earthTilt.add(earth);
-  // clouds + atmosphere rim
-  const atm = new THREE.Mesh(new THREE.SphereGeometry(10.5, 48, 24), new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide,
-    vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vN = normalize(normalMatrix*normal); vec4 mv = modelViewMatrix*vec4(position,1.0); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }',
-    fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 2.5); gl_FragColor = vec4(vec3(0.35,0.6,1.0)*f*1.4, 1.0); }',
+  // atmosphere: a soft glow outside the limb that fades to nothing (no hard ring), plus a lit haze on the disk edge
+  const sunDir = new THREE.Vector3(1, 0.15, 0.35).normalize();
+  const atmVS = 'varying vec3 vN; varying vec3 vV; varying vec3 vW; void main(){ vN = normalize(normalMatrix*normal); vW = normalize((modelMatrix*vec4(normal,0.0)).xyz); vec4 mv = modelViewMatrix*vec4(position,1.0); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }';
+  const atm = new THREE.Mesh(new THREE.SphereGeometry(11, 64, 32), new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide, uniforms: { uSun: { value: sunDir } },
+    vertexShader: atmVS,
+    fragmentShader: 'uniform vec3 uSun; varying vec3 vN; varying vec3 vV; varying vec3 vW; void main(){ float d = abs(dot(vN, vV)); float g = pow(smoothstep(0.0, 0.42, d), 2.4); float lit = 0.15 + 0.85*smoothstep(-0.35, 0.55, dot(vW, uSun)); gl_FragColor = vec4(vec3(0.32,0.6,1.0)*g*lit*0.85, 1.0); }',
   }));
+  atm.userData.noAO = true;
   scene.add(atm);
+  const haze = new THREE.Mesh(new THREE.SphereGeometry(10.04, 64, 32), new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { uSun: { value: sunDir } },
+    vertexShader: atmVS,
+    fragmentShader: 'uniform vec3 uSun; varying vec3 vN; varying vec3 vV; varying vec3 vW; void main(){ float f = pow(1.0 - max(dot(vN, vV), 0.0), 3.0); float lit = smoothstep(-0.25, 0.6, dot(vW, uSun)); gl_FragColor = vec4(vec3(0.35,0.62,1.0)*f*lit*0.7, 1.0); }',
+  }));
+  scene.add(haze);
   // the axis: a thin bright line through the poles
   const axis = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 30, 8), new THREE.MeshBasicMaterial({ color: '#ffd27a', toneMapped: false }));
   earthTilt.add(axis);
@@ -844,16 +909,15 @@ function buildSpace(r) {
   scene.add(ghostAxis);
   // tidal bulge: an exaggerated translucent ocean shell
   const bulge = new THREE.Mesh(new THREE.SphereGeometry(10.15, 64, 32), new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false,
-    vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vN = normalize(normalMatrix*normal); vec4 mv = modelViewMatrix*vec4(position,1.0); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }',
-    fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f = 1.0 - abs(dot(vN, vV)); gl_FragColor = vec4(mix(vec3(0.2,0.55,1.0), vec3(0.7,0.9,1.0), f), 0.18 + 0.7*pow(f, 2.0)); }',
+    transparent: true, depthWrite: false, uniforms: { uSun: { value: sunDir } },
+    vertexShader: 'varying vec3 vN; varying vec3 vV; varying vec3 vW; varying float vX; void main(){ vX = position.x / 10.15; vN = normalize(normalMatrix*normal); vW = normalize((modelMatrix*vec4(normal,0.0)).xyz); vec4 mv = modelViewMatrix*vec4(position,1.0); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }',
+    fragmentShader: 'uniform vec3 uSun; varying vec3 vN; varying vec3 vV; varying vec3 vW; varying float vX; void main(){ float f = 1.0 - abs(dot(vN, vV)); float cap = smoothstep(0.45, 0.97, abs(vX)); float lit = 0.25 + 0.75*smoothstep(-0.3, 0.6, dot(vW, uSun)); vec3 col = mix(vec3(0.08,0.4,0.9), vec3(0.5,0.82,1.0), f) * lit; gl_FragColor = vec4(col, cap * (0.45 + 0.45*f)); }',
   }));
   scene.add(bulge);
   // the Moon (fades away) and the Sun's light
   const moon = new THREE.Mesh(new THREE.SphereGeometry(2.7, 32, 16), new THREE.MeshStandardMaterial({ color: '#b9b5ad', roughness: 1, transparent: true }));
   moon.position.set(-17, 25, -14);
   scene.add(moon);
-  const sunDir = new THREE.Vector3(1, 0.15, 0.35).normalize();
   const sun = new THREE.DirectionalLight('#fff4e0', 3.0); sun.position.copy(sunDir).multiplyScalar(100);
   scene.add(sun, new THREE.AmbientLight('#2a3550', 0.35));
   const sunSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: makeSoftTexture(), color: '#fff2c8', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true }));
@@ -872,7 +936,7 @@ function buildSpace(r) {
         const k = smooth(0.15, 0.7, u);
         const toMoon = new THREE.Vector3().subVectors(moon.position, bulge.position).normalize();
         const dir = toMoon.clone().lerp(sunDir, k).normalize();
-        const amp = lerp(0.42, 0.13, k);
+        const amp = lerp(0.24, 0.08, k);
         bulge.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir);
         bulge.scale.set(1 + amp, 1 - amp * 0.35, 1 - amp * 0.35);
         bulge.visible = true;
@@ -885,7 +949,7 @@ function buildSpace(r) {
         axis.visible = true; ghostAxis.visible = shot === 'X2';
         const tilt = THREE.MathUtils.degToRad(tiltAt(t));
         // the axis also precesses slowly so the wobble reads in 3D
-        const prec = (t - 38.8) * 0.35;
+        const prec = (t - 22.4) * 0.6;
         earthTilt.rotation.set(0, prec, tilt);
         ghostAxis.rotation.set(0, 0, THREE.MathUtils.degToRad(23.4));
         if (shot === 'X1') { camera.position.set(lerp(16, 8, e), lerp(4, 2, e), lerp(70, 64, e)); camera.lookAt(0, 0, 0); camera.fov = 40; }

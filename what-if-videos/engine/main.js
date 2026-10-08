@@ -3,6 +3,11 @@
 import * as THREE from 'three';
 import { fbm1, clamp, smooth, mulberry32 } from './lib/rng.js';
 import { crackSVG } from './lib/fx.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const params = new URLSearchParams(location.search);
 const W = 1080, H = 1920;
@@ -49,6 +54,9 @@ const ctx = {
   grade: { brightness: 1, contrast: 1.04, saturate: 0.95, sepia: 0 },
   crack: 0,           // 0..1 crack progress
   view: null,         // { scene, camera } to draw instead of the main scene (cutaways)
+  post: null,         // set by a scenario in setup: { ao: { radius, intensity }, bloom: { strength, radius, threshold } }
+  bloom: null,        // per-frame bloom override { strength, radius, threshold }
+  ao: null,           // per-frame AO blend 0..1
   onFrame: [],
   t: 0,
 };
@@ -211,6 +219,67 @@ function applyCamera(t) {
   camera.updateMatrixWorld();
 }
 
+// ---- post-processing: ambient occlusion + bloom, then tone mapping in the output pass
+// AO's depth/normal pre-pass must skip sky domes, sprites, water and particles (anything marked noAO),
+// so the sky keeps depth 1 and gets no occlusion.
+GTAOPass.prototype.overrideVisibility = function () {
+  const cache = this._visibilityCache;
+  this.scene.traverse((o) => {
+    cache.set(o, o.visible);
+    if (o.isPoints || o.isLine || o.isSprite || o.userData.noAO) o.visible = false;
+  });
+};
+let composer = null;
+const passes = {};
+function setupPost(cfg) {
+  const w = canvas.width, h = canvas.height;
+  const rt = new THREE.WebGLRenderTarget(w, h, { type: THREE.HalfFloatType, samples: cfg.msaa ?? 0 });
+  composer = new EffectComposer(renderer, rt);
+  composer.setPixelRatio(1); composer.setSize(w, h);
+  passes.render = new RenderPass(scene, camera);
+  composer.addPass(passes.render);
+  if (cfg.ao) {
+    passes.ao = new GTAOPass(scene, camera, w, h, { samples: cfg.ao.samples ?? 12 });
+    passes.ao.updateGtaoMaterial({ radius: cfg.ao.radius ?? 0.6, distanceExponent: 1, thickness: 1, scale: 1, samples: cfg.ao.samples ?? 12 });
+    passes.ao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 12 });
+    passes.ao.blendIntensity = cfg.ao.intensity ?? 1;
+    composer.addPass(passes.ao);
+  }
+  if (cfg.bloom) {
+    passes.bloom = new UnrealBloomPass(new THREE.Vector2(w, h), cfg.bloom.strength ?? 0.6, cfg.bloom.radius ?? 0.5, cfg.bloom.threshold ?? 0.85);
+    composer.addPass(passes.bloom);
+  }
+  passes.out = new OutputPass();
+  composer.addPass(passes.out);
+  if (cfg.env) {
+    // soft sky-gradient environment: ambient fill and gentle reflections, no hard light panels
+    const envScene = new THREE.Scene();
+    envScene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.ShaderMaterial({
+      side: THREE.BackSide,
+      vertexShader: 'varying vec3 vD; void main(){ vD = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: 'varying vec3 vD; void main(){ float h = vD.y; vec3 c = h > 0.0 ? mix(vec3(0.72,0.78,0.85), vec3(0.88,0.92,0.98), pow(h, 0.6)) : mix(vec3(0.72,0.78,0.85), vec3(0.42,0.40,0.37), pow(-h, 0.5)); gl_FragColor = vec4(c, 1.0); }',
+    })));
+    const pm = new THREE.PMREMGenerator(renderer);
+    scene.environment = pm.fromScene(envScene, 0).texture;
+    scene.environmentIntensity = cfg.env;
+  }
+}
+function drawScene() {
+  const sc = ctx.view?.scene ?? scene, cam = ctx.view?.camera ?? camera;
+  if (!composer) { renderer.render(sc, cam); return; }
+  passes.render.scene = sc; passes.render.camera = cam;
+  if (passes.ao) {
+    passes.ao.scene = sc; passes.ao.camera = cam;
+    passes.ao.enabled = !ctx.view && (ctx.ao ?? 1) > 0;
+    passes.ao.blendIntensity = ctx.ao ?? (ctx.post.ao.intensity ?? 1);
+  }
+  if (passes.bloom) {
+    const b = Object.assign({}, ctx.post.bloom, ctx.bloom || {});
+    passes.bloom.strength = b.strength; passes.bloom.radius = b.radius; passes.bloom.threshold = b.threshold;
+  }
+  composer.render();
+}
+
 function step(frame) {
   const t = frame / FPS;
   ctx.t = t;
@@ -227,6 +296,7 @@ window.WI = {
     const st = document.querySelector('#end .stars'), rr = mulberry32(42);
     for (let i = 0; i < 140; i++) { const s = document.createElement('i'); s.style.left = (rr() * 1080).toFixed(0) + 'px'; s.style.top = (rr() * 1920).toFixed(0) + 'px'; s.style.opacity = (0.15 + rr() * 0.6).toFixed(2); const z = 1 + rr() * 2.5; s.style.width = s.style.height = z.toFixed(1) + 'px'; st.appendChild(s); }
     await S.setup(ctx);
+    if (ctx.post && LAYER !== 'text') setupPost(ctx.post);
     cur = -1;
     return { frames: Math.round(S.duration * FPS), fps: FPS, duration: S.duration, id: S.id, title: S.title, audio: S.audio || [] };
   },
@@ -249,7 +319,7 @@ window.WI = {
     ui.grain.style.opacity = ctx.grain.toFixed(3);
     if (ctx.grain > 0) grain(frame);
     drawRain(frame, t);
-    if (!o.black) renderer.render(ctx.view?.scene ?? scene, ctx.view?.camera ?? camera);
+    if (!o.black) drawScene();
     return { t };
   },
 };

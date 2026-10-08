@@ -8,3 +8,5 @@ moon/*.jpg
 moon/render.log
 moon/shots/
 __pycache__/
+assets/sfx/
+assets/music/

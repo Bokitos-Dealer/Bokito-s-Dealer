@@ -8,6 +8,8 @@ oscillators, so every episode can be re-rendered from its timeline.
 usage: python3 synth.py output/<id>/meta.json output/<id>/audio.wav
 """
 import json
+import os
+import subprocess
 import sys
 
 import numpy as np
@@ -618,10 +620,56 @@ def c_ring(m, c):
     m.add(c['t'], x * 0.5, c.get('level', 0.1), verb=0.1)
 
 
+
+# ---------------------------------------------------------------- recorded samples
+ASSETS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets')
+_cache = {}
+
+
+def load(name):
+    if name not in _cache:
+        path = os.path.join(ASSETS, name)
+        a = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-ac', '2', '-ar', str(SR), '-f', 'f32le', '-'], capture_output=True).stdout
+        if not a:
+            raise SystemExit(f'missing asset {path}: run python3 audio/fetch_assets.py')
+        _cache[name] = np.frombuffer(a, np.float32).reshape(-1, 2).astype(np.float64)
+    return _cache[name]
+
+
+def c_sample(m, c):
+    """A recorded sound: file, t (when its 'align' moment plays), offset into the file,
+    dur (looped if longer than the file), level, fin/fout fades, keys = [[t, gain]...] in video time."""
+    x = load(c['file'])
+    off = sec(c.get('offset', 0.0))
+    seg = x[off:]
+    if 'dur' in c:
+        n = sec(c['dur'])
+        if len(seg) < n:
+            # loop with a short crossfade
+            xf = sec(0.25); out = np.zeros((n, 2)); pos = 0; first = True
+            while pos < n:
+                k = min(len(seg), n - pos)
+                piece = seg[:k].copy()
+                if not first and k > xf: piece[:xf] *= np.linspace(0, 1, xf)[:, None]; out[pos - xf:pos] *= np.linspace(1, 0, xf)[:, None] if pos >= xf else 1
+                out[pos:pos + k] += piece; pos += k - (xf if k > xf else 0); first = False
+            seg = out[:n]
+        else:
+            seg = seg[:n]
+    seg = seg.copy()
+    # 'align' is a time in the file; it lands on t. Without it, the segment start (offset) lands on t.
+    start = c['t'] - (c.get('align', c.get('offset', 0.0)) - c.get('offset', 0.0))
+    fade(seg, c.get('fin', 0.01), c.get('fout', 0.05))
+    if 'keys' in c:
+        seg *= env_keys(len(seg), start, c['keys'])[:, None]
+    if c.get('pan'):
+        p = c['pan']; seg[:, 0] *= np.cos((p + 1) * np.pi / 4) * 1.414; seg[:, 1] *= np.sin((p + 1) * np.pi / 4) * 1.414
+    m.add(start, seg, c.get('level', 1.0), verb=c.get('verb', 0.08))
+
+
 CUES = dict(ambience=c_ambience, drone=c_drone, boom=c_boom, shimmer=c_shimmer, flicker=c_flicker, zap=c_zap,
             powerdown=c_powerdown, chime=c_chime, rumble=c_rumble, whoosh=c_whoosh, glass=c_glass, water=c_water,
             heartbeat=c_heartbeat, rain=c_rain, thunder=c_thunder, creak=c_creak,
-            crowd=c_crowd, gasp=c_gasp, siren=c_siren, riser=c_riser, braam=c_braam, pulse=c_pulse, ring=c_ring)
+            crowd=c_crowd, gasp=c_gasp, siren=c_siren, riser=c_riser, braam=c_braam, pulse=c_pulse, ring=c_ring, sample=c_sample)
 
 
 def main():
