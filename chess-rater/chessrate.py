@@ -395,8 +395,10 @@ class Voice:
         self.voice = cfg.get("voice", SERIES_VOICE)
         self.speed = float(cfg.get("speed", 1.08))
         self.pitch = float(cfg.get("pitch", SERIES_PITCH if self.voice == SERIES_VOICE else 0.0))
-        # some voices (am_puck, am_fenrir) swallow the first sound of a line; "lead_in": true works around it
-        self.lead_in = bool(cfg.get("lead_in", False))
+        # each line is spoken after a throwaway lead-in word that is cut off again. It keeps some voices
+        # (am_puck, am_fenrir) from swallowing a line's first sound, and it's part of the series
+        # narrator's sound: voice B was picked from a sample made this way
+        self.lead_in = bool(cfg.get("lead_in", self.voice == SERIES_VOICE))
         self.lang = cfg.get("lang", "en-us")
         self.cache_dir = cache_dir
         self.kokoro = None
@@ -616,11 +618,15 @@ class Project:
                 sys.exit(f"move {m.get('name')}: side {m['side']!r} isn't one of the players ({', '.join(self.players)})")
             if m["class"] not in CLASSES:
                 sys.exit(f"move {m.get('name')}: unknown class {m['class']!r}; use one of {', '.join(CLASSES)}")
+        labels = cfg.get("labels", "auto")
+        self.auto_labels = labels == "auto"
         self.labels = [l if isinstance(l, dict) else dict(zip(("from", "to", "text", "x", "y"), l))
-                       for l in cfg.get("labels", [])]
+                       for l in (cfg.get("extra_labels", []) if self.auto_labels else labels)]
+        self.models_dir = models_dir or os.path.join(HERE, "models")
         self.voice = Voice(cfg, models_dir or os.path.join(HERE, "models"), voice_enabled,
                            os.path.join(HERE, ".cache", "tts"))
         self.build()
+        self.face_tracks = self.find_faces() if self.auto_labels else []
 
     # ---- timeline construction
     def build(self):
@@ -747,6 +753,43 @@ class Project:
             return "capture"
         return "move-self" if move["side"] == "white" else "move-opponent"
 
+    def find_faces(self):
+        """Tracked, named faces for the labels (see faces.py); [] if OpenCV isn't installed."""
+        try:
+            import faces
+        except ImportError:
+            return []
+        import importlib.util
+        if importlib.util.find_spec("cv2") is None:
+            print("! opencv-python-headless is not installed: no name labels (pip install opencv-python-headless)")
+            return []
+        cfg = self.cfg.get("faces", {})
+        ranges = [list(s) for s in self.segments]
+        hook = self.cfg.get("hook")
+        if hook:
+            ranges.append([hook["from"], self.find_move(hook["move"])["t"]])
+        tracks, cuts = faces.detect_tracks(self.source, ranges, self.crop, self.models_dir,
+                                           os.path.join(HERE, ".cache", "faces"))
+        faces.assign_shots(tracks, cuts)
+        refs = {}
+        for key, pl in self.players.items():
+            av = pl.get("avatar")
+            if isinstance(av, dict):
+                refs.setdefault(pl.get("short", pl["name"]), []).append({"t": av["t"], "x": av["x"], "y": av["y"]})
+        for name, pts in cfg.get("cast", {}).items():
+            refs.setdefault(name, []).extend(pts)
+        embs = faces.reference_embeddings(self.source, refs, self.crop, self.models_dir)
+        pins = [(n, pt["t"], pt["x"], pt["y"]) for n, pts in refs.items() for pt in pts]
+        pins += [(name, t, x, y) for t, x, y, name in cfg.get("pins", [])]
+
+        def first_seen(tr):  # NPCs are numbered in the order viewers meet them
+            out = self.src_to_out(tr["samples"][0][0])
+            return out if out is not None else 1e9 + tr["samples"][0][0]
+
+        faces.name_tracks(tracks, embs, pins, cfg.get("npc_label", "NPC"), first_seen)
+        hide = set(cfg.get("hide", []))
+        return [faces.smooth(tr) for tr in tracks if tr["name"] not in hide]
+
     def find_move(self, name):
         for m in self.moves:
             if m.get("name") == name:
@@ -829,6 +872,7 @@ class Renderer:
                     self.coach[expr, m] = with_shadow(im, 8, 130)
             self.coach_w = self.coach["hype", 0].width - 32
         self.talk = self.talk_levels()
+        self.layout()
 
     # ---- static pieces
     def render_base(self):
@@ -896,10 +940,59 @@ class Renderer:
         self.cache[key] = img
         return img
 
-    def label(self, text):
-        key = ("label", text)
+    def face_boxes(self, src_t, zoom=1.0):
+        """[(name, (x0, y0, x1, y1) in clip pixels, alpha)] for every face visible at src_t."""
+        import faces
+        out = []
+        for tr in self.p.face_tracks:
+            b = faces.box_at(tr, src_t)
+            if b is None:
+                continue
+            x0, y0 = b[0] * self.cw, b[1] * self.ch
+            x1, y1 = x0 + b[2] * self.cw, y0 + b[3] * self.ch
+            if zoom > 1.0005:  # follow the slow push-in on freeze frames
+                cx, cy = self.cw / 2, self.ch / 2
+                x0, x1 = cx + (x0 - cx) * zoom, cx + (x1 - cx) * zoom
+                y0, y1 = cy + (y0 - cy) * zoom, cy + (y1 - cy) * zoom
+            # fade in/out when a face is uncovered or covered mid-shot; switch hard on cuts
+            first, last = tr["samples"][0][0], tr["samples"][-1][0]
+            a0, b0 = tr.get("shot_span", (-1e9, 1e9))
+            fade_in = 1.0 if first - a0 < 0.2 else clamp((src_t - first + 0.06) / 0.12, 0.0, 1.0)
+            fade_out = 1.0 if b0 - last < 0.2 else clamp((last - src_t + 0.06) / 0.12, 0.0, 1.0)
+            alpha = min(fade_in, fade_out)
+            out.append((tr["name"], (x0, y0, x1, y1), alpha))
+        return out
+
+    def draw_face_labels(self, clip, src_t, zoom=1.0):
+        """Name labels that sit above each face and follow it; a face that is covered or turns
+        away loses its label."""
+        tag = self.player_tag(self.p.members("black", src_t), "black")
+        taken = [(34, 12, 34 + tag.width, 12 + tag.height)]  # keep clear of the top player tag
+
+        def overlap(r):
+            return sum(max(0, min(r[2], o[2]) - max(r[0], o[0])) * max(0, min(r[3], o[3]) - max(r[1], o[1]))
+                       for o in taken)
+
+        boxes = sorted(self.face_boxes(src_t, zoom), key=lambda b: -(b[1][3] - b[1][1]))
+        for name, (x0, y0, x1, y1), alpha in boxes:
+            fh = y1 - y0
+            li = self.label(name, 26 if fh >= 0.1 * self.ch else 21)
+            lw, lh = li.width - 16, li.height - 16  # text box without the shadow margin
+            cx = clamp((x0 + x1) / 2, lw / 2 + 4, self.cw - lw / 2 - 4)
+            above = max(y0 - 0.18 * fh - lh / 2, lh / 2 + 2)  # just above the hair line
+            beside = taken[0][2] + lw / 2 + 8                  # above, but nudged right of the player tag
+            spots = [(cx, above), (beside, above), (cx, above - lh - 4), (cx, y1 + lh / 2 + 4)]
+            spots = [(x, y) for x, y in spots if x - lw / 2 < x1 + 0.4 * (x1 - x0) and x + lw / 2 < self.cw]
+            rects = [(x - lw / 2, y - lh / 2, x + lw / 2, y + lh / 2) for x, y in spots]
+            best = min(range(len(spots)), key=lambda i: (overlap(rects[i]) > 0, i if rects[i][1] >= 0 else 9))
+            taken.append(rects[best])
+            bx, by = spots[best]
+            alpha_paste(clip, fade(li, alpha), (bx - li.width / 2, by - li.height / 2))
+
+    def label(self, text, size=26):
+        key = ("label", text, size)
         if key not in self.cache:
-            fnt = font("mono", 26)
+            fnt = font("mono", size)
             l, t, r, b = fnt.getbbox(text)
             img = Image.new("RGBA", (r - l + 24, b - t + 24), (0, 0, 0, 0))
             draw_text(img, (12 - l, 12 - t), text, fnt, WHITE, shadow=3)
@@ -1105,7 +1198,111 @@ class Renderer:
         alpha_paste(clip, fade(img, a), (cx - img.width / 2, bottom - img.height + 16 * s + bob))
 
     def card_side(self, move):
-        return move.get("card", "right")
+        return self.sides.get(move["_n"], move.get("card", "right"))
+
+    # ---- automatic layout: badges and cards go where they don't cover faces
+    def layout(self):
+        """Pick a badge spot (and a card side) for every move that doesn't set one: next to the
+        speaker's face when it's on screen, never over a face, a name label, a player tag or a card,
+        and clear of the TikTok/Reels button rail."""
+        self.badges, self.sides = {}, {}
+        p = self.p
+        d = int(p.cfg.get("badge_size", 96))
+        cw, ch = self.cw, self.ch
+        ui = [(0, 0, 300, 84), (0, ch - 84, 300, ch)]  # player tags (and the eval bar beside them)
+
+        def area(a, b):
+            return max(0, min(a[2], b[2]) - max(a[0], b[0])) * max(0, min(a[3], b[3]) - max(a[1], b[1]))
+
+        def face_regions(src_t):
+            out = []
+            for name, (x0, y0, x1, y1), _ in self.face_boxes(src_t):
+                fh = y1 - y0
+                out.append((name, (x0 - 0.1 * fh, y0 - 0.18 * fh - 40, x1 + 0.1 * fh, y1)))  # face + name label
+            return out
+
+        def body_regions(src_t):  # shoulders and chest under each face: better not, but not as bad
+            out = []
+            for name, (x0, y0, x1, y1), _ in self.face_boxes(src_t):
+                fw = x1 - x0
+                out.append((x0 - 0.9 * fw, y1, x1 + 0.9 * fw, min(ch, y1 + 2.5 * (y1 - y0))))
+            return out
+
+        def card_rect(show, side):
+            img = self.card(show, 0)
+            iw, ih = img.width - 48, img.height - 48
+            x = 34 if side == "left" else cw - iw - SAFE_RIGHT
+            y = max(8, ch - 20 - ih)
+            rects = [(x, y, x + iw, y + ih)]
+            if self.coach_h:
+                rects.append((x + iw - self.coach_w - 6, y + 50 - self.coach_h, x + iw - 6, y + 50))
+            return rects
+
+        auto_badge = lambda m: m.get("badge", "auto") == "auto"
+        for show in p.shows:
+            m = show.move
+            if show.card and m["_n"] in self.sides:
+                continue
+            if show.card:
+                src_ts = [m["t"]]
+            else:
+                ts = [show.t0 + 0.05, (show.t0 + show.t1) / 2, max(show.t0 + 0.05, show.t1 - 0.1)]
+                src_ts = [p.span_at(t).src(t) for t in ts]
+            regions = [r for st in src_ts for r in face_regions(st)]
+            bodies = [r for st in src_ts for r in body_regions(st)]
+            blocked = list(ui)
+            if show.card:
+                if "card" in m:
+                    side = m["card"]
+                else:  # the side whose card covers less of the faces
+                    cost = {sd: sum(area(c, r) for c in card_rect(show, sd) for _, r in regions)
+                            for sd in ("right", "left")}
+                    side = "left" if cost["left"] < 0.7 * cost["right"] else "right"
+                self.sides[m["_n"]] = side
+                blocked += card_rect(show, side)
+            if not auto_badge(m) or m["_n"] in self.badges:
+                continue
+            speaker = p.players[m["side"]].get("short", p.players[m["side"]]["name"])
+            mine = [r for name, r in regions if name == speaker]
+            note = None
+            if not show.card and m.get("note") is not None:
+                img = self.note_tag(m)
+                note = (img.width - 32, img.height - 32)
+            best, best_cost = (0.82, 0.24), None
+            for gx in range(10, 89, 3):
+                for gy in range(12, 66, 3):
+                    cx, cy = gx / 100 * cw, gy / 100 * ch
+                    b = (cx - d / 2, cy - d / 2, cx + d / 2, cy + d / 2)
+                    if b[2] > cw - SAFE_RIGHT + 8:
+                        continue
+                    rects = [(b, 1.0)]
+                    if note:
+                        iw, ih = note
+                        x = clamp(cx - iw / 2, 30, cw - iw - SAFE_RIGHT)
+                        y = cy + d / 2 + 12
+                        if y + ih > ch - 80:
+                            y = cy - d / 2 - 12 - ih
+                        rects.append(((x, y, x + iw, y + ih), 0.6))
+                    cost = 0.0
+                    for r, w in rects:
+                        cost += w * 4 * sum(area(r, f) for _, f in regions)
+                        cost += w * 1 * sum(area(r, f) for f in bodies)
+                        cost += w * 10 * sum(area(r, u) for u in blocked)
+                    if mine:  # sit by the speaker's head, on whichever side has room
+                        f = mine[0]
+                        anchors = [(f[2] + d * 0.55, f[1] + 0.35 * (f[3] - f[1])),
+                                   (f[0] - d * 0.55, f[1] + 0.35 * (f[3] - f[1]))]
+                        dist = min(((cx - ax) ** 2 + (cy - ay) ** 2) ** 0.5 for ax, ay in anchors)
+                        cost += 25 * dist
+                    else:
+                        cost += 10 * (((cx - 0.8 * cw) ** 2 + (cy - 0.24 * ch) ** 2) ** 0.5)
+                    if best_cost is None or cost < best_cost:
+                        best, best_cost = (gx / 100, gy / 100), cost
+            self.badges[m["_n"]] = best
+
+    def badge_xy(self, move):
+        b = move.get("badge", "auto")
+        return self.badges.get(move["_n"], (0.82, 0.24)) if b == "auto" else b
 
     def bottom_tag_alpha(self, t):
         """Fade the bottom player tag out while a left-hand card covers it."""
@@ -1125,7 +1322,7 @@ class Renderer:
         move = show.move
         age, remain = t - show.t0, show.t1 - t
         alpha = clamp(remain / 0.2, 0, 1)
-        bx, by = move.get("badge", [0.82, 0.24])
+        bx, by = self.badge_xy(move)
         cx, cy = bx * self.cw, by * self.ch
         d = int(self.p.cfg.get("badge_size", 96))
         if age < 0.12:
@@ -1194,6 +1391,7 @@ class Renderer:
                 if lb["from"] <= src_t < lb["to"]:
                     li = self.label(lb["text"])
                     alpha_paste(clip, li, (lb["x"] * self.cw - li.width / 2, lb["y"] * self.ch - li.height / 2))
+            self.draw_face_labels(clip, src_t, zoom)
         self.draw_eval(clip, t)
         if not in_review:
             alpha_paste(clip, self.player_tag(p.members("black", src_t), "black"), (34, 12))
@@ -1330,6 +1528,20 @@ def write_wav(path, stereo):
         w.writeframes(data.tobytes())
 
 
+def loudnorm_filter(wav, target=-14.0):
+    """Two-pass loudness normalisation: measure the mix, then apply one linear gain so the video
+    lands on the social-media target (-14 LUFS) instead of the single-pass estimate."""
+    base = f"loudnorm=I={target}:TP=-1.5:LRA=11"
+    err = run(["ffmpeg", "-hide_banner", "-i", wav, "-af", base + ":print_format=json", "-f", "null", "-"],
+              capture_output=True, text=True).stderr
+    try:
+        m = json.loads(err[err.rindex("{"):err.rindex("}") + 1])
+        return (f"{base}:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}:"
+                f"measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
+    except (ValueError, KeyError):
+        return base
+
+
 def render_video(p, out, fast=False, t_from=0.0, t_to=None):
     t_to = min(t_to or p.duration, p.duration)
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
@@ -1337,13 +1549,14 @@ def render_video(p, out, fast=False, t_from=0.0, t_to=None):
     wav = os.path.join(tmp, "mix.wav")
     print("mixing audio...")
     write_wav(wav, build_audio(p, t_from, t_to))
+    norm = loudnorm_filter(wav)
     r = Renderer(p)
     enc = subprocess.Popen(
         ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
          "-i", "-", "-i", wav, "-map", "0:v", "-map", "1:a", "-c:v", "libx264",
          "-preset", "veryfast" if fast else "medium", "-crf", "18", "-maxrate", "14M", "-bufsize", "28M",
          "-pix_fmt", "yuv420p", "-profile:v", "high", "-c:a", "aac", "-b:a", "192k",
-         "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", str(SR), "-movflags", "+faststart", "-shortest", out],
+         "-af", norm, "-ar", str(SR), "-movflags", "+faststart", "-shortest", out],
         stdin=subprocess.PIPE)
     n0, n1 = int(round(t_from * FPS)), int(round(t_to * FPS))
     started = time.time()

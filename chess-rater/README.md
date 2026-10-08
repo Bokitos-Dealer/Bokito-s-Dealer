@@ -6,7 +6,8 @@ commentary). It renders a finished 1080×1920 MP4 with:
 
 - the hook title above the clip, with the red "like a chess game" accent
 - chess.com-style player tags (White at the bottom, Black at the top) and a live eval bar
-- name labels over each character, shot by shot
+- name labels that follow every face: main characters by name, everyone else as NPC 1, NPC 2…
+  (the same extra keeps the same number), and a label disappears when its face is covered
 - move badges (`!!` brilliant, `!` great, ★ best, 👍 excellent, ✓ good, 📖 book, `?!`, `?`, ✕, `??`)
 - freeze frames with a commentary card, read aloud by an AI voice in chess.com Game Review
   coach style ("The Kiss is brilliant!") while the words light up
@@ -87,9 +88,10 @@ the middle is cut out.
    negotiation, an interview, an argument, a flirt or a bluff. Someone should clearly "win".
 2. **Scout it.** `python scout.py clips/scene.mp4 --from 120 --to 250` writes a transcript
    with timestamps and a contact sheet of every shot with a 10×10 grid. The transcript needs
-   `pip install faster-whisper`. Use the sheet to read off x/y positions for labels and badges.
-3. **Write the project file.** Copy `projects/suits-mike-rachel.json` and edit it (format below).
-   Five or six voiced cards plus 20–30 quick badges is about right for 2–3 minutes.
+   `pip install faster-whisper`. Use the sheet to pick avatar spots and check who says what.
+3. **Write the project file.** Copy `projects/suits-interview.json` and edit it (format below).
+   Five or six voiced cards plus 20–30 quick badges is about right for 2–3 minutes. Name
+   labels, badge spots and card sides are automatic, so a project only needs the moves.
 4. **Check it.**
    - `python chessrate.py projects/scene.json --timeline` prints the edit and where every
      move lands.
@@ -132,16 +134,19 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   },
   "segments": [[44.6, 113.85], [122.72, 137.0]],   // the parts of the clip to use, in order
   "review": {"at": 226.0, "result": "1-0 · Rachel wins", "vo": "Good game! White wins."},
-  "labels": [[89.92, 92.88, "Rachel", 0.60, 0.05],    // [from, to, text, x, y]
-             [44.6, 45.2, "NPC 1", 0.12, 0.22]],         // random extras are NPC 1, NPC 2, ...
+  "labels": "auto",               // the default: face-tracked labels (see "Name labels" below)
+  "faces": {
+    "cast": {"Undercover Cop": [{"t": 247.0, "x": 0.48, "y": 0.32}]},  // name other people
+    "pins": [[229.24, 0.53, 0.35, "Harvey"]]  // [t, x, y, name] for faces too small to recognise
+  },
   "moves": [
     // a quick badge: shows for ~3 s while the clip keeps playing
     {"t": 59.44, "side": "black", "class": "excellent", "name": "Stealing From Us",
-     "note": "Straight to the point.", "eval": -0.3, "badge": [0.84, 0.22]},
+     "note": "Straight to the point.", "eval": -0.3},
     // a card: freezes the clip, and the voice reads "comment" (or "vo" if given)
     {"t": 93.0, "side": "white", "class": "great", "name": "In Here",
      "comment": "Mike read the files once, so he already has them. White is better.",
-     "eval": 1.2, "badge": [0.75, 0.24], "card": "right"}
+     "eval": 1.2}
   ]
 }
 ```
@@ -157,15 +162,27 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
   first frame of the next shot.
 - **`review.hold_at`** picks the frame held under the Game Review (a clip time). Use it when
   the clip ends in a transition into an end card.
-- **`card`** is `"right"` (the default) or `"left"`. Cards sit along the bottom of the clip, and
-  a left card briefly hides the bottom player tag. Pick the side that keeps faces visible.
+- **Badges and cards** are placed automatically: the badge goes next to the speaker's head (or
+  somewhere clear if they're off screen), never over a face, a name label, a player tag or a
+  card, and clear of the TikTok/Reels buttons; a card goes on the side that covers fewer faces.
+  To place one by hand, give the move `"badge": [x, y]` or `"card": "left"`/`"right"`.
 - **Other characters**: anyone from the main storyline who joins in goes under `players` with a
   `team` and a `joins` time, and their moves use their key as `side` (`"side": "louis"`). Add
   `leaves` (clip time) when they drop out of the scene, and their avatar leaves the team's tag.
   Random extras get a label only: `NPC 1`, `NPC 2`, and so on. A judge or referee who only
   rules on things is labelled as the arbiter ("Jessica (Arbiter)") and doesn't get moves.
-- **Labels and badges** shouldn't sit under the top player tag (about the top-left quarter of
-  the width and the top 15% of the clip). Move them lower or further right there.
+- **Name labels** (`"labels": "auto"`, the default) come from face tracking (`faces.py`, needs
+  `pip install opencv-python-headless`; the models download on first use). Every player is
+  recognised from their avatar spot; add anyone else from the main story under `faces.cast`
+  with a point on their face. Everyone else is an extra and gets `NPC 1`, `NPC 2`, … in the
+  order viewers meet them, keeping the same number when they come back. A label follows its
+  face, fades when someone walks in front or the person turns away, and switches exactly on
+  cuts. Faces that are tiny or blurry can't be recognised reliably, so they're numbered as
+  extras unless you pin a name on them (`faces.pins`); check the wide shots in a preview.
+  `faces.hide` lists names not to label, and `extra_labels` adds fixed text labels
+  (`[from, to, text, x, y]`), such as "Jessica (Arbiter)". A project can still give
+  `"labels"` as a list of fixed labels instead of `"auto"`. The face analysis takes about 40
+  seconds per minute of footage the first time and is cached after that.
 - **`voice`** can be one Kokoro voice (`"am_fenrir"`) or a weighted blend
   (`"am_michael:0.6+am_onyx:0.4"`). Leave out `voice` and `pitch` to get the series narrator.
   Keep the same voice across videos so the account has one recognisable host.
