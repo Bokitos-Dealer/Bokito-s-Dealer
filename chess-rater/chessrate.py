@@ -772,11 +772,13 @@ class Project:
         return self.players[key]["team"]
 
     def members(self, team, src_t=None):
-        """Player keys on a team, main player first; with src_t, only those who have joined by then."""
+        """Player keys on a team, main player first; with src_t, only those at the board then
+        (joined by src_t and not yet left)."""
         keys = [k for k, pl in self.players.items() if pl["team"] == team]
         keys.sort(key=lambda k: k != team)
         if src_t is not None:
-            keys = [k for k in keys if k == team or self.players[k].get("joins", -1e9) <= src_t]
+            keys = [k for k in keys if k == team or
+                    self.players[k].get("joins", -1e9) <= src_t < self.players[k].get("leaves", 1e9)]
         return tuple(keys)
 
     def counts(self, side):

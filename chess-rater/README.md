@@ -68,6 +68,12 @@ python chessrate.py projects/suits-mike-rachel.json        # -> out/suits-mike-r
 The times in the project file match that upload (4:11, ending in the Suits end card). A
 different copy of the scene will need its times re-checked with `scout.py`.
 
+`projects/suits-mock-trial.json` rates the Season 5 mock trial: Mike gets help from Benjamin,
+then claims Rachel is his wife so she can't testify, and Harvey plays the prosecutor. Save that
+upload (4:22, also ending in the end card) as `clips/suits-mock-trial.mp4` the same way.
+Benjamin plays for Mike's side only in the opening scene, and Jessica is labelled as the
+arbiter.
+
 ## Making a new video
 
 1. **Pick a scene.** The best ones are 1–3 minutes of back-and-forth between two sides: a
@@ -143,8 +149,12 @@ of the video frame: `0,0` is top-left and `1,1` is bottom-right.
 - **`card`** is `"right"` (the default) or `"left"`. Cards sit along the bottom of the clip, and
   a left card briefly hides the bottom player tag. Pick the side that keeps faces visible.
 - **Other characters**: anyone from the main storyline who joins in goes under `players` with a
-  `team` and a `joins` time, and their moves use their key as `side` (`"side": "louis"`).
-  Random extras get a label only: `NPC 1`, `NPC 2`, and so on.
+  `team` and a `joins` time, and their moves use their key as `side` (`"side": "louis"`). Add
+  `leaves` (clip time) when they drop out of the scene, and their avatar leaves the team's tag.
+  Random extras get a label only: `NPC 1`, `NPC 2`, and so on. A judge or referee who only
+  rules on things is labelled as the arbiter ("Jessica (Arbiter)") and doesn't get moves.
+- **Labels and badges** shouldn't sit under the top player tag (about the top-left quarter of
+  the width and the top 15% of the clip). Move them lower or further right there.
 - **`voice`** can be one Kokoro voice (`"am_fenrir"`) or a weighted blend
   (`"am_michael:0.6+am_onyx:0.4"`). Leave out `voice` and `pitch` to get the series narrator.
   Keep the same voice across videos so the account has one recognisable host.
