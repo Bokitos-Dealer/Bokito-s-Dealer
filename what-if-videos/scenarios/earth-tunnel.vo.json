@@ -1,0 +1,23 @@
+{
+  "id": "earth-tunnel",
+  "voice": "am_liam",
+  "speed": 1.05,
+  "lines": {
+    "hook": "What if you dug a hole straight through the Earth, and jumped in?",
+    "start": "Start in Spain, and the other end comes out in New Zealand.",
+    "air": "Pump out all the air first. Then, jump.",
+    "km1": "Fourteen seconds later, you're one kilometer down, doing five hundred kilometers an hour.",
+    "kola": "At twelve kilometers, you pass the deepest hole humans have ever dug.",
+    "crust": "A minute and a half in, you've fallen right through the crust.",
+    "mantle": "Then the mantle: three thousand kilometers of rock so hot, it flows.",
+    "core": "Thirteen minutes in, you drop into an ocean of liquid iron.",
+    "inner": "The inner core is as hot as the surface of the Sun. Hope you packed a heat-proof suit.",
+    "center": "At nineteen minutes, you shoot through the very center at thirty-five thousand kilometers an hour.",
+    "weight": "Strangest part? You've been weightless the entire time.",
+    "slow": "Now gravity pulls you back. You slow down, and down.",
+    "pop": "Thirty-eight minutes after you jumped, you float up out of the ground in New Zealand. Feet first.",
+    "still": "For a split second, you hang there, perfectly still.",
+    "back": "Then you fall all the way back.",
+    "outro": "And you'd keep doing it forever."
+  }
+}

@@ -117,7 +117,7 @@ function coastQuat() {
 }
 
 // an Earth with clouds and an atmosphere you can see from inside or outside (ray-marched shell)
-function buildEarth(R, atmH, sunDir) {
+export function buildEarth(R, atmH, sunDir) {
   const g = new THREE.Group();
   const T = earthTextures();
   const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 128, 64), new THREE.MeshStandardMaterial({ map: T.map, roughness: 0.9 }));

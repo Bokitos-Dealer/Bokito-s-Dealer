@@ -345,5 +345,33 @@ def c_flyby(m, c):
     place(m, t0, y, c, verb=0.3)
 
 
+def c_rush(m, c):
+    """Falling down the tunnel: air and rumble that follow how fast the walls stream past. speed = [[t, 0..1]]."""
+    r = rng_of(c)
+    t0, t1 = c['t0'], c['t1']
+    n = sec(t1 - t0)
+    k = np.array(c['speed'], dtype=float)
+    v = np.clip(lp(np.interp(t0 + np.arange(n) / SR, k[:, 0], k[:, 1]), 5.0, 1), 0, 1)
+    cols = []
+    for _ in range(2):
+        x = r.standard_normal(n)
+        cols.append(lp(x, 160) * (0.25 + v) * 1.4 + bp(x, 500, 2200) * v ** 1.2 * 0.8 + bp(x, 2500, 8000) * v ** 2.2 * 0.35)
+    y = np.stack(cols, axis=1)
+    place(m, t0, norm(y, 0.9), c, verb=0.15)
+
+
+def c_glide(m, c):
+    """A tone that follows a moving thing: keys2 = [[t, speed 0..1]]; pitch and level rise with speed."""
+    t0, t1 = c['t0'], c['t1']
+    n = sec(t1 - t0)
+    k = np.array(c['keys2'], dtype=float)
+    v = np.clip(lp(np.interp(t0 + np.arange(n) / SR, k[:, 0], k[:, 1]), 8.0, 1), 0, 1)
+    f = 196.0 * 2 ** (v * 1.6)
+    ph = np.cumsum(f) / SR
+    y = (np.sin(2 * np.pi * ph) + 0.3 * np.sin(4 * np.pi * ph + 0.3)) * (0.15 + 0.85 * v ** 0.7)
+    y *= np.clip(np.arange(n) / sec(0.08), 0, 1) * np.clip((n - np.arange(n)) / sec(0.12), 0, 1)
+    place(m, t0, to_stereo(norm(y, 0.6), -0.15, 0.15), c, verb=0.3)
+
+
 CUES = dict(flip=c_flip, sweep=c_sweep, count=c_count, rustle=c_rustle, snap=c_snap, slide=c_slide, creak=c_creak,
-            spring=c_spring, sparkle=c_sparkle, impact=c_impact, flyby=c_flyby)
+            spring=c_spring, sparkle=c_sparkle, impact=c_impact, flyby=c_flyby, rush=c_rush, glide=c_glide)

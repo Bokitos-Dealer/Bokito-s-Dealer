@@ -185,7 +185,7 @@ export function buildPeople(opts = {}) {
       if (p.extra) p.extra(t, po, pl);
       const yaw = pl.h + (p.turn ? p.turn(t) : 0);
       const y = (p.yAt ? p.yAt(pl.x, pl.z, t) : p.y) + (po.bob - po.drop) * p.scale;
-      q.setFromEuler(e.set(0, yaw, 0));
+      q.setFromEuler(e.set(p.tilt ? p.tilt(t) : 0, yaw, 0));   // tilt: pitch about the feet (e.g. Math.PI = upside down)
       B.compose(v.set(pl.x, y, pl.z), q, s.set(p.scale, p.scale, p.scale));
       const sk = c.set(p.skin);
       const write = (name, idx, rot, colA, colB, extraRot) => {
