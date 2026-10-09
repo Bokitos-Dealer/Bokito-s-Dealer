@@ -185,6 +185,8 @@ function deskFold(k) {
   if (zSplit(k)) return { O: new THREE.Vector3(p.cx, BASE_Y + p.T, p.cz), yaw: Math.PI / 2, L: p.b / 2, W: p.a, T: p.T };
   return { O: new THREE.Vector3(p.cx, BASE_Y + p.T, p.cz), yaw: 0, L: p.a / 2, W: p.b, T: p.T };
 }
+// the hand lets go of the edge once the flap stands up (just past vertical)
+const RELEASE = 0.52 * Math.PI;
 // theta and bend radius through a hand fold
 function handFoldShape(e, p) {
   const F = deskFold(e.k);
@@ -535,30 +537,24 @@ export default {
     const tW = U.clone().multiplyScalar(b.tx).add(V(0, b.ty, 0)), nW = U.clone().multiplyScalar(b.nx).add(V(0, b.ny, 0));
     return { P, t: tW, n: nW, F };
   },
-  // right hand on fold k at angle theta: pinch the free edge (lifting), then push the outside face over
+  // right hand on fold k at angle theta: thumb and index pinch the free edge and turn with it. Used only
+  // while the flap rises (up to RELEASE); past that the hand lets go and the flap falls over by itself
   carryR(k, theta, r, tremble = 0) {
     const st = this.st, F = deskFold(k);
     const wP = (zSplit(k) ? -0.22 : 0.2) * F.W;
     const A = this.foldPoint(k, theta, r, F.L, F.T / 2, wP);
-    const fA = A.t.clone().negate().addScaledVector(A.n, 0.55).normalize();
-    const qA = handQuat(fA, new THREE.Vector3().crossVectors(A.n, fA));
-    const poseA = 'pinch';
-    st.handR.set({ pose: poseA, quat: qA, anchor: ['pinch', A.P], elbow: st.ELBOW_R });
-    const posA = st.handR.root.position.clone();
-    const B = this.foldPoint(k, theta, r, F.L * 0.62, F.T, wP);
-    const fB = B.t.clone().addScaledVector(B.n, -0.25).normalize();
-    const qB = handQuat(fB, B.n);
-    st.handR.set({ pose: 'press', quat: qB, anchor: ['middle', B.P.clone().addScaledVector(B.n, 0.0095)], elbow: st.ELBOW_R });
-    const posB = st.handR.root.position.clone();
-    // blend the grip, but keep the contact point on the paper the whole time (the hand never lets go)
-    const s = smooth(0.3 * Math.PI, 0.75 * Math.PI, theta);
-    const quat = qA.clone().slerp(qB, s), pose = blendPose('pinch', 'press', s);
-    st.handR.set({ pose, quat, pos: V(0, 0, 0), elbow: st.ELBOW_R });
-    const lp = st.handR.local('pinch').lerp(st.handR.local('middle'), s).applyQuaternion(quat);
-    const target = A.P.clone().lerp(B.P.clone().addScaledVector(B.n, 0.0095), s);
-    const pos = target.sub(lp);
+    const f = A.t.clone().negate().addScaledVector(A.n, 0.55).normalize();
+    const quat = handQuat(f, new THREE.Vector3().crossVectors(A.n, f));
+    st.handR.set({ pose: 'pinch', quat, anchor: ['pinch', A.P], elbow: st.ELBOW_R });
+    const pos = st.handR.root.position.clone();
     if (tremble) pos.add(V(Math.sin(tremble * 61) * 0.0012, Math.sin(tremble * 47) * 0.0009, Math.cos(tremble * 53) * 0.0012));
-    return { pos, quat, pose };
+    return { pos, quat, pose: blendPose('pinch', 'pinch', 0) };
+  },
+  // just after letting go: fingers open a little, the hand backs off up and away from the falling flap
+  releasedR(k, r) {
+    const F = deskFold(k), c = this.carryR(k, RELEASE, r);
+    const U = V(Math.cos(F.yaw), 0, Math.sin(F.yaw));
+    return { pos: c.pos.clone().addScaledVector(U, 0.03).add(V(0, 0.035, 0)), quat: c.quat, pose: blendPose('pinch', 'relax', 0.6) };
   },
   // palm flat on the folded block, at fraction a along the crease
   pressR(k, a) {
@@ -615,19 +611,24 @@ export default {
       const start = (t) => this.carryR(e.k, 0, handFoldShape(e, 0).r);
       // approach from wherever the hand was
       blendSeg(Math.min(prevT, reach0 - 0.15), reach1, prevEnd, start, 0.025);
-      segs.push({ t0: reach1, t1: carry1, at: (t) => { const p = (t - e.t0) / e.d, s = handFoldShape(e, p); return this.carryR(e.k, s.theta, s.r, e.strain ? t : 0); } });
-      const landed = (t) => this.carryR(e.k, Math.PI, handFoldShape(e, 1).r);
+      // lift the edge until the flap stands up, then let go: it falls over by itself
+      let pRel = 0.12; while (pRel < 0.8 && handFoldShape(e, pRel).theta < RELEASE) pRel += 0.002;
+      const tRel = e.t0 + e.d * pRel, rRel = handFoldShape(e, pRel).r;
+      segs.push({ t0: reach1, t1: tRel, at: (t) => { const p = (t - e.t0) / e.d, s = handFoldShape(e, p); return this.carryR(e.k, Math.min(s.theta, RELEASE), s.r, e.strain ? t : 0); } });
+      const let1 = tRel + 0.16;
+      blendSeg(tRel, let1, (t) => this.carryR(e.k, RELEASE, rRel), (t) => this.releasedR(e.k, rRel), 0);
       if (e.press) {
-        const p0 = carry1 + 0.2, p1 = e.t0 + e.d + 0.3;
-        blendSeg(carry1, p0, landed, (t) => this.pressR(e.k, 0), 0.012);
+        // then come down on the landed block and run the palm along the crease
+        const p0 = Math.max(carry1 + 0.3, let1 + 0.45), p1 = Math.max(e.t0 + e.d + 0.3, p0 + 0.35);
+        blendSeg(let1, p0, (t) => this.releasedR(e.k, rRel), (t) => this.pressR(e.k, 0), 0.02);
         segs.push({ t0: p0, t1: p1, at: (t) => this.pressR(e.k, smooth(p0, p1, t)) });
         prevEnd = (t) => this.pressR(e.k, 1); prevT = p1;
-      } else { prevEnd = landed; prevT = carry1; }
+      } else { prevEnd = (t) => this.releasedR(e.k, rRel); prevT = let1; }
     }
     // the failed 8th fold: pinch, lift a little, tremble, let go
     const F0 = FAIL.t0, F1 = FAIL.t0 + FAIL.d;
     const failAt = (t) => { const s = failShape(t); return this.carryR(FAIL.k, s.theta, s.r, t); };
-    blendSeg(Math.min(prevT, F0 - 0.15), F0 + 0.08, prevEnd, (t) => failAt(F0), 0.02);
+    blendSeg(Math.min(prevT, F0 - 0.3), F0 + 0.08, prevEnd, (t) => failAt(F0), 0.02);
     segs.push({ t0: F0 + 0.05, t1: F0 + FAIL.d * 0.8, at: failAt });
     blendSeg(F0 + FAIL.d * 0.8, F1 + 0.9, (t) => failAt(F0 + FAIL.d * 0.8), (t) => this.restR(t), 0.03);
     segs.sort((a, b) => a.t0 - b.t0);
@@ -636,3 +637,6 @@ export default {
     return segs;
   },
 };
+
+// for offline checks (hand/paper collision and motion probes); not used by the renderer
+export const _debug = { EV, FAIL, handFoldShape, failShape, deskFold };
