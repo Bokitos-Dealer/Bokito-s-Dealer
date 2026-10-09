@@ -252,7 +252,7 @@ function buildAudio() {
       A.push(S_('sfx/2384.wav', land, { align: 0.1, level: 1.4 }));
       A.push(S_('sfx/1530.wav', land + 0.08, { align: 0.14, level: 1.1 }));
     } else if (e.strain) {
-      A.push(S_('sfx/2379.wav', e.t0 + 0.1, { offset: 0.4, dur: e.d * 0.75, level: 1.2, fin: 0.05, fout: 0.1 }));
+      A.push(S_('sfx/2379.wav', e.t0 + e.d * 0.1, { offset: 0.4, dur: e.d * 0.68, level: 1.2, fin: 0.05, fout: 0.1 }));
       A.push(S_('sfx/2385.wav', land, { align: 0.56, offset: 0.3, dur: 0.6, level: 1.3, fout: 0.1 }));
       A.push(S_('sfx/1530.wav', land + 0.1, { align: 0.14, level: 1.0 }));
     } else {
