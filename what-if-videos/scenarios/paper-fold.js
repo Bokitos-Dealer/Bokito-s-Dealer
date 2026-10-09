@@ -66,7 +66,7 @@ let FAIL, HERE, FADE, END, DURATION;
   const l8 = word('keep', 'keep'), l9 = Math.max(word('keep', 'going') + 0.12, l8 + 0.4);
   EV.push({ k: 8, t0: l8 - 0.36, d: 0.36, kind: 'flip' }, { k: 9, t0: l9 - 0.36, d: 0.36, kind: 'flip' });
   e = say('mug', e + 0.08);
-  EV.push({ k: 10, t0: word('mug', 'tall') - 0.38, d: 0.38, kind: 'flip' });
+  EV.push({ k: 10, t0: word('mug', 'mug') - 0.38, d: 0.38, kind: 'flip' });
   t = e + 0.12;
   // P5..P10: one landmark per line, the last flip lands on the key word (the voice waits if the flips need room)
   const landmark = (id, key, k0, k1, w, d) => {
@@ -76,16 +76,16 @@ let FAIL, HERE, FADE, END, DURATION;
     t = Math.max(e2 + 0.1, word(key, w) + 0.3);
   };
   landmark('P5', 'you', 11, 14, 'tall', 0.36);
-  landmark('P6', 'bldg', 15, 17, 'tall', 0.42);
-  landmark('P7', 'tower', 18, 20, 'taller', 0.44);
-  landmark('P8', 'tallest', 21, 23, 'taller', 0.48);
-  landmark('P9', 'planes', 24, 27, 'higher', 0.38);
-  landmark('P10', 'space', 28, 30, 'reaches', 0.42);
+  landmark('P6', 'bldg', 15, 17, 'building', 0.42);
+  landmark('P7', 'tower', 18, 20, 'towers', 0.44);
+  landmark('P8', 'tallest', 21, 23, 'history', 0.48);
+  landmark('P9', 'planes', 24, 27, 'above', 0.38);
+  landmark('P10', 'space', 28, 30, 'space', 0.42);
   // P11..P13: the counter races; it arrives as the line names the landmark
   const race = (id, key, from, to, w) => { shot(id); const e2 = say(key, t + 0.1); GROW.push({ from, to, t0: t + 0.12, t1: word(key, w) }); t = e2 + 0.12; };
   race('P11', 'moon', 30, 42, 'past');
   race('P12', 'sun', 42, 51, 'past');
-  race('P13', 'galaxy', 51, 83, 'long');
+  race('P13', 'galaxy', 51, 83, 'galaxy');
   // P14: ...and at one hundred and three folds — HERE — longer than the observable universe
   shot('P14'); e = say('final1', t + 0.15);
   HERE = e + 0.35;
@@ -253,11 +253,11 @@ function buildAudio() {
     keys: env((t) => t < shotStart('P4') ? 0.62 : t < shotStart('P9') ? 0.68 : t < cosmos ? 0.74 : t < HERE ? 0.95 : 1.15) }));
   // places (recorded room tone: park, wind, high air, space); everything that moves is synthesised below
   A.push(S_('sfx/367.wav', 0, { offset: 12, dur: shotStart('P9'), level: 0.42, fout: 0.25, keys: env(() => 1) }));
-  A.push(S_('sfx/1267.wav', shotStart('P9'), { offset: 3, dur: shotEnd('P9') - shotStart('P9') + 0.05, level: 0.42, fin: 0.08, fout: 0.15, keys: env(() => 1) }));
+  A.push(S_('sfx/1267.wav', shotStart('P9'), { offset: 3, dur: shotEnd('P9') - shotStart('P9') + 0.05, level: 0.34, fin: 0.08, fout: 0.15, keys: env(() => 1) }));
   A.push(S_('sfx/1177.wav', shotStart('P10'), { offset: 6, dur: shotEnd('P10') - shotStart('P10') + 0.05, level: 0.4, fin: 0.06, fout: 0.15, keys: env(() => 1) }));
   A.push(S_('sfx/653.mp3', shotStart('P10'), { offset: 12, dur: HERE - shotStart('P10'), level: 0.45, fin: 0.1, fout: 0.05,
     keys: env((t) => t < cosmos ? 0.6 : 0.72) }));
-  fx('flyby', { t: shotStart('P9') + 0.4, dur: 2.3, level: 0.4, seed: 9 });
+  fx('flyby', { t: shotStart('P9') + 0.4, dur: 2.3, level: 0.28, seed: 9 });
 
   // every cut: a swell that peaks on the cut, a thump on it (the jumps in scale into the cosmos are bigger, with a gliding tone)
   SHOTS.forEach(([t, id], i) => {

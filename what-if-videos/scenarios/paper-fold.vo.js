@@ -251,17 +251,17 @@ export default {
  },
  "mug": {
   "file": "vo/paper-fold/mug.wav",
-  "dur": 2.36,
-  "text": "Ten folds, and it's as tall as a coffee mug.",
+  "dur": 2.11,
+  "text": "Ten folds, and you're up to a coffee mug.",
   "words": [
    [
     "Ten",
     0.0,
-    0.18
+    0.2
    ],
    [
     "folds,",
-    0.18,
+    0.2,
     0.62
    ],
    [
@@ -270,93 +270,88 @@ export default {
     0.86
    ],
    [
-    "it's",
+    "you're",
     0.86,
-    1.02
+    1.0
    ],
    [
-    "as",
-    1.02,
-    1.14
+    "up",
+    1.0,
+    1.12
    ],
    [
-    "tall",
-    1.14,
-    1.4
-   ],
-   [
-    "as",
-    1.4,
-    1.6
+    "to",
+    1.12,
+    1.3
    ],
    [
     "a",
-    1.6,
-    1.7
+    1.3,
+    1.42
    ],
    [
     "coffee",
-    1.7,
-    1.98
+    1.42,
+    1.7
    ],
    [
     "mug.",
-    1.98,
-    2.24
+    1.7,
+    1.94
    ]
   ]
  },
  "you": {
   "file": "vo/paper-fold/you.wav",
-  "dur": 2.19,
-  "text": "Fourteen folds, and it's as tall as you.",
+  "dur": 2.25,
+  "text": "By fourteen folds, it's as tall as you.",
   "words": [
    [
-    "Fourteen",
+    "By",
     0.0,
-    0.42
+    0.14
+   ],
+   [
+    "fourteen",
+    0.14,
+    0.54
    ],
    [
     "folds,",
-    0.42,
-    0.8
-   ],
-   [
-    "and",
-    1.08,
-    1.1
+    0.54,
+    1.06
    ],
    [
     "it's",
-    1.1,
-    1.28
+    1.18,
+    1.34
    ],
    [
     "as",
-    1.28,
-    1.38
+    1.34,
+    1.44
    ],
    [
     "tall",
-    1.38,
-    1.62
+    1.44,
+    1.68
    ],
    [
     "as",
-    1.62,
-    1.82
+    1.68,
+    1.9
    ],
    [
     "you.",
-    1.82,
-    2.04
+    1.9,
+    2.1
    ]
   ]
  },
  "bldg": {
   "file": "vo/paper-fold/bldg.wav",
-  "dur": 3.09,
-  "text": "Seventeen folds, and it's as tall as a four-storey building.",
+  "dur": 2.55,
+  "text": "Seventeen folds. Now it's a four-storey building.",
   "words": [
    [
     "Seventeen",
@@ -364,56 +359,41 @@ export default {
     0.54
    ],
    [
-    "folds,",
+    "folds.",
     0.54,
-    0.82
+    0.84
    ],
    [
-    "and",
-    1.1,
-    1.18
+    "Now",
+    1.18,
+    1.3
    ],
    [
     "it's",
-    1.18,
-    1.32
-   ],
-   [
-    "as",
-    1.32,
-    1.44
-   ],
-   [
-    "tall",
-    1.44,
-    1.7
-   ],
-   [
-    "as",
-    1.7,
-    1.94
+    1.3,
+    1.52
    ],
    [
     "a",
-    1.94,
-    2.04
+    1.52,
+    1.58
    ],
    [
     "four-storey",
-    2.04,
-    2.68
+    1.58,
+    2.16
    ],
    [
     "building.",
-    2.68,
-    2.88
+    2.16,
+    2.34
    ]
   ]
  },
  "tower": {
   "file": "vo/paper-fold/tower.wav",
-  "dur": 2.85,
-  "text": "Twenty folds, and it's taller than a thirty-storey tower.",
+  "dur": 3.22,
+  "text": "Twenty folds, and it towers over a thirty-storey skyscraper.",
   "words": [
    [
     "Twenty",
@@ -431,281 +411,291 @@ export default {
     0.92
    ],
    [
-    "it's",
+    "it",
     0.92,
-    1.12
+    1.02
    ],
    [
-    "taller",
-    1.12,
-    1.34
+    "towers",
+    1.02,
+    1.36
    ],
    [
-    "than",
-    1.34,
-    1.6
+    "over",
+    1.36,
+    1.62
    ],
    [
     "a",
-    1.6,
-    1.74
+    1.62,
+    1.78
    ],
    [
     "thirty-storey",
-    1.74,
-    2.44
+    1.78,
+    2.52
    ],
    [
-    "tower.",
-    2.44,
-    2.62
+    "skyscraper.",
+    2.52,
+    3.04
    ]
   ]
  },
  "tallest": {
   "file": "vo/paper-fold/tallest.wav",
-  "dur": 3.22,
-  "text": "Twenty-three folds, and it's taller than the tallest building on Earth.",
+  "dur": 3.08,
+  "text": "Three more folds, and the tallest building on Earth is history.",
   "words": [
    [
-    "Twenty-three",
+    "Three",
     0.0,
-    0.5
+    0.18
+   ],
+   [
+    "more",
+    0.18,
+    0.4
    ],
    [
     "folds,",
-    0.5,
-    0.86
+    0.4,
+    0.84
    ],
    [
     "and",
-    1.14,
-    1.18
-   ],
-   [
-    "it's",
-    1.18,
-    1.42
-   ],
-   [
-    "taller",
-    1.42,
-    1.64
-   ],
-   [
-    "than",
-    1.64,
-    1.88
+    1.04,
+    1.12
    ],
    [
     "the",
-    1.88,
-    2.0
+    1.12,
+    1.22
    ],
    [
     "tallest",
-    2.0,
-    2.3
+    1.22,
+    1.5
    ],
    [
     "building",
-    2.3,
-    2.68
+    1.5,
+    1.84
    ],
    [
     "on",
-    2.68,
-    2.9
+    1.84,
+    2.1
    ],
    [
-    "Earth.",
-    2.9,
-    3.08
+    "Earth",
+    2.1,
+    2.28
+   ],
+   [
+    "is",
+    2.28,
+    2.52
+   ],
+   [
+    "history.",
+    2.52,
+    2.82
    ]
   ]
  },
  "planes": {
   "file": "vo/paper-fold/planes.wav",
-  "dur": 2.66,
-  "text": "Twenty-seven folds, and it's higher than planes fly.",
+  "dur": 2.29,
+  "text": "Four more folds, and it's above the planes.",
   "words": [
    [
-    "Twenty-seven",
+    "Four",
     0.0,
-    0.54
+    0.24
+   ],
+   [
+    "more",
+    0.24,
+    0.44
    ],
    [
     "folds,",
-    0.54,
-    0.94
+    0.44,
+    0.9
    ],
    [
     "and",
-    1.22,
-    1.24
+    1.08,
+    1.12
    ],
    [
     "it's",
-    1.24,
-    1.44
+    1.12,
+    1.32
    ],
    [
-    "higher",
-    1.44,
-    1.62
+    "above",
+    1.32,
+    1.5
    ],
    [
-    "than",
-    1.62,
-    1.86
+    "the",
+    1.5,
+    1.68
    ],
    [
-    "planes",
-    1.86,
-    2.16
-   ],
-   [
-    "fly.",
-    2.16,
-    2.5
+    "planes.",
+    1.68,
+    1.98
    ]
   ]
  },
  "space": {
   "file": "vo/paper-fold/space.wav",
-  "dur": 1.83,
-  "text": "Thirty folds, and it reaches space.",
+  "dur": 1.95,
+  "text": "At thirty folds, it's touching space.",
   "words": [
    [
-    "Thirty",
+    "At",
     0.0,
-    0.24
+    0.16
+   ],
+   [
+    "thirty",
+    0.16,
+    0.42
    ],
    [
     "folds,",
-    0.24,
-    0.66
+    0.42,
+    0.84
    ],
    [
-    "and",
-    0.82,
-    0.86
+    "it's",
+    0.94,
+    1.06
    ],
    [
-    "it",
-    0.86,
-    0.96
-   ],
-   [
-    "reaches",
-    0.96,
-    1.24
+    "touching",
+    1.06,
+    1.34
    ],
    [
     "space.",
-    1.24,
-    1.58
+    1.34,
+    1.72
    ]
   ]
  },
  "moon": {
   "file": "vo/paper-fold/moon.wav",
-  "dur": 2.34,
-  "text": "Forty-two folds, and it reaches past the Moon.",
+  "dur": 2.84,
+  "text": "Keep going, and at forty-two it flies right past the Moon.",
   "words": [
    [
-    "Forty-two",
+    "Keep",
     0.0,
-    0.48
+    0.2
    ],
    [
-    "folds,",
-    0.48,
-    0.82
+    "going,",
+    0.2,
+    0.54
    ],
    [
     "and",
-    1.1,
-    1.1
+    0.74,
+    0.76
+   ],
+   [
+    "at",
+    0.76,
+    0.86
+   ],
+   [
+    "forty-two",
+    0.86,
+    1.3
    ],
    [
     "it",
-    1.1,
-    1.2
-   ],
-   [
-    "reaches",
-    1.2,
+    1.3,
     1.44
    ],
    [
-    "past",
+    "flies",
     1.44,
-    1.76
+    1.68
+   ],
+   [
+    "right",
+    1.68,
+    2.0
+   ],
+   [
+    "past",
+    2.0,
+    2.3
    ],
    [
     "the",
-    1.76,
-    1.96
+    2.3,
+    2.48
    ],
    [
     "Moon.",
-    1.96,
-    2.14
+    2.48,
+    2.66
    ]
   ]
  },
  "sun": {
   "file": "vo/paper-fold/sun.wav",
-  "dur": 2.36,
-  "text": "Fifty-one folds, and it reaches past the Sun.",
+  "dur": 2.1,
+  "text": "By fifty-one, it's blown past the Sun.",
   "words": [
    [
-    "Fifty-one",
+    "By",
     0.0,
-    0.46
+    0.14
    ],
    [
-    "folds,",
-    0.46,
-    0.84
+    "fifty-one,",
+    0.14,
+    0.66
    ],
    [
-    "and",
-    1.1,
-    1.12
+    "it's",
+    0.82,
+    0.94
    ],
    [
-    "it",
-    1.12,
-    1.22
-   ],
-   [
-    "reaches",
-    1.22,
-    1.46
+    "blown",
+    0.94,
+    1.2
    ],
    [
     "past",
-    1.46,
-    1.78
+    1.2,
+    1.52
    ],
    [
     "the",
-    1.78,
-    1.98
+    1.52,
+    1.72
    ],
    [
     "Sun.",
-    1.98,
-    2.16
+    1.72,
+    1.88
    ]
   ]
  },
  "galaxy": {
   "file": "vo/paper-fold/galaxy.wav",
-  "dur": 3.05,
-  "text": "Eighty-three folds, and it's as long as our galaxy is wide.",
+  "dur": 3.3,
+  "text": "Eighty-three folds, and it stretches across our entire galaxy.",
   "words": [
    [
     "Eighty-three",
@@ -723,44 +713,34 @@ export default {
     1.18
    ],
    [
-    "it's",
+    "it",
     1.18,
-    1.34
+    1.26
    ],
    [
-    "as",
-    1.34,
-    1.46
+    "stretches",
+    1.26,
+    1.6
    ],
    [
-    "long",
-    1.46,
-    1.64
-   ],
-   [
-    "as",
-    1.64,
-    1.82
+    "across",
+    1.6,
+    1.98
    ],
    [
     "our",
-    1.82,
-    1.94
+    1.98,
+    2.2
    ],
    [
-    "galaxy",
-    1.94,
-    2.28
-   ],
-   [
-    "is",
-    2.28,
+    "entire",
+    2.2,
     2.58
    ],
    [
-    "wide.",
+    "galaxy.",
     2.58,
-    2.86
+    2.94
    ]
   ]
  },
