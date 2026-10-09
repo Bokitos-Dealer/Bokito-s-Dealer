@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "installedAt": "2026-10-09T15:08:51.546Z",
+  "files": {
+    "/home/user/Bokito-s-Dealer/.claude/settings.json": {
+      "plugins": [
+        "ruflo-mods@ruflo",
+        "ruflo-swarm@ruflo",
+        "ruflo-console@ruflo"
+      ],
+      "marketplace": true,
+      "env": true,
+      "claudeInstalled": []
+    }
+  }
+}
