@@ -226,7 +226,7 @@ function buildAudio() {
     for (const [key, at] of Object.entries(SAY)) k = Math.max(k, smooth(at - 0.18, at, t) * (1 - smooth(at + VO[key].dur, at + VO[key].dur + 0.3, t)));
     return k;
   };
-  const env = (base) => { const ks = []; for (let t = 0; t <= DURATION; t += 0.05) ks.push([+t.toFixed(2), base(t) * (1 - 0.6 * talking(t))]); return ks; };
+  const env = (base) => { const ks = []; for (let t = 0; t <= DURATION; t += 0.05) ks.push([+t.toFixed(2), base(t) * (1 - 0.68 * talking(t))]); return ks; };
   const cosmos = shotStart('P11');
   // "The Journey", entered mid-track so the hit after its breakdown (96.96 s in, after ~0.7 s of
   // near-silence) lands on HERE
@@ -234,10 +234,10 @@ function buildAudio() {
     keys: env((t) => t < shotStart('P4') ? 0.62 : t < shotStart('P9') ? 0.68 : t < cosmos ? 0.74 : t < HERE ? 0.95 : 1.15) }));
   // places
   A.push(S_('sfx/367.wav', 0, { offset: 12, dur: shotStart('P9'), level: 0.42, fout: 0.25, keys: env(() => 1) }));
-  A.push(S_('sfx/1267.wav', shotStart('P9'), { offset: 3, dur: shotEnd('P9') - shotStart('P9') + 0.05, level: 0.75, fin: 0.08, fout: 0.15, keys: env(() => 1) }));
-  A.push(S_('sfx/1579.wav', shotStart('P9') + 0.75, { align: 1.2, offset: 0, dur: 2.6, level: 0.5, fin: 0.05, fout: 0.4, pan: -0.2, keys: env(() => 1) }));
-  A.push(S_('sfx/1177.wav', shotStart('P10'), { offset: 6, dur: shotEnd('P10') - shotStart('P10') + 0.05, level: 0.75, fin: 0.06, fout: 0.15, keys: env(() => 1) }));
-  A.push(S_('sfx/653.mp3', shotStart('P10'), { offset: 12, dur: HERE - shotStart('P10'), level: 0.55, fin: 0.1, fout: 0.05,
+  A.push(S_('sfx/1267.wav', shotStart('P9'), { offset: 3, dur: shotEnd('P9') - shotStart('P9') + 0.05, level: 0.55, fin: 0.08, fout: 0.15, keys: env(() => 1) }));
+  A.push(S_('sfx/1579.wav', shotStart('P9') + 0.75, { align: 1.2, offset: 0, dur: 2.6, level: 0.36, fin: 0.05, fout: 0.4, pan: -0.2, keys: env(() => 1) }));
+  A.push(S_('sfx/1177.wav', shotStart('P10'), { offset: 6, dur: shotEnd('P10') - shotStart('P10') + 0.05, level: 0.55, fin: 0.06, fout: 0.15, keys: env(() => 1) }));
+  A.push(S_('sfx/653.mp3', shotStart('P10'), { offset: 12, dur: HERE - shotStart('P10'), level: 0.45, fin: 0.1, fout: 0.05,
     keys: env((t) => t < cosmos ? 0.6 : 1) }));
   // hand folds: lift, turn over, snap down, a slide along the crease
   const hand = EV.filter((e) => e.kind === 'hand');
@@ -260,13 +260,13 @@ function buildAudio() {
   A.push(S_('sfx/2385.wav', FAIL.t0 + 0.1, { offset: 0.35, dur: FAIL.d * 0.7, level: 1.3, fin: 0.05, fout: 0.15 }));
   A.push(S_('sfx/2384.wav', FAIL.t0 + FAIL.d * 0.78, { align: 0.1, level: 0.8 }));
   // "what if you could keep going?"
-  A.push(S_('sfx/2350.wav', shotStart('P4') + 0.25, { align: 0.14, level: 0.75 }));
+  A.push(S_('sfx/2350.wav', shotStart('P4') + 0.05, { align: 0.14, level: 0.42 }));
   // flips by itself: a whoosh that deepens with the scale, a thump on landing
   const flips = EV.filter((e) => e.kind === 'flip');
   for (const e of flips) {
     const land = e.t0 + e.d, sh = shotAt(e.t0 + 0.01)[1];
-    const W = { P4: ['sfx/2605.wav', 0.24, 0.3], P5: ['sfx/1461.wav', 0.16, 0.4], P6: ['sfx/1489.wav', 0.7, 0.45], P7: ['sfx/2604.wav', 0.48, 0.5], P8: ['sfx/2604.wav', 0.48, 0.55], P9: ['sfx/2604.wav', 0.48, 0.45], P10: ['sfx/2625.wav', 0.46, 0.5] }[sh];
-    const under = (t) => 1 - 0.55 * talking(t);   // effects step back while the voice speaks
+    const W = { P4: ['sfx/2605.wav', 0.24, 0.3], P5: ['sfx/1461.wav', 0.16, 0.4], P6: ['sfx/1489.wav', 0.7, 0.45], P7: ['sfx/2604.wav', 0.48, 0.4], P8: ['sfx/2604.wav', 0.48, 0.42], P9: ['sfx/2604.wav', 0.48, 0.36], P10: ['sfx/2625.wav', 0.46, 0.5] }[sh];
+    const under = (t) => 1 - 0.68 * talking(t);   // effects step back while the voice speaks
     if (W) A.push(S_(W[0], e.t0 + e.d * 0.55, { align: W[1], level: W[2] * under(e.t0 + e.d * 0.55) }));
     if (sh === 'P4' || sh === 'P5') A.push(S_('sfx/1104.wav', land, { align: 0.12, level: sh === 'P4' ? 0.75 : 0.6 }));
     if (sh !== 'P4') A.push(S_('sfx/563.wav', land, { align: 0.15, level: ({ P5: 0.22, P6: 0.4, P7: 0.5, P8: 0.6, P9: 0.5, P10: 0.55 }[sh] ?? 0.4) * under(land), dur: 1.6, fout: 0.6 }));
@@ -279,7 +279,7 @@ function buildAudio() {
     A.push(S_(g.to - g.from > 25 ? 'sfx/1117.wav' : 'sfx/1124.wav', t, { align: 0.1, dur: g.to - g.from > 25 ? 0.07 : 0.15, level: 0.3 * (1 - 0.4 * talking(t)), fout: 0.03, pan: ((k % 3) - 1) * 0.15 }));
   }
   // build to HERE, a fifth of a second of silence, then the hit
-  A.push(S_('sfx/632.wav', HERE - 0.25, { align: 25.9, offset: 21, dur: 4.9, level: 0.6, fout: 0.03 }));
+  A.push(S_('sfx/632.wav', HERE - 0.25, { align: 25.9, offset: 21, dur: 4.9, level: 0.45, fout: 0.03, keys: env(() => 1) }));
   A.push({ type: 'duck', keys: [[0, 1], [HERE - 0.27, 1], [HERE - 0.22, 0.06], [HERE - 0.01, 0.06], [HERE + 0.02, 1], [46.5, 1]] });
   A.push(S_('sfx/788.mp3', HERE, { align: 2.1, offset: 2.02, fin: 0.01, level: 1.0, free: true }));
   A.push(S_('sfx/2918.wav', HERE, { align: 3.04, offset: 2.95, fin: 0.01, level: 0.6, free: true }));
