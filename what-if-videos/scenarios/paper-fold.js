@@ -195,8 +195,8 @@ function handFoldShape(e, p) {
   let th;
   if (e.strain) {
     // lifts, stalls and trembles, then goes over with a push
-    if (p < 0.1) th = 0;
-    else if (p < 0.34) th = 0.3 * easeOut((p - 0.1) / 0.24);
+    if (p < 0.12) th = 0;                                                // still while the hand takes hold
+    else if (p < 0.34) th = 0.3 * easeInOut((p - 0.12) / 0.22);
     else if (p < 0.6) th = 0.3 + 0.022 * Math.sin((p - 0.34) * 95) * (1 - (p - 0.34) / 0.26);
     else if (p < 0.8) th = 0.3 + 0.7 * easeInOut((p - 0.6) / 0.2);      // gives way and snaps over
     else th = 1;
@@ -204,10 +204,12 @@ function handFoldShape(e, p) {
   const r = lerp(r0, rMin, smooth(0.5, 0.8, p));
   return { theta: th * Math.PI, r };
 }
+const FAIL_GRAB = 0.08;   // fraction of the failed fold before the hand has hold of the edge
 function failShape(t) {
   const p = clamp((t - FAIL.t0) / FAIL.d);
   let th = 0;
-  if (p < 0.3) th = 0.14 * easeOut(p / 0.3);
+  if (p < FAIL_GRAB) th = 0;                                            // still while the hand takes hold
+  else if (p < 0.3) th = 0.14 * easeInOut((p - FAIL_GRAB) / (0.3 - FAIL_GRAB));
   else if (p < 0.72) th = 0.14 + 0.015 * Math.sin((p - 0.3) * 70) * (1 - (p - 0.3) / 0.42) - 0.02 * (p - 0.3);
   else th = 0.132 * Math.pow(1 - (p - 0.72) / 0.28, 2) * Math.cos((p - 0.72) * 22);
   const F = deskFold(FAIL.k);
@@ -632,8 +634,8 @@ export default {
     // the failed 8th fold: pinch, lift a little, tremble, let go
     const F0 = FAIL.t0, F1 = FAIL.t0 + FAIL.d;
     const failAt = (t) => { const s = failShape(t); return this.carryR(FAIL.k, s.theta, s.r, t); };
-    blendSeg(Math.min(prevT, F0 - 0.3), F0 + 0.08, prevEnd, (t) => failAt(F0), 0.02);
-    segs.push({ t0: F0 + 0.05, t1: F0 + FAIL.d * 0.8, at: failAt });
+    blendSeg(Math.min(prevT, F0 - 0.3), F0 + FAIL.d * FAIL_GRAB, prevEnd, (t) => failAt(F0), 0.02);
+    segs.push({ t0: F0 + FAIL.d * FAIL_GRAB, t1: F0 + FAIL.d * 0.8, at: failAt });
     blendSeg(F0 + FAIL.d * 0.8, F1 + 0.9, (t) => failAt(F0 + FAIL.d * 0.8), (t) => this.restR(t), 0.03);
     segs.sort((a, b) => a.t0 - b.t0);
     // make sure segments do not overlap: later ones win from their start
