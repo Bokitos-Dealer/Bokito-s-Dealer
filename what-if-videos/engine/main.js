@@ -94,7 +94,8 @@ function overlay(t) {
   for (const [a, b, txt] of S.captions) {
     if (t >= a - 0.01 && t <= b + 0.01) {
       ct = txt;
-      ca = smooth(a, a + 0.4, t) * (1 - smooth(b - 0.4, b, t));
+      const cf = S.captionFade ?? 0.4;
+      ca = smooth(a, a + cf, t) * (1 - smooth(b - cf, b, t));
       break;
     }
   }

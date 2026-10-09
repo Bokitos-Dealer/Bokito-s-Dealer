@@ -12,6 +12,7 @@ import { buildDaySky, buildTown, TOWN, makeCloudTexture, regionTexture, buildPla
 import { buildPeople } from '../engine/lib/people.js';
 import { buildVehicles } from '../engine/lib/vehicles.js';
 import { buildCosmos } from '../engine/lib/cosmos.js';
+import VO from './paper-fold.vo.js';
 
 // ------------------------------------------------------------------ facts
 const T0 = 1e-4;                       // one sheet: 0.1 mm
@@ -20,49 +21,103 @@ const BASE_Y = 0.004;                  // top of the blanket
 const thick = (n) => T0 * Math.pow(2, n);
 const LY = 9.4607e15;
 
-// ------------------------------------------------------------------ timeline
-const SHOTS = [
-  [0.0, 'P1'],    // hook: hands fold the sheet once
-  [2.8, 'P2'],    // folds 2..6, quick
-  [5.4, 'P3'],    // fold 7 with effort, fold 8 won't go
-  [8.0, 'P4'],    // it folds by itself: 8, 9, 10 — as tall as the mug
-  [11.2, 'P5'],   // 11..14: as tall as a person
-  [13.8, 'P6'],   // 15..17: the 4-storey building
-  [16.4, 'P7'],   // 18..20: a 30-storey tower
-  [19.0, 'P8'],   // 21..23: taller than the tallest building
-  [21.6, 'P9'],   // 24..27: above the planes
-  [24.2, 'P10'],  // 28..30: space
-  [26.8, 'P11'],  // 31..42: past the Moon
-  [29.8, 'P12'],  // 43..51: past the Sun
-  [32.6, 'P13'],  // 52..83: across the galaxy
-  [35.4, 'P14'],  // 84..103: beyond the observable universe
-];
-const FADE = [40.6, 41.4], END = 41.6, HERE = 38.2;
+// ------------------------------------------------------------------ timeline (built from the narration)
+// Every shot lasts as long as its voice-over line (plus a breath). Folds are placed so the landmark
+// fold lands on the line's key word ("...as TALL as a coffee mug"), the counter races finish on
+// "...reaches PAST the Moon", and the hit comes a beat after "...one hundred and three folds".
+const wordT = (key, word, nth = 0) => {
+  const ws = VO[key].words; let n = 0;
+  for (const [w, s] of ws) if (w.toLowerCase().replace(/[^a-z0-9']/g, '').startsWith(word)) { if (n++ === nth) return s; }
+  throw new Error(`word "${word}" not in line ${key}`);
+};
+const SHOTS = [], SAY = {}, EV = [], GROW = [];
+let FAIL, HERE, FADE, END, DURATION;
+{
+  let t = 0;
+  const shot = (id) => SHOTS.push([t, id]);
+  const say = (key, at) => { SAY[key] = at; return at + VO[key].dur; };
+  const word = (key, w, nth) => SAY[key] + wordT(key, w, nth);
+  // the last of a run of flips lands at `land`; the rest are spread evenly before it
+  const flips = (k0, k1, from, land, d) => {
+    const n = k1 - k0 + 1, first = from, last = land - d;
+    for (let i = 0; i < n; i++) EV.push({ k: k0 + i, t0: n > 1 ? lerp(first, last, i / (n - 1)) : last, d, kind: 'flip' });
+  };
+  // P1: the hook, the first fold by hand
+  shot('P1'); let e = say('hook', t + 0.35);
+  EV.push({ k: 1, t0: t + 1.0, d: 1.35, kind: 'hand', press: true });
+  t = e + 0.3;
+  // P2: twice as thick, every time — then counting the layers fold by fold
+  shot('P2'); e = say('double', t + 0.2);
+  const quick = (k, land) => EV.push({ k, t0: land - 0.45 * 0.8, d: 0.45, kind: 'hand' });
+  quick(2, word('double', 'fold')); quick(3, word('double', 'twice'));
+  let land = e + 0.35;
+  for (const [k, key] of [[4, 'c16'], [5, 'c32'], [6, 'c64']]) { quick(k, land); e = say(key, land - 0.04); land = e + 0.14; }
+  t = e + 0.4;
+  // P3: by hand you get stuck at about seven
+  shot('P3'); e = say('stuck', t + 0.25);
+  const sevenAt = word('stuck', 'seven'), f7 = t + 0.3;
+  EV.push({ k: 7, t0: f7, d: (sevenAt - f7) / 0.8, kind: 'hand', strain: true, press: true });
+  const f7end = f7 + (sevenAt - f7) / 0.8;
+  FAIL = { k: 8, t0: Math.max(f7end + 0.35, e - 0.4), d: 0.85 };
+  t = Math.max(e + 0.3, FAIL.t0 + FAIL.d + 0.15);
+  // P4: ...but what if you could keep going? It folds by itself, as tall as a mug at ten
+  shot('P4'); e = say('keep', t + 0.15);
+  EV.push({ k: 8, t0: t + 0.65, d: 0.48, kind: 'flip' }, { k: 9, t0: t + 1.23, d: 0.48, kind: 'flip' });
+  e = say('mug', e + 0.3);
+  EV.push({ k: 10, t0: word('mug', 'tall') - 0.48, d: 0.48, kind: 'flip' });
+  t = e + 0.4;
+  // P5..P10: one landmark per line, the last flip lands on the key word
+  const landmark = (id, key, k0, k1, w, d) => { shot(id); const e2 = say(key, t + 0.15); flips(k0, k1, t + 0.2, word(key, w), d); t = Math.max(e2 + 0.35, word(key, w) + 0.45); };
+  landmark('P5', 'you', 11, 14, 'tall', 0.45);
+  landmark('P6', 'bldg', 15, 17, 'tall', 0.52);
+  landmark('P7', 'tower', 18, 20, 'taller', 0.55);
+  landmark('P8', 'tallest', 21, 23, 'taller', 0.6);
+  landmark('P9', 'planes', 24, 27, 'higher', 0.5);
+  landmark('P10', 'space', 28, 30, 'reaches', 0.55);
+  // P11..P13: the counter races; it arrives as the line names the landmark
+  const race = (id, key, from, to, w) => { shot(id); const e2 = say(key, t + 0.2); GROW.push({ from, to, t0: t + 0.25, t1: word(key, w) }); t = e2 + 0.4; };
+  race('P11', 'moon', 30, 42, 'past');
+  race('P12', 'sun', 42, 51, 'past');
+  race('P13', 'galaxy', 51, 83, 'long');
+  // P14: ...and at one hundred and three folds — HERE — longer than the observable universe
+  shot('P14'); e = say('final1', t + 0.3);
+  HERE = e + 0.45;
+  GROW.push({ from: 83, to: 103, t0: t + 0.25, t1: HERE });
+  e = say('final2', HERE + 0.6);
+  FADE = [e + 0.9, e + 1.7]; END = FADE[1] + 0.2;
+  say('outro', END + 0.7);
+  DURATION = END + 5.2;
+}
 const shotAt = (t) => { let s = SHOTS[0]; for (const x of SHOTS) if (t >= x[0]) s = x; return s; };
 const shotStart = (id) => SHOTS.find((s) => s[1] === id)[0];
 const shotEnd = (id) => { const i = SHOTS.findIndex((s) => s[1] === id); return i + 1 < SHOTS.length ? SHOTS[i + 1][0] : END; };
+EV.sort((x, y) => x.t0 - y.t0);
 
-// fold events. 'hand' = folded by hand (reach, carry over, press), 'flip' = folds by itself
-const EV = [];
-EV.push({ k: 1, t0: 0.3, d: 1.35, kind: 'hand', press: true });
-[2.95, 3.4, 3.85, 4.3, 4.75].forEach((t, i) => EV.push({ k: 2 + i, t0: t, d: 0.45, kind: 'hand' }));
-EV.push({ k: 7, t0: 5.45, d: 1.15, kind: 'hand', strain: true, press: true });
-const FAIL = { k: 8, t0: 7.05, d: 0.85 };   // the 8th fold by hand: lifts a little, trembles, springs back
-[8.6, 9.2, 9.8].forEach((t, i) => EV.push({ k: 8 + i, t0: t, d: 0.48, kind: 'flip' }));
-const flipsIn = (k0, times, d) => times.forEach((t, i) => EV.push({ k: k0 + i, t0: t, d, kind: 'flip' }));
-flipsIn(11, [11.35, 11.9, 12.45, 13.0], 0.45);
-flipsIn(15, [14.0, 14.65, 15.3], 0.52);
-flipsIn(18, [16.6, 17.25, 17.9], 0.55);
-flipsIn(21, [19.2, 19.85, 20.5], 0.6);
-flipsIn(24, [21.75, 22.3, 22.85, 23.4], 0.5);
-flipsIn(28, [24.4, 25.05, 25.7], 0.55);
-// beyond 30 folds the counter races: the length doubles every step
-const GROW = [
-  { from: 30, to: 42, t0: 27.0, t1: 29.0 },
-  { from: 42, to: 51, t0: 30.0, t1: 31.6 },
-  { from: 51, to: 83, t0: 32.8, t1: 34.6 },
-  { from: 83, to: 103, t0: 35.6, t1: HERE },
-];
+// captions: the spoken words in short groups, on screen exactly while they are said
+function buildCaptions() {
+  const out = [];
+  for (const [key, at] of Object.entries(SAY)) {
+    if (key === 'hook' || key === 'outro') continue;           // the title / end card already say it
+    const ws = [];
+    for (const [w, s, e] of VO[key].words) {
+      if (ws.length && /^[-']/.test(w)) { const p = ws[ws.length - 1]; p[0] += w; p[2] = e; } else ws.push([w, s, e]);
+    }
+    // break after punctuation or every few words, but never right after a little word ("the", "as", "on"...)
+    const LITTLE = /^(a|an|the|as|of|on|in|to|than|and|it's|its|our|at|by|be|your|you'll|is)$/i;
+    let chunk = [];
+    const flush = (end) => { if (!chunk.length) return; out.push([at + chunk[0][1], at + end, chunk.map((c) => c[0]).join(' ')]); chunk = []; };
+    ws.forEach(([w, s, e], i) => {
+      chunk.push([w, s, e]);
+      const next = ws[i + 1];
+      const full = chunk.length >= 4 && !LITTLE.test(w.replace(/[^A-Za-z']/g, ''));
+      if (!next || full || chunk.length >= 6 || /[,.?!…]$/.test(w)) flush(next ? Math.min(next[1], e + 0.6) : e + 0.35);
+    });
+  }
+  out.sort((x, y) => x[0] - y[0]);
+  for (let i = 0; i < out.length - 1; i++) out[i][1] = Math.min(out[i][1], out[i + 1][0] - 0.01);
+  return out;
+}
+
 const LAND = (e) => e.t0 + e.d * (e.kind === 'hand' ? 0.8 : 1.0);   // when a fold lands (the counter ticks)
 
 // folds completed at time t (integer), and the smooth value used for lengths when racing
@@ -163,17 +218,27 @@ function failShape(t) {
 const S_ = (file, t, o = {}) => Object.assign({ type: 'sample', file, t }, o);
 function buildAudio() {
   const A = [];
-  // music: "The Journey", entered mid-track so the hit after its breakdown lands on HERE
-  // (the hit is 96.96 s into the track, after ~0.7 s of near-silence)
-  A.push(S_('music/79.mp3', 0, { offset: 96.96 - HERE, level: 0.5, fin: 0.15, fout: 1.5, dur: 46.5,
-    keys: [[0, 0.6], [7.9, 0.6], [8.3, 0.62], [11.2, 0.64], [21.6, 0.68], [26.6, 0.85], [38.2, 1.0], [46.5, 1.0]] }));
+  // the voice: on top of everything, never ducked
+  for (const [key, at] of Object.entries(SAY)) A.push(S_(VO[key].file, at, { level: 1.35, free: true, verb: 0.035, fin: 0.005, fout: 0.03 }));
+  // music and ambience dip under every line and come back up in the gaps
+  const talking = (t) => {
+    let k = 0;
+    for (const [key, at] of Object.entries(SAY)) k = Math.max(k, smooth(at - 0.18, at, t) * (1 - smooth(at + VO[key].dur, at + VO[key].dur + 0.3, t)));
+    return k;
+  };
+  const env = (base) => { const ks = []; for (let t = 0; t <= DURATION; t += 0.05) ks.push([+t.toFixed(2), base(t) * (1 - 0.6 * talking(t))]); return ks; };
+  const cosmos = shotStart('P11');
+  // "The Journey", entered mid-track so the hit after its breakdown (96.96 s in, after ~0.7 s of
+  // near-silence) lands on HERE
+  A.push(S_('music/79.mp3', 0, { offset: 96.96 - HERE, level: 0.42, fin: 0.15, fout: 1.5, dur: DURATION,
+    keys: env((t) => t < shotStart('P4') ? 0.62 : t < shotStart('P9') ? 0.68 : t < cosmos ? 0.74 : t < HERE ? 0.95 : 1.15) }));
   // places
-  A.push(S_('sfx/367.wav', 0, { offset: 12, dur: 21.6, level: 0.42, fout: 0.25 }));
-  A.push(S_('sfx/1267.wav', shotStart('P9'), { offset: 3, dur: 2.65, level: 0.75, fin: 0.08, fout: 0.15 }));
-  A.push(S_('sfx/1579.wav', shotStart('P9') + 0.75, { align: 1.2, offset: 0, dur: 2.6, level: 0.85, fin: 0.05, fout: 0.4, pan: -0.2 }));
-  A.push(S_('sfx/1177.wav', shotStart('P10'), { offset: 6, dur: 2.65, level: 0.75, fin: 0.06, fout: 0.15 }));
+  A.push(S_('sfx/367.wav', 0, { offset: 12, dur: shotStart('P9'), level: 0.42, fout: 0.25, keys: env(() => 1) }));
+  A.push(S_('sfx/1267.wav', shotStart('P9'), { offset: 3, dur: shotEnd('P9') - shotStart('P9') + 0.05, level: 0.75, fin: 0.08, fout: 0.15, keys: env(() => 1) }));
+  A.push(S_('sfx/1579.wav', shotStart('P9') + 0.75, { align: 1.2, offset: 0, dur: 2.6, level: 0.5, fin: 0.05, fout: 0.4, pan: -0.2, keys: env(() => 1) }));
+  A.push(S_('sfx/1177.wav', shotStart('P10'), { offset: 6, dur: shotEnd('P10') - shotStart('P10') + 0.05, level: 0.75, fin: 0.06, fout: 0.15, keys: env(() => 1) }));
   A.push(S_('sfx/653.mp3', shotStart('P10'), { offset: 12, dur: HERE - shotStart('P10'), level: 0.55, fin: 0.1, fout: 0.05,
-    keys: [[24.2, 0.6], [26.8, 1.0], [38.2, 1.0]] }));
+    keys: env((t) => t < cosmos ? 0.6 : 1) }));
   // hand folds: lift, turn over, snap down, a slide along the crease
   const hand = EV.filter((e) => e.kind === 'hand');
   hand.forEach((e, i) => {
@@ -201,16 +266,17 @@ function buildAudio() {
   for (const e of flips) {
     const land = e.t0 + e.d, sh = shotAt(e.t0 + 0.01)[1];
     const W = { P4: ['sfx/2605.wav', 0.24, 0.3], P5: ['sfx/1461.wav', 0.16, 0.4], P6: ['sfx/1489.wav', 0.7, 0.45], P7: ['sfx/2604.wav', 0.48, 0.5], P8: ['sfx/2604.wav', 0.48, 0.55], P9: ['sfx/2604.wav', 0.48, 0.45], P10: ['sfx/2625.wav', 0.46, 0.5] }[sh];
-    if (W) A.push(S_(W[0], e.t0 + e.d * 0.55, { align: W[1], level: W[2] }));
+    const under = (t) => 1 - 0.55 * talking(t);   // effects step back while the voice speaks
+    if (W) A.push(S_(W[0], e.t0 + e.d * 0.55, { align: W[1], level: W[2] * under(e.t0 + e.d * 0.55) }));
     if (sh === 'P4' || sh === 'P5') A.push(S_('sfx/1104.wav', land, { align: 0.12, level: sh === 'P4' ? 0.75 : 0.6 }));
-    if (sh !== 'P4') A.push(S_('sfx/563.wav', land, { align: 0.15, level: { P5: 0.22, P6: 0.4, P7: 0.5, P8: 0.6, P9: 0.5, P10: 0.55 }[sh] ?? 0.4, dur: 1.6, fout: 0.6 }));
+    if (sh !== 'P4') A.push(S_('sfx/563.wav', land, { align: 0.15, level: ({ P5: 0.22, P6: 0.4, P7: 0.5, P8: 0.6, P9: 0.5, P10: 0.55 }[sh] ?? 0.4) * under(land), dur: 1.6, fout: 0.6 }));
   }
   // jumps in scale
   for (const id of ['P11', 'P12', 'P13', 'P14']) A.push(S_('sfx/1492.wav', shotStart(id), { align: 0.9, level: 0.5 }));
   // the counter racing: one tick per fold
   for (const g of GROW) for (let k = g.from + 1; k <= g.to; k++) {
     const t = g.t0 + (k - g.from) / (g.to - g.from) * (g.t1 - g.t0);
-    A.push(S_(g.to - g.from > 25 ? 'sfx/1117.wav' : 'sfx/1124.wav', t, { align: 0.1, dur: g.to - g.from > 25 ? 0.07 : 0.15, level: 0.32, fout: 0.03, pan: ((k % 3) - 1) * 0.15 }));
+    A.push(S_(g.to - g.from > 25 ? 'sfx/1117.wav' : 'sfx/1124.wav', t, { align: 0.1, dur: g.to - g.from > 25 ? 0.07 : 0.15, level: 0.3 * (1 - 0.4 * talking(t)), fout: 0.03, pan: ((k % 3) - 1) * 0.15 }));
   }
   // build to HERE, a fifth of a second of silence, then the hit
   A.push(S_('sfx/632.wav', HERE - 0.25, { align: 25.9, offset: 21, dur: 4.9, level: 0.6, fout: 0.03 }));
@@ -263,27 +329,11 @@ export default {
   id: 'paper-fold',
   title: 'What if you could fold paper 103 times?',
   endFact: 'To really fold paper 42 times, you’d need a strip about <b>100,000 light-years</b> long.',
-  duration: 46.5,
-  titleIn: [-1, -0.5], titleOut: [2.3, 2.75],
+  duration: DURATION,
+  titleIn: [-1, -0.5], titleOut: [SAY.hook + VO.hook.dur + 0.1, SAY.hook + VO.hook.dur + 0.5],
   fadeOut: FADE, endAt: END,
-  captions: [
-    [0.7, 2.75, 'Fold a sheet of paper in half…'],
-    [2.95, 5.35, '…and it gets twice as thick. Every time.'],
-    [5.55, 7.95, 'By hand, you get stuck at about 7 folds.'],
-    [8.1, 9.55, 'But what if you could keep going?'],
-    [9.75, 11.15, '10 folds: as tall as a coffee mug.'],
-    [11.4, 13.75, '14 folds: as tall as a person.'],
-    [14.0, 16.35, '17 folds: as tall as a 4-storey building.'],
-    [16.6, 18.95, '20 folds: taller than a 30-storey tower.'],
-    [19.2, 21.55, '23 folds: taller than the world’s tallest building.'],
-    [21.8, 24.15, '27 folds: higher than planes fly.'],
-    [24.4, 26.75, '30 folds: it reaches space.'],
-    [27.0, 29.75, '42 folds: it reaches past the Moon.'],
-    [30.0, 32.55, '51 folds: past the Sun.'],
-    [32.8, 35.35, '83 folds: as long as our galaxy is wide.'],
-    [35.6, 38.05, '103 folds…'],
-    [38.35, 40.5, '…longer than the observable universe is wide.'],
-  ],
+  captions: buildCaptions(),
+  captionFade: 0.06,
   hud(t) {
     if (t >= FADE[1]) return null;
     const n = foldsDone(t);

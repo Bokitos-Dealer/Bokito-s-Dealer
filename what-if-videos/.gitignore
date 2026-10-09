@@ -10,3 +10,5 @@ moon/shots/
 __pycache__/
 assets/sfx/
 assets/music/
+assets/tts/
+assets/vo/
