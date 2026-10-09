@@ -41,6 +41,17 @@ def level(a, target_db=-20.0):
     return np.clip(a * g, -0.98, 0.98)
 
 
+def script_words(words, text):
+    """Whisper gives the timings but may spell numbers as digits ("64.") or split "Thirty-two": when it heard
+    the same number of words as the script has, keep its timings and use the script's own spelling."""
+    merged = []
+    for w, s, e in words:
+        if merged and re.match(r"^[-'\u2019]", w): merged[-1][0] += w; merged[-1][2] = e
+        else: merged.append([w, s, e])
+    toks = text.split()
+    return [[t, s, e] for t, (_, s, e) in zip(toks, merged)] if len(merged) == len(toks) else words
+
+
 def main():
     spec = json.load(open(sys.argv[1]))
     from kokoro_onnx import Kokoro
@@ -61,6 +72,7 @@ def main():
         segs, _ = stt.transcribe(a16, word_timestamps=True, initial_prompt=text)
         words = [[w.word.strip(), round(w.start, 3), round(w.end, 3)] for s in segs for w in s.words]
         heard = ' '.join(w[0] for w in words)
+        words = script_words(words, text)
         result[key] = {'file': f'vo/{vid}/{key}.wav', 'dur': round(len(audio) / sr, 3), 'text': text, 'words': words}
         print(f'{key:10s} {len(audio) / sr:5.2f}s  {heard}', flush=True)
     js = os.path.join(ROOT, 'scenarios', f'{vid}.vo.js')

@@ -37,61 +37,74 @@ let FAIL, HERE, FADE, END, DURATION;
   const shot = (id) => SHOTS.push([t, id]);
   const say = (key, at) => { SAY[key] = at; return at + VO[key].dur; };
   const word = (key, w, nth) => SAY[key] + wordT(key, w, nth);
-  // the last of a run of flips lands at `land`; the rest are spread evenly before it
+  // a run of flips tiles the time from `from` to `land`, the last landing on `land` (on the key word); if the
+  // time is short they get faster rather than overlapping
   const flips = (k0, k1, from, land, d) => {
-    const n = k1 - k0 + 1, first = from, last = land - d;
-    for (let i = 0; i < n; i++) EV.push({ k: k0 + i, t0: n > 1 ? lerp(first, last, i / (n - 1)) : last, d, kind: 'flip' });
+    const n = k1 - k0 + 1, dd = Math.min(d, (land - from) / n * 0.92);
+    for (let i = 0; i < n; i++) EV.push({ k: k0 + i, t0: n > 1 ? lerp(from, land - dd, i / (n - 1)) : land - dd, d: dd, kind: 'flip' });
   };
   // P1: the hook, the first fold by hand
-  shot('P1'); let e = say('hook', t + 0.35);
-  EV.push({ k: 1, t0: t + 1.0, d: 1.35, kind: 'hand', press: true });
-  t = e + 0.3;
+  shot('P1'); let e = say('hook', t + 0.2);
+  EV.push({ k: 1, t0: t + 0.55, d: 1.0, kind: 'hand', press: true });
+  t = e + 0.1;
   // P2: twice as thick, every time — then counting the layers fold by fold
-  shot('P2'); e = say('double', t + 0.2);
-  const quick = (k, land) => EV.push({ k, t0: land - 0.45 * 0.8, d: 0.45, kind: 'hand' });
-  quick(2, word('double', 'fold')); quick(3, word('double', 'twice'));
-  let land = e + 0.35;
-  for (const [k, key] of [[4, 'c16'], [5, 'c32'], [6, 'c64']]) { quick(k, land); e = say(key, land - 0.04); land = e + 0.14; }
-  t = e + 0.4;
+  shot('P2'); e = say('double', t + 0.1);
+  const quick = (k, land) => EV.push({ k, t0: land - 0.36 * 0.8, d: 0.36, kind: 'hand' });
+  quick(2, word('double', 'fold') + 0.12); quick(3, word('double', 'twice'));
+  let land = e + 0.18;
+  for (const [k, key] of [[4, 'c16'], [5, 'c32'], [6, 'c64']]) { quick(k, land); e = say(key, land - 0.03); land = e + 0.05; }
+  t = e + 0.12;
   // P3: by hand you get stuck at about seven
-  shot('P3'); e = say('stuck', t + 0.25);
-  const sevenAt = word('stuck', 'seven'), f7 = t + 0.3;
+  shot('P3'); e = say('stuck', t + 0.12);
+  const sevenAt = word('stuck', 'seven'), f7 = t + 0.15;
   EV.push({ k: 7, t0: f7, d: (sevenAt - f7) / 0.8, kind: 'hand', strain: true, press: true });
   const f7end = f7 + (sevenAt - f7) / 0.8;
-  FAIL = { k: 8, t0: Math.max(f7end + 0.35, e - 0.4), d: 0.85 };
-  t = Math.max(e + 0.3, FAIL.t0 + FAIL.d + 0.15);
-  // P4: ...but what if you could keep going? It folds by itself, as tall as a mug at ten
-  shot('P4'); e = say('keep', t + 0.15);
-  EV.push({ k: 8, t0: t + 0.65, d: 0.48, kind: 'flip' }, { k: 9, t0: t + 1.23, d: 0.48, kind: 'flip' });
-  e = say('mug', e + 0.3);
-  EV.push({ k: 10, t0: word('mug', 'tall') - 0.48, d: 0.48, kind: 'flip' });
-  t = e + 0.4;
-  // P5..P10: one landmark per line, the last flip lands on the key word
-  const landmark = (id, key, k0, k1, w, d) => { shot(id); const e2 = say(key, t + 0.15); flips(k0, k1, t + 0.2, word(key, w), d); t = Math.max(e2 + 0.35, word(key, w) + 0.45); };
-  landmark('P5', 'you', 11, 14, 'tall', 0.45);
-  landmark('P6', 'bldg', 15, 17, 'tall', 0.52);
-  landmark('P7', 'tower', 18, 20, 'taller', 0.55);
-  landmark('P8', 'tallest', 21, 23, 'taller', 0.6);
-  landmark('P9', 'planes', 24, 27, 'higher', 0.5);
-  landmark('P10', 'space', 28, 30, 'reaches', 0.55);
+  FAIL = { k: 8, t0: Math.max(f7end + 0.2, e - 0.35), d: 0.7 };
+  t = Math.max(e + 0.1, FAIL.t0 + FAIL.d + 0.1);
+  // P4: ...but what if you could keep going? It folds by itself: 8 on "keep", 9 on "going", ten as tall as a mug
+  shot('P4'); e = say('keep', t + 0.08);
+  const l8 = word('keep', 'keep'), l9 = Math.max(word('keep', 'going') + 0.12, l8 + 0.4);
+  EV.push({ k: 8, t0: l8 - 0.36, d: 0.36, kind: 'flip' }, { k: 9, t0: l9 - 0.36, d: 0.36, kind: 'flip' });
+  e = say('mug', e + 0.08);
+  EV.push({ k: 10, t0: word('mug', 'tall') - 0.38, d: 0.38, kind: 'flip' });
+  t = e + 0.12;
+  // P5..P10: one landmark per line, the last flip lands on the key word (the voice waits if the flips need room)
+  const landmark = (id, key, k0, k1, w, d) => {
+    shot(id);
+    const n = k1 - k0 + 1, at = Math.max(t + 0.08, t + 0.1 + n * 0.3 - wordT(key, w)), e2 = say(key, at);
+    flips(k0, k1, t + 0.1, word(key, w), d);
+    t = Math.max(e2 + 0.1, word(key, w) + 0.3);
+  };
+  landmark('P5', 'you', 11, 14, 'tall', 0.36);
+  landmark('P6', 'bldg', 15, 17, 'tall', 0.42);
+  landmark('P7', 'tower', 18, 20, 'taller', 0.44);
+  landmark('P8', 'tallest', 21, 23, 'taller', 0.48);
+  landmark('P9', 'planes', 24, 27, 'higher', 0.38);
+  landmark('P10', 'space', 28, 30, 'reaches', 0.42);
   // P11..P13: the counter races; it arrives as the line names the landmark
-  const race = (id, key, from, to, w) => { shot(id); const e2 = say(key, t + 0.2); GROW.push({ from, to, t0: t + 0.25, t1: word(key, w) }); t = e2 + 0.4; };
+  const race = (id, key, from, to, w) => { shot(id); const e2 = say(key, t + 0.1); GROW.push({ from, to, t0: t + 0.12, t1: word(key, w) }); t = e2 + 0.12; };
   race('P11', 'moon', 30, 42, 'past');
   race('P12', 'sun', 42, 51, 'past');
   race('P13', 'galaxy', 51, 83, 'long');
   // P14: ...and at one hundred and three folds — HERE — longer than the observable universe
-  shot('P14'); e = say('final1', t + 0.3);
-  HERE = e + 0.45;
-  GROW.push({ from: 83, to: 103, t0: t + 0.25, t1: HERE });
-  e = say('final2', HERE + 0.6);
-  FADE = [e + 0.9, e + 1.7]; END = FADE[1] + 0.2;
-  say('outro', END + 0.7);
-  DURATION = END + 5.2;
+  shot('P14'); e = say('final1', t + 0.15);
+  HERE = e + 0.35;
+  GROW.push({ from: 83, to: 103, t0: t + 0.12, t1: HERE });
+  e = say('final2', HERE + 0.45);
+  FADE = [e + 0.6, e + 1.2]; END = FADE[1] + 0.15;
+  say('outro', END + 0.45);
+  DURATION = END + 4.0;
 }
 const shotAt = (t) => { let s = SHOTS[0]; for (const x of SHOTS) if (t >= x[0]) s = x; return s; };
 const shotStart = (id) => SHOTS.find((s) => s[1] === id)[0];
 const shotEnd = (id) => { const i = SHOTS.findIndex((s) => s[1] === id); return i + 1 < SHOTS.length ? SHOTS[i + 1][0] : END; };
 EV.sort((x, y) => x.t0 - y.t0);
+// how big the thing flipping over is in each shot (0 a sheet of paper .. 1 hundreds of km): sets how the flips sound and punch
+const SIZE = { P4: 0.08, P5: 0.28, P6: 0.45, P7: 0.58, P8: 0.7, P9: 0.82, P10: 0.93 };
+// the last flip of each landmark shot is the one that lands on the key word: it gets the biggest thump and a push-in
+const LAST_FLIP = {};
+for (const e of EV) if (e.kind === 'flip') { const sh = shotAt(e.t0 + 0.01)[1]; if (!LAST_FLIP[sh] || e.k > LAST_FLIP[sh].k) LAST_FLIP[sh] = e; }
+const PUNCH = Object.entries(LAST_FLIP).map(([sh, e]) => ({ t: e.t0 + e.d, a: 0.025 + 0.03 * (SIZE[sh] ?? 0.5) }));
 
 // captions: the spoken words in short groups, on screen exactly while they are said
 function buildCaptions() {
@@ -222,77 +235,75 @@ function failShape(t) {
 const S_ = (file, t, o = {}) => Object.assign({ type: 'sample', file, t }, o);
 function buildAudio() {
   const A = [];
+  const fx = (type, o) => A.push(Object.assign({ type, fx: true }, o));    // effects: they step back while the voice speaks
   // the voice: on top of everything, never ducked
   for (const [key, at] of Object.entries(SAY)) A.push(S_(VO[key].file, at, { level: 1.35, free: true, verb: 0.035, fin: 0.005, fout: 0.03 }));
-  // music and ambience dip under every line and come back up in the gaps
   const talking = (t) => {
     let k = 0;
     for (const [key, at] of Object.entries(SAY)) k = Math.max(k, smooth(at - 0.18, at, t) * (1 - smooth(at + VO[key].dur, at + VO[key].dur + 0.3, t)));
     return k;
   };
-  const env = (base) => { const ks = []; for (let t = 0; t <= DURATION; t += 0.05) ks.push([+t.toFixed(2), base(t) * (1 - 0.68 * talking(t))]); return ks; };
-  const cosmos = shotStart('P11');
+  const keysEvery = (f, step = 0.05) => { const ks = []; for (let t = 0; t <= DURATION; t += step) ks.push([+t.toFixed(2), +f(t).toFixed(3)]); return ks; };
+  const env = (base) => keysEvery((t) => base(t) * (1 - 0.75 * talking(t)));     // music and ambience dip under every line
+  A.push({ type: 'fxduck', keys: keysEvery((t) => 1 - 0.5 * talking(t), 0.04) });  // effects dip by half
+  const cosmos = shotStart('P11'), idx = (id) => SHOTS.findIndex((s) => s[1] === id);
   // "The Journey", entered mid-track so the hit after its breakdown (96.96 s in, after ~0.7 s of
   // near-silence) lands on HERE
   A.push(S_('music/79.mp3', 0, { offset: 96.96 - HERE, level: 0.42, fin: 0.15, fout: 1.5, dur: DURATION,
     keys: env((t) => t < shotStart('P4') ? 0.62 : t < shotStart('P9') ? 0.68 : t < cosmos ? 0.74 : t < HERE ? 0.95 : 1.15) }));
-  // places
+  // places (recorded room tone: park, wind, high air, space); everything that moves is synthesised below
   A.push(S_('sfx/367.wav', 0, { offset: 12, dur: shotStart('P9'), level: 0.42, fout: 0.25, keys: env(() => 1) }));
-  A.push(S_('sfx/1267.wav', shotStart('P9'), { offset: 3, dur: shotEnd('P9') - shotStart('P9') + 0.05, level: 0.55, fin: 0.08, fout: 0.15, keys: env(() => 1) }));
-  A.push(S_('sfx/1579.wav', shotStart('P9') + 0.75, { align: 1.2, offset: 0, dur: 2.6, level: 0.36, fin: 0.05, fout: 0.4, pan: -0.2, keys: env(() => 1) }));
-  A.push(S_('sfx/1177.wav', shotStart('P10'), { offset: 6, dur: shotEnd('P10') - shotStart('P10') + 0.05, level: 0.55, fin: 0.06, fout: 0.15, keys: env(() => 1) }));
+  A.push(S_('sfx/1267.wav', shotStart('P9'), { offset: 3, dur: shotEnd('P9') - shotStart('P9') + 0.05, level: 0.42, fin: 0.08, fout: 0.15, keys: env(() => 1) }));
+  A.push(S_('sfx/1177.wav', shotStart('P10'), { offset: 6, dur: shotEnd('P10') - shotStart('P10') + 0.05, level: 0.4, fin: 0.06, fout: 0.15, keys: env(() => 1) }));
   A.push(S_('sfx/653.mp3', shotStart('P10'), { offset: 12, dur: HERE - shotStart('P10'), level: 0.45, fin: 0.1, fout: 0.05,
-    keys: env((t) => t < cosmos ? 0.6 : 1) }));
-  // hand folds: lift, turn over, snap down, a slide along the crease
-  const hand = EV.filter((e) => e.kind === 'hand');
-  hand.forEach((e, i) => {
-    const land = e.t0 + e.d * 0.8, lift = e.t0 + e.d * 0.15;
-    if (e.k === 1) {
-      A.push(S_('sfx/1105.wav', lift + 0.35, { align: 0.32, level: 1.4 }));
-      A.push(S_('sfx/2384.wav', land, { align: 0.1, level: 1.4 }));
-      A.push(S_('sfx/1530.wav', land + 0.08, { align: 0.14, level: 1.1 }));
-    } else if (e.strain) {
-      A.push(S_('sfx/2379.wav', e.t0 + e.d * 0.1, { offset: 0.4, dur: e.d * 0.68, level: 1.2, fin: 0.05, fout: 0.1 }));
-      A.push(S_('sfx/2385.wav', land, { align: 0.56, offset: 0.3, dur: 0.6, level: 1.3, fout: 0.1 }));
-      A.push(S_('sfx/1530.wav', land + 0.1, { align: 0.14, level: 1.0 }));
-    } else {
-      A.push(S_(i % 2 ? 'sfx/2380.wav' : 'sfx/1104.wav', land, { align: i % 2 ? 0.32 : 0.14, level: 1.4, pan: i % 2 ? 0.15 : -0.1 }));
-      A.push(S_('sfx/2384.wav', land + 0.02, { align: 0.1, level: 0.8 }));
-    }
+    keys: env((t) => t < cosmos ? 0.6 : 0.72) }));
+  fx('flyby', { t: shotStart('P9') + 0.4, dur: 2.3, level: 0.4, seed: 9 });
+
+  // every cut: a swell that peaks on the cut, a thump on it (the jumps in scale into the cosmos are bigger, with a gliding tone)
+  SHOTS.forEach(([t, id], i) => {
+    if (!i) return;
+    const big = i >= idx('P11'), up = i % 2 === 0;
+    fx('sweep', big
+      ? { t, pre: 0.8, post: 0.3, f: [200, 9500], q: 1.3, curve: 2.6, tone: 0.5, hit: 1.0, level: 0.46, pan: [-0.6, 0.6], seed: 100 + i }
+      : { t, pre: 0.5, post: 0.2, f: up ? [350, 6200] : [6200, 350], hit: 0.55, level: 0.55, pan: up ? [-0.6, 0.6] : [0.6, -0.6], seed: 100 + i });
   });
-  // the 8th fold refuses: crinkle, strain, spring back
-  A.push(S_('sfx/2385.wav', FAIL.t0 + 0.1, { offset: 0.35, dur: FAIL.d * 0.7, level: 1.3, fin: 0.05, fout: 0.15 }));
-  A.push(S_('sfx/2384.wav', FAIL.t0 + FAIL.d * 0.78, { align: 0.1, level: 0.8 }));
+
+  // hand folds: paper rustling as it is lifted, a snap as it lands, a thumbnail along the crease on the pressed ones
+  EV.filter((e) => e.kind === 'hand').forEach((e) => {
+    const land = e.t0 + e.d * 0.8, side = e.k % 2 ? 0.2 : -0.2;
+    if (e.strain) fx('creak', { t0: e.t0 + e.d * 0.1, t1: land - 0.04, level: 0.65, pan: side, seed: 40 + e.k });
+    else fx('rustle', { t0: e.t0 + e.d * 0.08, t1: land - 0.03, level: 0.6, pan: side, seed: 40 + e.k });
+    fx('snap', { t: land, size: 0.04 * e.k, level: 0.75, pan: side, seed: 50 + e.k });
+    if (e.press && !e.strain) fx('slide', { t0: land + 0.3, t1: land + (e.strain ? 0.85 : 0.65), level: 0.5, pan: side, seed: 60 + e.k });
+  });
+  // the 8th fold refuses: strain, then it springs back
+  fx('creak', { t0: FAIL.t0 + 0.04, t1: FAIL.t0 + FAIL.d * 0.72, level: 0.65, seed: 71 });
+  fx('spring', { t: FAIL.t0 + FAIL.d * 0.74, level: 0.65, seed: 72 });
   // "what if you could keep going?"
-  A.push(S_('sfx/2350.wav', shotStart('P4') + 0.05, { align: 0.14, level: 0.42 }));
-  // flips by itself: a whoosh that deepens with the scale, a thump on landing
-  const flips = EV.filter((e) => e.kind === 'flip');
-  for (const e of flips) {
-    const land = e.t0 + e.d, sh = shotAt(e.t0 + 0.01)[1];
-    const W = { P4: ['sfx/2605.wav', 0.24, 0.3], P5: ['sfx/1461.wav', 0.16, 0.4], P6: ['sfx/1489.wav', 0.7, 0.45], P7: ['sfx/2604.wav', 0.48, 0.4], P8: ['sfx/2604.wav', 0.48, 0.42], P9: ['sfx/2604.wav', 0.48, 0.36], P10: ['sfx/2625.wav', 0.46, 0.5] }[sh];
-    const under = (t) => 1 - 0.68 * talking(t);   // effects step back while the voice speaks
-    if (W) A.push(S_(W[0], e.t0 + e.d * 0.55, { align: W[1], level: W[2] * under(e.t0 + e.d * 0.55) }));
-    if (sh === 'P4' || sh === 'P5') A.push(S_('sfx/1104.wav', land, { align: 0.12, level: sh === 'P4' ? 0.75 : 0.6 }));
-    if (sh !== 'P4') A.push(S_('sfx/563.wav', land, { align: 0.15, level: ({ P5: 0.22, P6: 0.4, P7: 0.5, P8: 0.6, P9: 0.5, P10: 0.55 }[sh] ?? 0.4) * under(land), dur: 1.6, fout: 0.6 }));
+  fx('sparkle', { t: shotStart('P4') + 0.02, dur: 0.85, level: 0.33, seed: 8 });
+
+  // flips by themselves: the whoosh deepens and the thump grows with the size of what is turning over
+  for (const e of EV.filter((x) => x.kind === 'flip')) {
+    const sh = shotAt(e.t0 + 0.01)[1], size = SIZE[sh] ?? 0.5, last = LAST_FLIP[sh] === e;
+    fx('flip', { t: e.t0, d: e.d, size, accent: last ? 1 : 0, dir: e.k % 2 ? 1 : -1, pan: ((e.k % 3) - 1) * 0.2, level: 0.36 - 0.22 * size, seed: 200 + e.k });
   }
-  // jumps in scale
-  for (const id of ['P11', 'P12', 'P13', 'P14']) A.push(S_('sfx/1492.wav', shotStart(id), { align: 0.9, level: 0.5 }));
-  // the counter racing: one tick per fold
-  for (const g of GROW) for (let k = g.from + 1; k <= g.to; k++) {
-    const t = g.t0 + (k - g.from) / (g.to - g.from) * (g.t1 - g.t0);
-    A.push(S_(g.to - g.from > 25 ? 'sfx/1117.wav' : 'sfx/1124.wav', t, { align: 0.1, dur: g.to - g.from > 25 ? 0.07 : 0.15, level: 0.3 * (1 - 0.4 * talking(t)), fout: 0.03, pan: ((k % 3) - 1) * 0.15 }));
-  }
+
+  // the counter racing: a tone glides up half a semitone per fold, a ping per fold on the music's scale, a bell on arrival
+  GROW.forEach((g, i) => fx('count', { t0: g.t0, t1: g.t1, from: g.from, to: g.to, level: 0.22, seed: 300 + i }));
+
   // build to HERE, a fifth of a second of silence, then the hit
-  A.push(S_('sfx/632.wav', HERE - 0.25, { align: 25.9, offset: 21, dur: 4.9, level: 0.45, fout: 0.03, keys: env(() => 1) }));
-  A.push({ type: 'duck', keys: [[0, 1], [HERE - 0.27, 1], [HERE - 0.22, 0.06], [HERE - 0.01, 0.06], [HERE + 0.02, 1], [46.5, 1]] });
-  A.push(S_('sfx/788.mp3', HERE, { align: 2.1, offset: 2.02, fin: 0.01, level: 1.0, free: true }));
-  A.push(S_('sfx/2918.wav', HERE, { align: 3.04, offset: 2.95, fin: 0.01, level: 0.6, free: true }));
-  A.push({ type: 'chime', t: END, level: 0.35, free: true });
+  fx('sweep', { t: HERE - 0.27, pre: 1.6, post: 0.02, f: [250, 9500], q: 1.2, curve: 2.8, tone: 0.55, level: 0.8, pan: [-0.3, 0.3], seed: 400 });
+  A.push({ type: 'duck', keys: [[0, 1], [HERE - 0.27, 1], [HERE - 0.22, 0.06], [HERE - 0.01, 0.06], [HERE + 0.02, 1], [DURATION, 1]] });
+  // the hit and the end chime ring on, but step back when the next line starts
+  A.push({ type: 'impact', t: HERE, level: 0.7, verb: 0.18, free: true, seed: 500, keys: [[HERE, 1], [SAY.final2 - 0.1, 1], [SAY.final2 + 0.15, 0.12], [DURATION, 0.12]] });
+  A.push({ type: 'chime', t: END, level: 0.17, free: true });
   return A;
 }
 
 // ------------------------------------------------------------------ cameras (pure functions of time)
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
+// the dolly in the landmark shots covers 1.7x the distance between its two ends
+const lerpX = (a, b, e) => lerp(a, b, 0.5 + (e - 0.5) * 1.7);
 function camAt(t) {
   const [s0, shot] = shotAt(t), s1 = shotEnd(shot), u = clamp((t - s0) / (s1 - s0)), e = easeInOut(u);
   const c = { pos: V(0, 1, 2), look: V(0, 0, 0), fov: 45, near: 0.01, far: 4000, handheld: 0.4, camScale: 1, roll: 0 };
@@ -313,12 +324,14 @@ function camAt(t) {
       c.pos.set(lerp(0.12, 0.1, e), lerp(0.05, 0.075, e), lerp(0.1, 0.09, e)); c.look.set(STACK_X - 0.02, lerp(0.03, ly / wsum, e), STACK_Z - 0.02);
       c.fov = 40; c.near = 0.004; c.far = 3000; c.camScale = 0.006; break;
     }
-    case 'P5': c.pos.set(lerp(-0.55, -0.45, e), lerp(0.95, 1.0, e), lerp(4.7, 4.4, e)); c.look.set(0.3, lerp(0.85, 0.92, e), -0.05); c.fov = 38; c.near = 0.05; c.far = 6000; c.camScale = 0.4; break;
-    case 'P6': c.pos.set(lerp(3.6, 3.2, e), lerp(1.6, 2.3, e), lerp(32, 30, e)); c.look.set(4.4, lerp(5.6, 6.8, e), -2); c.fov = 50; c.near = 0.1; c.far = 8000; c.camScale = 1; break;
-    case 'P7': c.pos.set(lerp(-330, -318, e), lerp(36, 44, e), lerp(128, 122, e)); c.look.set(-20, lerp(48, 56, e), -38); c.fov = 44; c.near = 0.5; c.far = 12000; c.camScale = 2; break;
-    case 'P8': c.pos.set(lerp(-1830, -1760, e), lerp(260, 320, e), lerp(850, 810, e)); c.look.set(-130, lerp(380, 430, e), -210); c.fov = 46; c.near = 2; c.far = 40000; c.camScale = 6; break;
+    case 'P5': c.pos.set(lerpX(-0.55, -0.45, e), lerpX(0.95, 1.0, e), lerpX(4.7, 4.4, e)); c.look.set(0.3, lerp(0.85, 0.92, e), -0.05); c.fov = 38; c.near = 0.05; c.far = 6000; c.camScale = 0.4; break;
+    case 'P6': c.pos.set(lerpX(3.6, 3.2, e), lerpX(1.6, 2.3, e), lerpX(32, 30, e)); c.look.set(4.4, lerp(5.6, 6.8, e), -2); c.fov = 50; c.near = 0.1; c.far = 8000; c.camScale = 1; break;
+    case 'P7': c.pos.set(lerpX(-330, -318, e), lerpX(36, 44, e), lerpX(128, 122, e)); c.look.set(-20, lerp(48, 56, e), -38); c.fov = 44; c.near = 0.5; c.far = 12000; c.camScale = 2; break;
+    case 'P8': c.pos.set(lerpX(-1830, -1760, e), lerpX(260, 320, e), lerpX(850, 810, e)); c.look.set(-130, lerp(380, 430, e), -210); c.fov = 46; c.near = 2; c.far = 40000; c.camScale = 6; break;
     default: break;
   }
+  // a small push-in as each landmark lands, with the thump: eased in just before and out after
+  for (const P of PUNCH) { const x = t - P.t; if (x > -0.08 && x < 0.4) c.fov *= 1 - P.a * smooth(-0.08, 0.03, x) * (1 - smooth(0.03, 0.4, x)); }
   return c;
 }
 // which way each shot's stack folds over (the swing stays across the frame)
@@ -338,8 +351,8 @@ export default {
   title: 'What if you could fold paper 103 times?',
   endFact: 'To really fold paper 42 times, you’d need a strip about <b>100,000 light-years</b> long.',
   duration: DURATION,
-  titleIn: [-1, -0.5], titleOut: [SAY.hook + VO.hook.dur + 0.1, SAY.hook + VO.hook.dur + 0.5],
-  fadeOut: FADE, endAt: END,
+  titleIn: [-1, -0.5], titleOut: [SAY.hook + VO.hook.dur + 0.05, SAY.hook + VO.hook.dur + 0.4],
+  fadeOut: FADE, endAt: END, endSpeed: 1.45,
   captions: buildCaptions(),
   captionFade: 0.06,
   hud(t) {
@@ -605,7 +618,12 @@ export default {
   },
   buildRightSegments() {
     const segs = [];
+    // the hand's pose at time t from the segments built so far (the one that started latest wins, as in rightHandAt)
+    const poseAt = (t) => { let hit = null; for (const g of segs) if (t >= g.t0 && t < g.t1 && (!hit || g.t0 > hit.t0)) hit = g; return hit ? hit.at(t) : this.restR(t); };
+    // from = 'auto' starts from wherever the hand actually is at t0, so a blend that starts while the previous
+    // movement is still going (the timeline is tight) takes over without a jump
     const blendSeg = (t0, t1, from, to, lift) => segs.push({ t0, t1, at: (t) => {
+      if (from === 'auto') { const A0 = poseAt(t0 - 1e-3); from = () => A0; }
       const s = smooth(t0, t1, t), A = from(t), B = to(t);
       const pos = A.pos.clone().lerp(B.pos, s); pos.y += Math.sin(Math.PI * s) * lift;
       return { pos, quat: A.quat.clone().slerp(B.quat, s), pose: blendPose(A.pose, B.pose, s) };
@@ -616,7 +634,7 @@ export default {
       const reach0 = e.t0, reach1 = e.t0 + e.d * 0.12, carry1 = e.t0 + e.d * 0.8;
       const start = (t) => this.carryR(e.k, 0, handFoldShape(e, 0).r);
       // approach from wherever the hand was
-      blendSeg(Math.min(prevT, reach0 - 0.15), reach1, prevEnd, start, 0.025);
+      blendSeg(Math.min(prevT, reach0 - 0.15), reach1, 'auto', start, 0.025);
       // lift the edge until the flap stands up, then let go: it falls over by itself
       let pRel = 0.12; while (pRel < 0.8 && handFoldShape(e, pRel).theta < RELEASE) pRel += 0.002;
       const tRel = e.t0 + e.d * pRel, rRel = handFoldShape(e, pRel).r;
@@ -634,7 +652,10 @@ export default {
     // the failed 8th fold: pinch, lift a little, tremble, let go
     const F0 = FAIL.t0, F1 = FAIL.t0 + FAIL.d;
     const failAt = (t) => { const s = failShape(t); return this.carryR(FAIL.k, s.theta, s.r, t); };
-    blendSeg(Math.min(prevT, F0 - 0.3), F0 + FAIL.d * FAIL_GRAB, prevEnd, (t) => failAt(F0), 0.02);
+    // the hand heads for the failed fold as soon as the 7th has landed: a palm-press that would start after that is dropped
+    const fs = Math.min(prevT, F0 - 0.3);
+    for (let i = segs.length - 1; i >= 0; i--) if (segs[i].t0 > fs) segs.splice(i, 1);
+    blendSeg(fs, F0 + FAIL.d * FAIL_GRAB, 'auto', (t) => failAt(F0), 0.02);
     segs.push({ t0: F0 + FAIL.d * FAIL_GRAB, t1: F0 + FAIL.d * 0.8, at: failAt });
     blendSeg(F0 + FAIL.d * 0.8, F1 + 0.9, (t) => failAt(F0 + FAIL.d * 0.8), (t) => this.restR(t), 0.03);
     segs.sort((a, b) => a.t0 - b.t0);
@@ -645,4 +666,4 @@ export default {
 };
 
 // for offline checks (hand/paper collision and motion probes); not used by the renderer
-export const _debug = { EV, FAIL, handFoldShape, failShape, deskFold, camAt };
+export const _debug = { EV, FAIL, HERE, SAY, SHOTS, GROW, handFoldShape, failShape, deskFold, camAt, shotAt };

@@ -666,22 +666,42 @@ def c_sample(m, c):
     m.add(start, seg, c.get('level', 1.0), verb=c.get('verb', 0.08))
 
 
+def _load_motion():
+    # motion.py sits next to this file; python -I does not put the script's folder on sys.path, so load it by path
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('motion', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'motion.py'))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.CUES
+
+
 CUES = dict(ambience=c_ambience, drone=c_drone, boom=c_boom, shimmer=c_shimmer, flicker=c_flicker, zap=c_zap,
             powerdown=c_powerdown, chime=c_chime, rumble=c_rumble, whoosh=c_whoosh, glass=c_glass, water=c_water,
             heartbeat=c_heartbeat, rain=c_rain, thunder=c_thunder, creak=c_creak,
             crowd=c_crowd, gasp=c_gasp, siren=c_siren, riser=c_riser, braam=c_braam, pulse=c_pulse, ring=c_ring, sample=c_sample)
+CUES.update(_load_motion())
 
 
-def main():
-    meta = json.load(open(sys.argv[1]))
+def render(meta, keep=None):
+    """Mix the cue list to a stereo array (before the final normalisation). keep(cue) -> bool selects a subset,
+    which makes it possible to measure the voice against everything else at the same scale."""
     dur = meta['duration']
     m = Mix(dur)          # everything that can be ducked
     free = Mix(dur)       # hits that must punch through a duck
-    ducks = []
+    fx = Mix(dur)         # sound effects: they step back while the voice speaks (the 'fxduck' keys), then join m
+    ducks, fxducks = [], []
     for c in meta['audio']:
+        if keep and c['type'] not in ('duck', 'fxduck') and not keep(c):
+            continue
         if c['type'] == 'duck':
             ducks.append(c); continue
-        CUES[c['type']](free if c.get('free') else m, c)
+        if c['type'] == 'fxduck':
+            fxducks.append(c); continue
+        CUES[c['type']](free if c.get('free') else fx if c.get('fx') else m, c)
+    for c in fxducks:
+        g = env_keys(fx.n, 0, c['keys'])[:, None]
+        fx.dry *= g; fx.send *= g
+    m.dry += fx.dry; m.send += fx.send
     for c in ducks:
         g = env_keys(m.n, 0, c['keys'])[:, None]
         m.dry *= g; m.send *= g
@@ -690,7 +710,13 @@ def main():
     wet = np.stack([signal.fftconvolve(m.send[:, k], ir[:, k])[: m.n] for k in range(2)], axis=1)
     out = m.dry + wet * 0.6
     out = out[: sec(dur)]
-    out = filt(out.T, 'hp', 25).T
+    return filt(out.T, 'hp', 25).T
+
+
+def main():
+    meta = json.load(open(sys.argv[1]))
+    dur = meta['duration']
+    out = render(meta)
     # gentle bus compression + soft clip, then normalise to -1 dBFS
     peak = np.abs(out).max() + 1e-9
     out = out / peak * 1.6

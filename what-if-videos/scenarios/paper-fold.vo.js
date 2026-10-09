@@ -2,633 +2,578 @@
 export default {
  "hook": {
   "file": "vo/paper-fold/hook.wav",
-  "dur": 3.51,
+  "dur": 3.09,
   "text": "What if you could fold a piece of paper one hundred and three times?",
   "words": [
    [
     "What",
     0.0,
-    0.2
+    0.14
    ],
    [
     "if",
-    0.2,
-    0.34
+    0.14,
+    0.26
    ],
    [
     "you",
-    0.34,
-    0.5
+    0.26,
+    0.38
    ],
    [
     "could",
-    0.5,
-    0.66
+    0.38,
+    0.56
    ],
    [
     "fold",
-    0.66,
-    0.94
+    0.56,
+    0.78
    ],
    [
     "a",
-    0.94,
-    1.12
+    0.78,
+    0.94
    ],
    [
     "piece",
-    1.12,
-    1.26
+    0.94,
+    1.1
    ],
    [
     "of",
-    1.26,
-    1.5
+    1.1,
+    1.32
    ],
    [
     "paper",
-    1.5,
-    1.76
+    1.32,
+    1.5
    ],
    [
     "one",
-    1.76,
-    2.02
+    1.5,
+    1.74
    ],
    [
     "hundred",
-    2.02,
-    2.4
+    1.74,
+    2.12
    ],
    [
     "and",
-    2.4,
-    2.64
+    2.12,
+    2.3
    ],
    [
     "three",
-    2.64,
-    2.86
+    2.3,
+    2.52
    ],
    [
     "times?",
-    2.86,
-    3.26
+    2.52,
+    2.88
    ]
   ]
  },
  "double": {
   "file": "vo/paper-fold/double.wav",
-  "dur": 2.74,
-  "text": "Every time you fold it, it gets twice as thick.",
+  "dur": 1.93,
+  "text": "Every fold makes it twice as thick.",
   "words": [
    [
     "Every",
     0.0,
-    0.3
-   ],
-   [
-    "time",
-    0.3,
-    0.56
-   ],
-   [
-    "you",
-    0.56,
-    0.76
+    0.24
    ],
    [
     "fold",
-    0.76,
-    0.96
+    0.24,
+    0.6
    ],
    [
-    "it,",
-    0.96,
-    1.24
+    "makes",
+    0.6,
+    0.84
    ],
    [
     "it",
-    1.42,
-    1.6
-   ],
-   [
-    "gets",
-    1.6,
-    1.82
+    0.84,
+    1.04
    ],
    [
     "twice",
-    1.82,
-    2.08
+    1.04,
+    1.28
    ],
    [
     "as",
-    2.08,
-    2.32
+    1.28,
+    1.52
    ],
    [
     "thick.",
-    2.32,
-    2.62
+    1.52,
+    1.78
    ]
   ]
  },
  "c16": {
   "file": "vo/paper-fold/c16.wav",
-  "dur": 0.73,
+  "dur": 0.77,
   "text": "Sixteen.",
   "words": [
    [
     "Sixteen.",
     0.0,
-    0.56
+    0.52
    ]
   ]
  },
  "c32": {
   "file": "vo/paper-fold/c32.wav",
-  "dur": 0.68,
+  "dur": 0.85,
   "text": "Thirty-two.",
   "words": [
    [
-    "Thirty",
+    "Thirty-two.",
     0.0,
-    0.22
-   ],
-   [
-    "-two.",
-    0.22,
-    0.54
+    0.66
    ]
   ]
  },
  "c64": {
   "file": "vo/paper-fold/c64.wav",
-  "dur": 0.81,
+  "dur": 0.94,
   "text": "Sixty-four.",
   "words": [
    [
-    "Sixty",
+    "Sixty-four.",
     0.0,
-    0.38
-   ],
-   [
-    "-four.",
-    0.38,
-    0.68
+    0.42
    ]
   ]
  },
  "stuck": {
   "file": "vo/paper-fold/stuck.wav",
-  "dur": 2.89,
+  "dur": 2.41,
   "text": "By hand, you'll get stuck at about seven folds.",
   "words": [
    [
     "By",
     0.0,
-    0.16
+    0.14
    ],
    [
     "hand,",
-    0.16,
-    0.58
+    0.14,
+    0.44
    ],
    [
     "you'll",
-    0.88,
-    0.98
+    0.56,
+    0.64
    ],
    [
     "get",
-    0.98,
-    1.06
+    0.64,
+    0.74
    ],
    [
     "stuck",
-    1.06,
-    1.36
+    0.74,
+    1.02
    ],
    [
     "at",
-    1.36,
-    1.66
+    1.02,
+    1.28
    ],
    [
     "about",
-    1.66,
-    1.86
+    1.28,
+    1.44
    ],
    [
     "seven",
-    1.86,
-    2.22
+    1.44,
+    1.82
    ],
    [
     "folds.",
-    2.22,
-    2.62
+    1.82,
+    2.18
    ]
   ]
  },
  "keep": {
   "file": "vo/paper-fold/keep.wav",
-  "dur": 1.62,
+  "dur": 1.6,
   "text": "But what if you could keep going?",
   "words": [
    [
     "But",
     0.0,
-    0.16
+    0.14
    ],
    [
     "what",
-    0.16,
-    0.38
+    0.14,
+    0.3
    ],
    [
     "if",
-    0.38,
-    0.54
+    0.3,
+    0.46
    ],
    [
     "you",
-    0.54,
-    0.68
+    0.46,
+    0.6
    ],
    [
     "could",
-    0.68,
-    0.84
+    0.6,
+    0.78
    ],
    [
     "keep",
-    0.84,
-    1.04
+    0.78,
+    1.0
    ],
    [
     "going?",
-    1.04,
+    1.0,
     1.4
    ]
   ]
  },
  "mug": {
   "file": "vo/paper-fold/mug.wav",
-  "dur": 3.25,
-  "text": "Fold it ten times, and it's as tall as a coffee mug.",
+  "dur": 2.36,
+  "text": "Ten folds, and it's as tall as a coffee mug.",
   "words": [
    [
-    "Fold",
+    "Ten",
     0.0,
-    0.28
+    0.18
    ],
    [
-    "it",
-    0.28,
-    0.42
-   ],
-   [
-    "ten",
-    0.42,
-    0.6
-   ],
-   [
-    "times,",
-    0.6,
-    1.18
+    "folds,",
+    0.18,
+    0.62
    ],
    [
     "and",
-    1.56,
-    1.66
+    0.8,
+    0.86
    ],
    [
     "it's",
-    1.66,
-    1.8
+    0.86,
+    1.02
    ],
    [
     "as",
-    1.8,
-    1.92
+    1.02,
+    1.14
    ],
    [
     "tall",
-    1.92,
-    2.2
+    1.14,
+    1.4
    ],
    [
     "as",
-    2.2,
-    2.4
+    1.4,
+    1.6
    ],
    [
     "a",
-    2.4,
-    2.5
+    1.6,
+    1.7
    ],
    [
     "coffee",
-    2.5,
-    2.8
+    1.7,
+    1.98
    ],
    [
     "mug.",
-    2.8,
-    3.06
+    1.98,
+    2.24
    ]
   ]
  },
  "you": {
   "file": "vo/paper-fold/you.wav",
-  "dur": 2.54,
+  "dur": 2.19,
   "text": "Fourteen folds, and it's as tall as you.",
   "words": [
    [
     "Fourteen",
     0.0,
-    0.48
+    0.42
    ],
    [
     "folds,",
-    0.48,
-    0.9
+    0.42,
+    0.8
    ],
    [
     "and",
-    1.4,
-    1.46
+    1.08,
+    1.1
    ],
    [
     "it's",
-    1.46,
-    1.64
+    1.1,
+    1.28
    ],
    [
     "as",
-    1.64,
-    1.74
+    1.28,
+    1.38
    ],
    [
     "tall",
-    1.74,
-    1.98
+    1.38,
+    1.62
    ],
    [
     "as",
-    1.98,
-    2.2
+    1.62,
+    1.82
    ],
    [
     "you.",
-    2.2,
-    2.4
+    1.82,
+    2.04
    ]
   ]
  },
  "bldg": {
   "file": "vo/paper-fold/bldg.wav",
-  "dur": 3.81,
+  "dur": 3.09,
   "text": "Seventeen folds, and it's as tall as a four-storey building.",
   "words": [
    [
     "Seventeen",
     0.0,
-    0.66
+    0.54
    ],
    [
     "folds,",
-    0.66,
-    1.0
+    0.54,
+    0.82
    ],
    [
     "and",
-    1.58,
-    1.72
+    1.1,
+    1.18
    ],
    [
     "it's",
-    1.72,
-    1.88
+    1.18,
+    1.32
    ],
    [
     "as",
-    1.88,
-    2.0
+    1.32,
+    1.44
    ],
    [
     "tall",
-    2.0,
-    2.3
+    1.44,
+    1.7
    ],
    [
     "as",
-    2.3,
-    2.52
+    1.7,
+    1.94
    ],
    [
     "a",
-    2.52,
+    1.94,
+    2.04
+   ],
+   [
+    "four-storey",
+    2.04,
     2.68
    ],
    [
-    "four",
+    "building.",
     2.68,
     2.88
-   ],
-   [
-    "-storey",
-    2.88,
-    3.34
-   ],
-   [
-    "building.",
-    3.34,
-    3.56
    ]
   ]
  },
  "tower": {
   "file": "vo/paper-fold/tower.wav",
-  "dur": 3.53,
+  "dur": 2.85,
   "text": "Twenty folds, and it's taller than a thirty-storey tower.",
   "words": [
    [
     "Twenty",
     0.0,
-    0.34
+    0.24
    ],
    [
     "folds,",
-    0.34,
-    0.82
+    0.24,
+    0.68
    ],
    [
     "and",
-    1.26,
-    1.38
+    0.9,
+    0.92
    ],
    [
     "it's",
-    1.38,
-    1.58
+    0.92,
+    1.12
    ],
    [
     "taller",
-    1.58,
-    1.84
+    1.12,
+    1.34
    ],
    [
     "than",
-    1.84,
-    2.16
+    1.34,
+    1.6
    ],
    [
     "a",
-    2.16,
-    2.32
+    1.6,
+    1.74
    ],
    [
-    "thirty",
-    2.32,
-    2.58
-   ],
-   [
-    "-storey",
-    2.58,
-    3.06
+    "thirty-storey",
+    1.74,
+    2.44
    ],
    [
     "tower.",
-    3.06,
-    3.26
+    2.44,
+    2.62
    ]
   ]
  },
  "tallest": {
   "file": "vo/paper-fold/tallest.wav",
-  "dur": 3.97,
+  "dur": 3.22,
   "text": "Twenty-three folds, and it's taller than the tallest building on Earth.",
   "words": [
    [
-    "Twenty",
+    "Twenty-three",
     0.0,
-    0.3
-   ],
-   [
-    "-three",
-    0.3,
-    0.64
+    0.5
    ],
    [
     "folds,",
-    0.64,
-    1.12
+    0.5,
+    0.86
    ],
    [
     "and",
-    1.54,
-    1.74
+    1.14,
+    1.18
    ],
    [
     "it's",
-    1.74,
-    1.96
+    1.18,
+    1.42
    ],
    [
     "taller",
-    1.96,
-    2.22
+    1.42,
+    1.64
    ],
    [
     "than",
-    2.22,
-    2.5
+    1.64,
+    1.88
    ],
    [
     "the",
-    2.5,
-    2.62
+    1.88,
+    2.0
    ],
    [
     "tallest",
-    2.62,
-    2.94
+    2.0,
+    2.3
    ],
    [
     "building",
-    2.94,
-    3.38
+    2.3,
+    2.68
    ],
    [
     "on",
-    3.38,
-    3.66
+    2.68,
+    2.9
    ],
    [
     "Earth.",
-    3.66,
-    3.88
+    2.9,
+    3.08
    ]
   ]
  },
  "planes": {
   "file": "vo/paper-fold/planes.wav",
-  "dur": 3.22,
+  "dur": 2.66,
   "text": "Twenty-seven folds, and it's higher than planes fly.",
   "words": [
    [
-    "Twenty",
+    "Twenty-seven",
     0.0,
-    0.22
-   ],
-   [
-    "-seven",
-    0.22,
-    0.58
+    0.54
    ],
    [
     "folds,",
-    0.58,
-    1.1
+    0.54,
+    0.94
    ],
    [
     "and",
-    1.56,
-    1.64
+    1.22,
+    1.24
    ],
    [
     "it's",
-    1.64,
-    1.86
+    1.24,
+    1.44
    ],
    [
     "higher",
-    1.86,
-    2.08
+    1.44,
+    1.62
    ],
    [
     "than",
-    2.08,
-    2.34
+    1.62,
+    1.86
    ],
    [
     "planes",
-    2.34,
-    2.68
+    1.86,
+    2.16
    ],
    [
     "fly.",
-    2.68,
-    3.02
+    2.16,
+    2.5
    ]
   ]
  },
  "space": {
   "file": "vo/paper-fold/space.wav",
-  "dur": 2.04,
+  "dur": 1.83,
   "text": "Thirty folds, and it reaches space.",
   "words": [
    [
@@ -639,349 +584,319 @@ export default {
    [
     "folds,",
     0.24,
-    0.7
+    0.66
    ],
    [
     "and",
-    1.04,
-    1.06
+    0.82,
+    0.86
    ],
    [
     "it",
-    1.06,
-    1.16
+    0.86,
+    0.96
    ],
    [
     "reaches",
-    1.16,
-    1.42
+    0.96,
+    1.24
    ],
    [
     "space.",
-    1.42,
-    1.78
+    1.24,
+    1.58
    ]
   ]
  },
  "moon": {
   "file": "vo/paper-fold/moon.wav",
-  "dur": 3.66,
-  "text": "If you fold it forty-two times, it reaches past the Moon.",
+  "dur": 2.34,
+  "text": "Forty-two folds, and it reaches past the Moon.",
   "words": [
    [
-    "If",
+    "Forty-two",
     0.0,
-    0.16
+    0.48
    ],
    [
-    "you",
-    0.16,
-    0.3
+    "folds,",
+    0.48,
+    0.82
    ],
    [
-    "fold",
-    0.3,
-    0.54
-   ],
-   [
-    "it",
-    0.54,
-    0.74
-   ],
-   [
-    "forty",
-    0.74,
-    0.96
-   ],
-   [
-    "-two",
-    0.96,
-    1.28
-   ],
-   [
-    "times,",
-    1.28,
-    1.68
+    "and",
+    1.1,
+    1.1
    ],
    [
     "it",
-    2.2,
-    2.38
+    1.1,
+    1.2
    ],
    [
     "reaches",
-    2.38,
-    2.66
+    1.2,
+    1.44
    ],
    [
     "past",
-    2.66,
-    3.04
+    1.44,
+    1.76
    ],
    [
     "the",
-    3.04,
-    3.26
+    1.76,
+    1.96
    ],
    [
     "Moon.",
-    3.26,
-    3.46
+    1.96,
+    2.14
    ]
   ]
  },
  "sun": {
   "file": "vo/paper-fold/sun.wav",
-  "dur": 2.88,
+  "dur": 2.36,
   "text": "Fifty-one folds, and it reaches past the Sun.",
   "words": [
    [
-    "Fifty",
+    "Fifty-one",
     0.0,
-    0.2
-   ],
-   [
-    "-one",
-    0.2,
-    0.52
+    0.46
    ],
    [
     "folds,",
-    0.52,
-    0.94
+    0.46,
+    0.84
    ],
    [
     "and",
-    1.48,
-    1.54
+    1.1,
+    1.12
    ],
    [
     "it",
-    1.54,
-    1.64
+    1.12,
+    1.22
    ],
    [
     "reaches",
-    1.64,
-    1.88
+    1.22,
+    1.46
    ],
    [
     "past",
-    1.88,
-    2.26
+    1.46,
+    1.78
    ],
    [
     "the",
-    2.26,
-    2.48
+    1.78,
+    1.98
    ],
    [
     "Sun.",
-    2.48,
-    2.66
+    1.98,
+    2.16
    ]
   ]
  },
  "galaxy": {
   "file": "vo/paper-fold/galaxy.wav",
-  "dur": 3.73,
+  "dur": 3.05,
   "text": "Eighty-three folds, and it's as long as our galaxy is wide.",
   "words": [
    [
-    "Eighty",
+    "Eighty-three",
     0.0,
-    0.3
-   ],
-   [
-    "-three",
-    0.3,
-    0.6
+    0.5
    ],
    [
     "folds,",
-    0.6,
-    1.12
+    0.5,
+    0.9
    ],
    [
     "and",
-    1.5,
-    1.72
+    1.12,
+    1.18
    ],
    [
     "it's",
-    1.72,
-    1.88
+    1.18,
+    1.34
    ],
    [
     "as",
-    1.88,
-    2.0
+    1.34,
+    1.46
    ],
    [
     "long",
-    2.0,
-    2.2
+    1.46,
+    1.64
    ],
    [
     "as",
-    2.2,
-    2.36
+    1.64,
+    1.82
    ],
    [
     "our",
-    2.36,
-    2.46
+    1.82,
+    1.94
    ],
    [
     "galaxy",
-    2.46,
-    2.82
+    1.94,
+    2.28
    ],
    [
     "is",
-    2.82,
-    3.2
+    2.28,
+    2.58
    ],
    [
     "wide.",
-    3.2,
-    3.54
+    2.58,
+    2.86
    ]
   ]
  },
  "final1": {
   "file": "vo/paper-fold/final1.wav",
-  "dur": 2.05,
+  "dur": 1.92,
   "text": "And at one hundred and three folds...",
   "words": [
    [
     "And",
     0.0,
-    0.16
+    0.12
    ],
    [
     "at",
-    0.16,
-    0.3
+    0.12,
+    0.24
    ],
    [
     "one",
-    0.3,
-    0.54
+    0.24,
+    0.44
    ],
    [
     "hundred",
-    0.54,
-    0.92
+    0.44,
+    0.82
    ],
    [
     "and",
-    0.92,
-    1.14
+    0.82,
+    1.0
    ],
    [
     "three",
-    1.14,
-    1.38
+    1.0,
+    1.24
    ],
    [
     "folds...",
-    1.38,
-    2.02
+    1.24,
+    1.9
    ]
   ]
  },
  "final2": {
   "file": "vo/paper-fold/final2.wav",
-  "dur": 3.6,
+  "dur": 3.11,
   "text": "it's longer than the entire observable universe is wide.",
   "words": [
    [
-    "It's",
+    "it's",
     0.0,
     0.24
    ],
    [
     "longer",
     0.24,
-    0.46
+    0.44
    ],
    [
     "than",
-    0.46,
-    0.76
+    0.44,
+    0.66
    ],
    [
     "the",
-    0.76,
-    0.9
+    0.66,
+    0.8
    ],
    [
     "entire",
-    0.9,
-    1.46
+    0.8,
+    1.26
    ],
    [
     "observable",
-    1.46,
-    2.04
+    1.26,
+    1.78
    ],
    [
     "universe",
-    2.04,
-    2.62
+    1.78,
+    2.34
    ],
    [
     "is",
-    2.62,
-    3.04
+    2.34,
+    2.62
    ],
    [
     "wide.",
-    3.04,
-    3.42
+    2.62,
+    2.94
    ]
   ]
  },
  "outro": {
   "file": "vo/paper-fold/outro.wav",
-  "dur": 1.84,
+  "dur": 1.76,
   "text": "All from a single sheet of paper.",
   "words": [
    [
     "All",
     0.0,
-    0.24
+    0.2
    ],
    [
     "from",
-    0.24,
-    0.44
+    0.2,
+    0.4
    ],
    [
     "a",
-    0.44,
-    0.58
+    0.4,
+    0.54
    ],
    [
     "single",
-    0.58,
-    0.86
+    0.54,
+    0.8
    ],
    [
     "sheet",
-    0.86,
-    1.16
+    0.8,
+    1.08
    ],
    [
     "of",
-    1.16,
-    1.32
+    1.08,
+    1.24
    ],
    [
     "paper.",
-    1.32,
-    1.58
+    1.24,
+    1.48
    ]
   ]
  }

@@ -138,17 +138,17 @@ function overlay(t) {
   // ---- fade to black + end card
   const fo = S.fadeOut ?? [S.duration - 12, S.duration - 10];
   ui.fade.style.opacity = smooth(fo[0], fo[1], t).toFixed(3);
-  const e0 = S.endAt ?? fo[1] + 0.5;
-  const ea = smooth(e0, e0 + 0.8, t);
+  const e0 = S.endAt ?? fo[1] + 0.5, es = S.endSpeed ?? 1;   // endSpeed > 1 plays the end card's sequence faster
+  const ea = smooth(e0, e0 + 0.8 / es, t);
   ui.end.style.opacity = ea.toFixed(3);
   if (ea > 0) {
     setText(ui.end.querySelector('.e-title'), S.title);
     ui.end.querySelector('.e-fact').innerHTML = S.endFact;
     setText(ui.end.querySelector('.e-brand'), brand.name || '');
     setText(ui.end.querySelector('.e-handle'), brand.handle || '');
-    ui.end.querySelector('.e-fact').style.opacity = smooth(e0 + 0.9, e0 + 1.8, t).toFixed(3);
-    for (const sel of ['.e-div', '.e-brand', '.orbit']) ui.end.querySelector(sel).style.opacity = smooth(e0 + 1.8, e0 + 2.6, t).toFixed(3);
-    for (const sel of ['.e-handle', '.e-follow', '.e-ask']) ui.end.querySelector(sel).style.opacity = smooth(e0 + 2.6, e0 + 3.4, t).toFixed(3);
+    ui.end.querySelector('.e-fact').style.opacity = smooth(e0 + 0.9 / es, e0 + 1.8 / es, t).toFixed(3);
+    for (const sel of ['.e-div', '.e-brand', '.orbit']) ui.end.querySelector(sel).style.opacity = smooth(e0 + 1.8 / es, e0 + 2.6 / es, t).toFixed(3);
+    for (const sel of ['.e-handle', '.e-follow', '.e-ask']) ui.end.querySelector(sel).style.opacity = smooth(e0 + 2.6 / es, e0 + 3.4 / es, t).toFixed(3);
   }
   return { black: smooth(fo[0], fo[1], t) >= 0.999 || ea >= 0.999 };
 }

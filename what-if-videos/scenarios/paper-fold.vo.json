@@ -1,32 +1,32 @@
 {
   "id": "paper-fold",
-  "voice": "af_heart",
-  "speed": 0.85,
+  "voice": "am_liam",
+  "speed": 1.05,
   "lines": {
     "hook": "What if you could fold a piece of paper one hundred and three times?",
-    "double": "Every time you fold it, it gets twice as thick.",
+    "double": "Every fold makes it twice as thick.",
     "c16": {
       "say": "Sixteen.",
-      "speed": 1.0
+      "speed": 1.12
     },
     "c32": {
       "say": "Thirty-two.",
-      "speed": 1.0
+      "speed": 1.12
     },
     "c64": {
       "say": "Sixty-four.",
-      "speed": 1.0
+      "speed": 1.12
     },
     "stuck": "By hand, you'll get stuck at about seven folds.",
     "keep": "But what if you could keep going?",
-    "mug": "Fold it ten times, and it's as tall as a coffee mug.",
+    "mug": "Ten folds, and it's as tall as a coffee mug.",
     "you": "Fourteen folds, and it's as tall as you.",
     "bldg": "Seventeen folds, and it's as tall as a four-storey building.",
     "tower": "Twenty folds, and it's taller than a thirty-storey tower.",
     "tallest": "Twenty-three folds, and it's taller than the tallest building on Earth.",
     "planes": "Twenty-seven folds, and it's higher than planes fly.",
     "space": "Thirty folds, and it reaches space.",
-    "moon": "If you fold it forty-two times, it reaches past the Moon.",
+    "moon": "Forty-two folds, and it reaches past the Moon.",
     "sun": "Fifty-one folds, and it reaches past the Sun.",
     "galaxy": "Eighty-three folds, and it's as long as our galaxy is wide.",
     "final1": "And at one hundred and three folds...",
