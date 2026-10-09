@@ -423,7 +423,7 @@ function buildAudio() {
   A.push(S_('sfx/367.wav', shotStart('NZ'), { offset: 40, dur: shotEnd('NZ') - shotStart('NZ') + 0.05, level: 0.4, fin: 0.05, fout: 0.15, keys: env(() => 1) }));
   // inside the tunnel: a rush that follows how fast the walls stream past
   const tunnel = (t) => ['TUN1', 'TUN2', 'TUN3', 'TUN4', 'TUN5'].includes(shotAt(t)[1]);
-  fx('rush', { t0: shotStart('TUN1'), t1: shotEnd('TUN5'), level: 0.5, seed: 1,
+  fx('rush', { t0: shotStart('TUN1'), t1: shotEnd('TUN5'), level: 0.2, seed: 1,
     speed: keysEvery((t) => tunnel(t) ? clamp((VIS.speed(t) - 2) / 46) : 0, 0.05) });
   // every cut: a swell that peaks on it
   SHOTS.forEach(([t, id], i) => {
@@ -441,7 +441,7 @@ function buildAudio() {
   // the dot on the cut-away Earth: a tone that rises with its speed
   for (const id of ['GLOBE2', 'GLOBE3', 'GLOBE4']) {
     const t0 = shotStart(id), t1 = shotEnd(id);
-    fx('glide', { t0, t1, level: 0.22, seed: 40, keys2: keysEvery((t) => (t >= t0 && t <= t1) ? Math.abs(fallAt(t).v) / FALL.vmax : 0, 0.05).filter((k) => k[0] >= t0 - 0.1 && k[0] <= t1 + 0.1) });
+    fx('glide', { t0, t1, level: 0.1, seed: 40, keys2: keysEvery((t) => (t >= t0 && t <= t1) ? Math.abs(fallAt(t).v) / FALL.vmax : 0, 0.05).filter((k) => k[0] >= t0 - 0.1 && k[0] <= t1 + 0.1) });
   }
   // through the centre
   fx('sweep', { t: tc, pre: 0.9, post: 0.9, f: [220, 9000], q: 1.2, curve: 2.6, tone: 0.5, hit: 1.0, level: 0.55, pan: [-0.5, 0.5], seed: 50 });
