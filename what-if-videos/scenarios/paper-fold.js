@@ -303,8 +303,12 @@ function camAt(t) {
     }
     case 'P3': c.pos.set(lerp(-0.3, -0.285, e), lerp(0.075, 0.068, e), lerp(-0.19, -0.18, e)); c.look.set(-0.093, 0.014, -0.128); c.fov = 38; c.near = 0.004; c.far = 3000; c.camScale = 0.004; break;
     case 'P4': {
-      const top = Math.min(stackTopSmooth(t), BASE_Y + thick(10));
-      c.pos.set(lerp(0.12, 0.1, e), lerp(0.05, 0.075, e), lerp(0.1, 0.09, e)); c.look.set(STACK_X - 0.02, lerp(0.03, Math.max(0.05, top * 0.6), e), STACK_Z - 0.02);
+      // tilt up with the stack, but eased: a smooth floor instead of a kink, averaged over a moment either
+      // side so the camera starts to follow before the 10th fold doubles the height and settles after it
+      const aim = (x) => { const y = 0.6 * Math.min(stackTopSmooth(x), BASE_Y + thick(10)); return 0.5 * (0.05 + y + Math.hypot(y - 0.05, 0.012)); };
+      let ly = 0, wsum = 0;
+      for (let i = -6; i <= 6; i++) { const w = 7 - Math.abs(i); ly += w * aim(t + i * 0.07); wsum += w; }
+      c.pos.set(lerp(0.12, 0.1, e), lerp(0.05, 0.075, e), lerp(0.1, 0.09, e)); c.look.set(STACK_X - 0.02, lerp(0.03, ly / wsum, e), STACK_Z - 0.02);
       c.fov = 40; c.near = 0.004; c.far = 3000; c.camScale = 0.006; break;
     }
     case 'P5': c.pos.set(lerp(-0.55, -0.45, e), lerp(0.95, 1.0, e), lerp(4.7, 4.4, e)); c.look.set(0.3, lerp(0.85, 0.92, e), -0.05); c.fov = 38; c.near = 0.05; c.far = 6000; c.camScale = 0.4; break;
@@ -639,4 +643,4 @@ export default {
 };
 
 // for offline checks (hand/paper collision and motion probes); not used by the renderer
-export const _debug = { EV, FAIL, handFoldShape, failShape, deskFold };
+export const _debug = { EV, FAIL, handFoldShape, failShape, deskFold, camAt };
