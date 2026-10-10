@@ -1,0 +1,112 @@
+{
+  "source": "../clips/suits-interview.mp4",
+  "title": {
+    "text": "I Rated Mike Ross's Interview With Harvey",
+    "accent": "Like a Chess Game"
+  },
+  "card_width": 636,
+  "music": {
+    "track": "Behind Enemy Lines",
+    "level_db": -17
+  },
+  "coach": {
+    "enabled": true,
+    "size": 220
+  },
+  "labels": "auto",
+  "faces": {
+    "cast": {
+      "Undercover Cop": [
+        {"t": 247.0, "x": 0.48, "y": 0.32}
+      ]
+    },
+    "pins": [
+      [195.0, 0.37, 0.37, "Mike"],
+      [229.24, 0.53, 0.35, "Harvey"],
+      [232.49, 0.7, 0.37, "Mike"],
+      [232.65, 0.62, 0.38, "Harvey"],
+      [234.82, 0.55, 0.38, "Harvey"],
+      [235.74, 0.66, 0.39, "Mike"],
+      [237.32, 0.39, 0.22, "Harvey"],
+      [358.07, 0.49, 0.51, "Harvey"],
+      [359.07, 0.4, 0.51, "Harvey"],
+      [361.07, 0.25, 0.52, "Harvey"],
+      [361.73, 0.6, 0.52, "Mike"],
+      [377.15, 0.98, 0.34, "Harvey"],
+      [427.82, 0.32, 0.25, "Harvey"]
+    ]
+  },
+  "players": {
+    "white": {
+      "name": "Mike Ross",
+      "short": "Mike",
+      "avatar": {"t": 321.0, "x": 0.47, "y": 0.35, "size": 0.45}
+    },
+    "black": {
+      "name": "Harvey Specter",
+      "short": "Harvey",
+      "avatar": {"t": 409.95, "x": 0.4, "y": 0.35, "size": 0.45}
+    },
+    "donna": {
+      "name": "Donna Paulsen",
+      "short": "Donna",
+      "team": "black",
+      "joins": 196.4,
+      "leaves": 250.0,
+      "avatar": {"t": 197.03, "x": 0.53, "y": 0.28, "size": 0.4}
+    }
+  },
+  "hook": {
+    "from": 387.9,
+    "move": "Playing Hearts",
+    "vo": "Playing Hearts is a great move! Bro beat a Harvard lawyer while playing card games. How the hell did we get here? Let's review the game."
+  },
+  "segments": [
+    [191.07, 249.96],
+    [271.15, 435.6],
+    [441.6, 513.08]
+  ],
+  "review": {
+    "at": 512.88,
+    "hold_at": 512.85,
+    "result": "1-0 · Mike gets the job",
+    "vo": "Good game! Mike walked in with a briefcase full of weed and walked out with a job."
+  },
+  "moves": [
+    {"t": 203.2, "side": "donna", "class": "good", "name": "Five Minutes Late", "note": "Gatekeeper mode.", "eval": -0.2},
+    {"t": 209.55, "side": "white", "class": "excellent", "name": "Ditch the Cops", "comment": "Bro told the gatekeeper he's running from the cops. Most honest interview opener ever.", "eval": 0.4},
+    {"t": 219.98, "side": "donna", "class": "excellent", "name": "Right With You", "note": "Donna let him cook.", "eval": 0.3},
+    {"t": 231.14, "side": "white", "class": "inaccuracy", "name": "I'm Rick Sorkin", "note": "Identity theft, day one.", "eval": -0.2},
+    {"t": 237.18, "side": "white", "class": "blunder", "name": "The Briefcase", "comment": "Three seconds after meeting Harvey, his briefcase spills weed all over the floor. In front of a lawyer.", "eval": -4.0},
+    {"t": 245.3, "side": "donna", "class": "good", "name": "Can I Help You?", "note": "Bouncer energy.", "eval": -3.8},
+    {"t": 273.78, "side": "black", "class": "good", "name": "How'd You Know?", "note": "He's intrigued.", "eval": -3.6},
+    {"t": 281.86, "side": "white", "class": "good", "name": "Read a Novel", "note": "Elementary school reading paid off.", "eval": -3.0},
+    {"t": 287.94, "side": "white", "class": "good", "name": "I Like to Read", "note": "Casual flex.", "eval": -2.8},
+    {"t": 296.88, "side": "white", "class": "excellent", "name": "Throw Them Off", "comment": "He asked an undercover cop for the time while carrying a briefcase full of pot. Galaxy brain.", "eval": -1.5},
+    {"t": 302.35, "side": "black", "class": "good", "name": "Signing Bonus", "note": "He's joking. Right?", "eval": -1.2},
+    {"t": 303.82, "side": "white", "class": "inaccuracy", "name": "I'll Take It", "note": "Down bad for this job.", "eval": -1.8},
+    {"t": 312.95, "side": "black", "class": "best", "name": "Harvard Only", "note": "Reality check.", "eval": -3.0},
+    {"t": 318.02, "side": "white", "class": "good", "name": "Passed the Bar", "note": "Big claim. Prove it.", "eval": -2.5},
+    {"t": 320.12, "side": "black", "class": "good", "name": "Full of Crap", "note": "Not buying it.", "eval": -2.8},
+    {"t": 326.22, "side": "white", "class": "best", "name": "Read Me Something", "note": "Put up or shut up.", "eval": -1.5},
+    {"t": 344.85, "side": "white", "class": "great", "name": "Word for Word", "comment": "Harvey gave him one line, and Mike recited the rest from memory. That's not studying, that's a cheat code.", "eval": 1.5},
+    {"t": 351.0, "side": "white", "class": "good", "name": "Studied for the Bar", "note": "Casually.", "eval": 1.6},
+    {"t": 362.4, "side": "black", "class": "good", "name": "Harvard Attorney", "note": "Home-turf flex.", "eval": 1.3},
+    {"t": 374.8, "side": "black", "class": "good", "name": "Section 409A", "note": "Textbook answer.", "eval": 1.1},
+    {"t": 377.35, "side": "white", "class": "excellent", "name": "Sarbanes-Oxley", "note": "Corrected the Harvard guy.", "eval": 1.8},
+    {"t": 381.62, "side": "black", "class": "excellent", "name": "Statute of Limitations", "note": "Counter-punch.", "eval": 1.3},
+    {"t": 386.15, "side": "white", "class": "best", "name": "Sixth Circuit", "note": "Cited a court case from memory.", "eval": 2.4},
+    {"t": 390.94, "side": "black", "class": "inaccuracy", "name": "You're at a Computer", "note": "Wrong read.", "eval": 2.8},
+    {"t": 399.3, "side": "white", "class": "great", "name": "Playing Hearts", "comment": "Harvey thought he was looking it all up. Bro was playing Hearts the whole time. Pure disrespect.", "eval": 4.0},
+    {"t": 408.95, "side": "white", "class": "good", "name": "Never Forget", "note": "Photographic memory.", "eval": 4.0},
+    {"t": 415.5, "side": "white", "class": "inaccuracy", "name": "The Bet", "note": "Swearing in the interview, bro.", "eval": 3.3},
+    {"t": 429.05, "side": "black", "class": "good", "name": "Back to Work", "note": "Interview over? Not so fast.", "eval": 2.0},
+    {"t": 446.9, "side": "black", "class": "good", "name": "Go to Law School", "note": "Asking the real question.", "eval": 1.8},
+    {"t": 476.32, "side": "white", "class": "brilliant", "name": "The Confession", "comment": "He admitted he got kicked out of college for selling a test. Mid-interview. Full queen sacrifice.", "eval": 4.5},
+    {"t": 489.55, "side": "black", "class": "best", "name": "Grown Man", "note": "Elementary school callback. Brutal.", "eval": 3.8},
+    {"t": 497.12, "side": "white", "class": "excellent", "name": "Harvard Douches", "note": "Said it to a Harvard guy.", "eval": 4.8},
+    {"t": 501.18, "side": "black", "class": "good", "name": "Another Way?", "note": "One last test.", "eval": 4.5},
+    {"t": 502.3, "side": "white", "class": "excellent", "name": "That's Fair", "note": "Grown man response.", "eval": 5.2},
+    {"t": 511.85, "side": "black", "class": "best", "name": "Emailing the Firm", "comment": "Harvey broke his own Harvard-only rule on the spot. Mike got the job. GG.", "eval": "1-0"}
+  ]
+}

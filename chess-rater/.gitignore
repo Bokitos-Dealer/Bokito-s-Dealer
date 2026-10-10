@@ -1,0 +1,9 @@
+clips/
+out/
+models/
+.cache/
+__pycache__/
+*.scout.txt
+*.shots.png
+sounds/
+music/
