@@ -51,17 +51,17 @@ const yAtDepth = (d) => { if (d >= R_E) return DY[DY.length - 1][1]; let lo = -4
 // ------------------------------------------------------------------ the story
 const FT = 3.28084;
 const LM = [
-  { key: 'pipes', d: 12, cap: 'Pipes. Cables. Sewers.', sub: 'CITY UTILITIES · 40 FT' },
-  { key: 'subway', d: 105.5, cap: 'The deepest subway station on Earth.', sub: 'ARSENALNA STATION, KYIV · 346 FT' },
+  { key: 'pipes', d: 12, cap: 'Pipes. Cables. Sewers.', sub: 'CITY UTILITIES · 40 FT · 12 M' },
+  { key: 'subway', d: 105.5, cap: 'The deepest subway station on Earth.', sub: 'ARSENALNA STATION, KYIV · 346 FT · 105 M' },
   { key: 'water', d: 300, cap: 'Rain from centuries ago, soaked into rock.', sub: 'GROUNDWATER' },
-  { key: 'cave', d: 2212, cap: 'The deepest cave anyone has explored.', sub: 'VERYOVKINA CAVE · 7,257 FT' },
-  { key: 'mine', d: 4000, cap: 'The deepest mine. The rock is 150°F.', sub: 'MPONENG GOLD MINE · 13,000 FT' },
-  { key: 'kola', d: 12262, cap: 'No human hole has ever gone deeper.', sub: 'KOLA SUPERDEEP BOREHOLE · 40,230 FT' },
-  { key: 'moho', d: 35000, cap: 'The crust ends. The rock starts to glow.', sub: 'THE MANTLE BEGINS · 22 MI' },
-  { key: 'diamonds', d: 160000, cap: 'Diamonds are born down here.', sub: 'DIAMOND ZONE · ~100 MI' },
-  { key: 'core', d: 2890e3, cap: 'An ocean of liquid iron.', sub: 'OUTER CORE · 1,800 MI' },
-  { key: 'inner', d: 5150e3, cap: 'Solid iron, as hot as the Sun’s surface.', sub: 'INNER CORE · 9,800°F' },
-  { key: 'center', d: 6371e3, cap: 'Weightless, at 22,000 mph.', sub: 'THE CENTER OF THE EARTH · 3,959 MI' },
+  { key: 'cave', d: 2212, cap: 'The deepest cave anyone has explored.', sub: 'VERYOVKINA CAVE · 7,257 FT · 2,212 M' },
+  { key: 'mine', d: 4000, cap: 'The deepest mine. The rock is 150°F.', sub: 'MPONENG GOLD MINE · 13,000 FT · 4 KM' },
+  { key: 'kola', d: 12262, cap: 'No human hole has ever gone deeper.', sub: 'KOLA SUPERDEEP BOREHOLE · 40,230 FT · 12.3 KM' },
+  { key: 'moho', d: 35000, cap: 'The crust ends. The rock starts to glow.', sub: 'THE MANTLE BEGINS · 22 MI · 35 KM' },
+  { key: 'diamonds', d: 160000, cap: 'Diamonds are born down here.', sub: 'DIAMOND ZONE · ~100 MI · 160 KM' },
+  { key: 'core', d: 2890e3, cap: 'An ocean of liquid iron.', sub: 'OUTER CORE · 1,800 MI · 2,890 KM' },
+  { key: 'inner', d: 5150e3, cap: 'Solid iron, as hot as the Sun’s surface.', sub: 'INNER CORE · 9,800°F · 5,400°C' },
+  { key: 'center', d: 6371e3, cap: 'Weightless, at 22,000 mph.', sub: 'THE CENTER OF THE EARTH · 3,959 MI · 6,371 KM' },
 ];
 LM.forEach((l) => { l.y = yAtDepth(l.d); });
 // the narration drives the clock: each line starts as the last one ends, and the fall reaches each landmark
@@ -88,9 +88,10 @@ const T_HERE = T_CENTER;
 const T_TAIL_END = SAY.tail + VO.tail.dur;
 const FADE = [T_TAIL_END + 0.2, T_TAIL_END + 0.9], END = FADE[1] + 0.15, DURATION = END + 3.6;
 
-const NUMS = [['three hundred feet', '300 feet'], ['seven thousand feet', '7,000 feet'], ['two and a half miles', '2.5 miles'], ['a hundred and fifty degrees', '150°F'],
-  ['seven and a half miles', '7.5 miles'], ['point two percent', '0.2%'], ['twenty-two miles', '22 miles'], ['a hundred miles', '100 miles'], ['eighteen hundred miles', '1,800 miles'],
-  ['twenty-two thousand miles an hour', '22,000 mph'], ['four thousand miles', '4,000 miles']];
+// on screen every number is in both systems
+const NUMS = [['three hundred feet', '300 feet (90 m)'], ['seven thousand feet', '7,000 feet (2.1 km)'], ['two and a half miles', '2.5 miles (4 km)'], ['a hundred and fifty degrees', '150°F (66°C)'],
+  ['seven and a half miles', '7.5 miles (12 km)'], ['point two percent', '0.2%'], ['twenty-two miles', '22 miles (35 km)'], ['a hundred miles', '100 miles (160 km)'], ['eighteen hundred miles', '1,800 miles (2,900 km)'],
+  ['twenty-two thousand miles an hour', '22,000 mph (35,000 km/h)'], ['four thousand miles', '4,000 miles (6,400 km)']];
 // captions: the narration a clause at a time (long clauses split evenly), timed to the voice
 function buildCaptions() {
   const out = [];
@@ -144,6 +145,7 @@ const PATH = (() => {
 const jumperY = (t) => (t < T_JUMP ? 0 : PATH(t));
 const depthNow = (t) => (t < T_JUMP ? 0 : depthAtY(Math.max(jumperY(t), LM[LM.length - 1].y)));
 
+const fmtMetric = (m) => (m < 1000 ? `−${Math.round(m).toLocaleString('en-US')} m` : m < 100e3 ? `−${(m / 1000).toFixed(1)} km` : `−${Math.round(m / 1000).toLocaleString('en-US')} km`);
 const fmtDepth = (m) => { const ft = m * FT; if (ft < 30000) return `−${Math.round(ft).toLocaleString('en-US')} ft`; const mi = m / 1609.34; return mi < 100 ? `−${mi.toFixed(1)} mi` : `−${Math.round(mi).toLocaleString('en-US')} mi`; };
 const fmtClock = (s) => { s = Math.max(0, s); const mm = Math.floor(s / 60), ss = Math.floor(s % 60); return `${mm}:${String(ss).padStart(2, '0')}`; };
 
@@ -319,7 +321,7 @@ function buildWorld(st) {
   }
   const coneM = new THREE.MeshStandardMaterial({ color: '#ff7a1a', roughness: 0.5 });
   for (const [x, z] of [[-6.6, 1.4], [6.8, 0.6], [-6.2, -4.4], [6.4, -4.8], [-1.6, -6.6], [1.7, -6.5]]) { const c = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.75, 12).translate(0, 0.375, 0), coneM); c.position.set(x, 0, z); c.castShadow = true; scene.add(c); }
-  const sign = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 2.1), new THREE.MeshStandardMaterial({ map: signTexture([['HOLE TO THE CENTER', 92], ['OF THE EARTH', 92], ['3,959 MILES · KEEP BACK', 58]], { bg: '#f4c400', fg: '#1a1a1a' }), roughness: 0.6 }));
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 2.1), new THREE.MeshStandardMaterial({ map: signTexture([['HOLE TO THE CENTER', 92], ['OF THE EARTH', 92], ['3,959 MI · 6,371 KM · KEEP BACK', 52]], { bg: '#f4c400', fg: '#1a1a1a' }), roughness: 0.6 }));
   sign.position.set(-8.2, 2.5, -6.5); sign.rotation.y = 0.55; sign.castShadow = true; scene.add(sign);
   const post = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.5), new THREE.MeshStandardMaterial({ color: '#555' })); post.position.set(-8.2, 0.75, -6.55); scene.add(post);
 
@@ -437,7 +439,7 @@ function buildUnderground(scene, st, ppl) {
   const hz = (() => { const cv = canvas(1024, 64), c = cv.getContext('2d'); for (let i = 0; i < 32; i++) { c.fillStyle = i % 2 ? '#f2c400' : '#141414'; c.beginPath(); c.moveTo(i * 32, 0); c.lineTo(i * 32 + 32, 0); c.lineTo(i * 32 + 16, 64); c.lineTo(i * 32 - 16, 64); c.fill(); } return ctex(cv, true); })();
   hz.repeat.set(2, 1);
   add(new THREE.CylinderGeometry(RS - 0.03, RS - 0.03, 0.6, 64, 1, true), new THREE.MeshBasicMaterial({ map: hz, side: THREE.BackSide, toneMapped: false }), 0, yK, 0);
-  onWall(new THREE.PlaneGeometry(3.6, 1.3), new THREE.MeshBasicMaterial({ map: signTexture([['KOLA SUPERDEEP BOREHOLE', 64], ['40,230 FT · DEEPEST HOLE EVER DUG', 46]], { bg: '#2a2a2e', fg: '#f4f0e6' }), toneMapped: false }), FAR_A, yK - 1.2);
+  onWall(new THREE.PlaneGeometry(3.6, 1.3), new THREE.MeshBasicMaterial({ map: signTexture([['KOLA SUPERDEEP BOREHOLE', 64], ['12,262 M · 40,230 FT · DEEPEST EVER DUG', 42]], { bg: '#2a2a2e', fg: '#f4f0e6' }), toneMapped: false }), FAR_A, yK - 1.2);
   lamp(V(0, yK, 0), '#ffffff', 12);
 
   // ---- diamonds glint in the walls
@@ -536,17 +538,17 @@ export default {
     if (a <= 0) return null;
     if (t >= T_HERE) return { label: 'GOAL REACHED ✓', pct: '100%', k: 1, from: 'SURFACE', to: 'THE CENTER', alpha: a };
     const p = depthNow(t) / R_E * 100;
-    return { label: 'GOAL: THE CENTER', pct: p < 0.005 ? '0%' : p < 1 ? `${p.toFixed(2)}%` : p < 10 ? `${p.toFixed(1)}%` : `${Math.floor(p)}%`, k: p / 100, from: 'SURFACE', to: '3,959 MI', alpha: a };
+    return { label: 'GOAL: THE CENTER', pct: p < 0.005 ? '0%' : p < 1 ? `${p.toFixed(2)}%` : p < 10 ? `${p.toFixed(1)}%` : `${Math.floor(p)}%`, k: p / 100, from: 'SURFACE', to: '3,959 MI · 6,371 KM', alpha: a };
   },
   hud(t) {
     if (t >= FADE[1]) return null;
     const a = 1 - smooth(FADE[0], FADE[1], t);
-    if (t >= T_HERE) return { label: 'THE CENTER', value: 'HERE', sub: '3,959 MI DOWN · WEIGHTLESS', alpha: a };
+    if (t >= T_HERE) return { label: 'THE CENTER', value: 'HERE', sub: '3,959 MI · 6,371 KM DOWN · WEIGHTLESS', alpha: a };
     const d = depthNow(t);
     const left = FALL.T - FALL.tAt(d);
     let sub = 'FALL TIME TO THE CENTER: 19 MIN';
     for (const l of LM) if (t >= l.t - 0.9) sub = l.sub;
-    return { label: `DEPTH · CENTER IN ${fmtClock(left)}`, value: d < 0.5 ? '0 ft' : fmtDepth(d), sub, alpha: a };
+    return { label: `DEPTH · CENTER IN ${fmtClock(left)}`, value: d < 0.5 ? '0 ft' : fmtDepth(d), value2: d < 0.5 ? '0 m' : fmtMetric(d), sub, alpha: a };
   },
   labels(t) { return []; },
   audio: buildAudio(),

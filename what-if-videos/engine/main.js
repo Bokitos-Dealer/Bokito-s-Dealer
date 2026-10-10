@@ -35,7 +35,7 @@ const $ = (s) => document.querySelector(s);
 const ui = {
   title: $('#title'), titleT: $('#title .t'),
   goal: $('#goal'), goalL: $('#goal .gl'), goalP: $('#goal .gp'), goalFill: $('#goal .fill'), goalDot: $('#goal .dot'), goal0: $('#goal .g0'), goal1: $('#goal .g1'),
-  hud: $('#hud'), hudLabel: $('#hud .label'), hudValue: $('#hud .value'), hudSub: $('#hud .sub'),
+  hud: $('#hud'), hudLabel: $('#hud .label'), hudValue: $('#hud .value'), hudValue2: $('#hud .value2'), hudSub: $('#hud .sub'),
   caption: $('#caption'), captionT: $('#caption span'),
   crack: $('#crack'), fade: $('#fade'), flash: $('#flash'), tint: $('#tint'), grain: $('#grain'), labels: $('#labels'),
   end: $('#end'),
@@ -86,7 +86,7 @@ function overlay(t) {
   // ---- HUD
   const h = S.hud ? S.hud(t, ctx) : null;
   if (h) {
-    setText(ui.hudLabel, h.label || ''); setText(ui.hudValue, h.value || ''); setText(ui.hudSub, h.sub || '');
+    setText(ui.hudLabel, h.label || ''); setText(ui.hudValue, h.value || ''); setText(ui.hudValue2, h.value2 || ''); setText(ui.hudSub, h.sub || '');
     ui.hud.style.opacity = (h.alpha ?? 1).toFixed(3);
   } else ui.hud.style.opacity = '0';
 
