@@ -433,17 +433,23 @@ const KEYS = (() => {
   const k = (t, az, y, d, look, aim = 0) => ({ t, az, y, d, look, aim });
   return [
     k(T_TL - 0.9, 150, -1.6, 4.8, 0.9),
-    k(L.tower.t - 0.6, 30, 0.6, 5.0, -0.3, 0.5),
-    k(L.clouds.t, 300, 2.2, 4.4, -1.2),
-    k(L.halfair.t + 0.6, 300, 3.4, 3.8, -2.4),
+    k(L.tower.t - 1.4, 34, 0.2, 5.0, -0.1, 0.0),
+    k(L.tower.t - 0.2, 30, 0.6, 5.0, -0.3, 0.5),
+    k(L.tower.t + 0.3, 10, 0.9, 5.0, -0.5, 0.0),
+    k(L.clouds.t, -40, 2.2, 4.4, -1.2),
+    k(L.halfair.t + 0.6, -60, 3.4, 3.8, -2.4),
     k(L.everest.t + 0.4, 70, -0.6, 5.0, 0.4),
+    k(L.plane.t - 0.7, 183, 0.3, 5.2, 0.1, 0.0),
     k(L.plane.t + 0.2, 185, 0.4, 5.2, 0.0, 0.3),
+    k(L.plane.t + 1.2, 192, 0.5, 5.2, 0.0, 0.0),
     k(wordT('plane', 'bird') + 0.4, 220, 0.6, 5.0, 0.0),
     k(L.armstrong.t + 0.5, 100, 2.8, 4.2, -1.8),
+    k(L.skydive.t - 0.6, 42, 0.3, 5.4, 0.2, 0.0),
     k(L.skydive.t + 0.3, 40, 0.3, 5.4, 0.2, 0.3),
+    k(L.skydive.t + 1.2, 38, 0.3, 5.4, 0.2, 0.0),
     k(L.meteors.t + 1.2, 160, -1.8, 5.0, 1.2),
     k(L.meteors.t + 4.4, 168, -1.5, 5.0, 1.0),
-    k(T_SPACE + 0.3, 30, 1.6, 4.6, -0.6),
+    k(T_SPACE + 0.3, 70, 1.6, 4.6, -0.6),
     k(SAY.tail + 1.5, 55, 1.4, 7.5, 0.2),
     k(SAY.outro, 75, 2.5, 15, 0.8),
     k(DURATION, 90, 4, 26, 1.2),
@@ -457,7 +463,8 @@ function camKeys(t) {
   const a = KEYS[Math.max(0, i - 1)], b = KEYS[i], c = KEYS[i + 1], d = KEYS[Math.min(n - 1, i + 2)];
   const u = (t - b.t) / (c.t - b.t), u2 = u * u, u3 = u2 * u;
   const out = {};
-  for (const f of ['az', 'y', 'd', 'look', 'aim']) {
+  out.aim = lerp(b.aim, c.aim, u * u * (3 - 2 * u));          // no overshoot: zero between keys that are zero
+  for (const f of ['az', 'y', 'd', 'look']) {
     const m1 = (c[f] - a[f]) / Math.max(0.01, c.t - a.t) * (c.t - b.t) * 0.5, m2 = (d[f] - b[f]) / Math.max(0.01, d.t - b.t) * (c.t - b.t) * 0.5;
     out[f] = (2 * u3 - 3 * u2 + 1) * b[f] + (u3 - 2 * u2 + u) * m1 + (-2 * u3 + 3 * u2) * c[f] + (u3 - u2) * m2;
   }
@@ -469,7 +476,7 @@ function camAt(t) {
   const k = camKeys(t), az = k.az * Math.PI / 180;
   const follow = { pos: V(Math.sin(az) * k.d, hy + k.y, -0.38 + Math.cos(az) * k.d), look: V(0, hy + k.look, -0.38) };
   // lean the aim toward whichever landmark is nearest in time
-  if (k.aim > 0.01) {
+  if (k.aim > 0) {
     const targets = [[L.tower.t, V(-150, 828, -220)], [L.plane.t, V((t - L.plane.t) * 140 - 30, L.plane.y - 14, 120)], [L.skydive.t, V(-470, L.skydive.y + 20, -170)]];
     let best = targets[0]; for (const tg of targets) if (Math.abs(t - tg[0]) < Math.abs(t - best[0])) best = tg;
     const d0 = follow.look.clone().sub(follow.pos).normalize(), d1 = best[1].clone().sub(follow.pos).normalize();
