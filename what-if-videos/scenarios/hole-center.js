@@ -11,6 +11,7 @@ import * as THREE from 'three';
 import { Rng, clamp, lerp, smooth, easeInOut } from '../engine/lib/rng.js';
 import { buildDaySky, townKit } from '../engine/lib/town.js';
 import { buildPeople } from '../engine/lib/people.js';
+import VO from './hole-center.vo.js';
 
 const W = 1080, H = 1920;
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
@@ -63,16 +64,62 @@ const LM = [
   { key: 'center', d: 6371e3, cap: 'Weightless, at 22,000 mph.', sub: 'THE CENTER OF THE EARTH · 3,959 MI' },
 ];
 LM.forEach((l) => { l.y = yAtDepth(l.d); });
-const T_JUMP = 8.4, T_FIRST = 11.2, STEP = 4.4;
-LM.forEach((l, i) => { l.t = T_FIRST + i * STEP + (i === LM.length - 1 ? 0.6 : 0); });
+// the narration drives the clock: each line starts as the last one ends, and the fall reaches each landmark
+// as its depth is said
+const SAY = {};
+let T_JUMP;
+{
+  let t = 0.25;
+  const say = (key, gap = 0.15) => { SAY[key] = t + gap; t = SAY[key] + VO[key].dur; };
+  say('hook', 0); T_JUMP = t + 0.1;
+  say('goal', 0.35);
+  for (const k of ['subway', 'cave', 'mine', 'kola', 'moho', 'diamonds', 'core', 'inner']) say(k, k === 'cave' ? 0.3 : 0.15);
+  say('center', 0.6); say('tail', 0.2);
+}
+const wordT = (key, word) => { for (const [w, s] of VO[key].words) if (w.toLowerCase().replace(/[^a-z0-9']/g, '').startsWith(word)) return SAY[key] + s; return SAY[key]; };
+LM.forEach((l) => { if (SAY[l.key] !== undefined) l.t = SAY[l.key] + 0.45; });
 LM[0].t = T_JUMP + 1.75;                                         // the pipes come up right after the jump
+LM[10].t = wordT('center', 'made');                               // "And he made it."
+for (const k of ['subway', 'cave', 'mine']) LM.find((l) => l.key === k).t = wordT(k, 'deepest') - 0.15;   // the rooms fill the frame as they're named
+LM[5].t = wordT('kola', 'deepest') - 0.4;
+LM[2].t = (LM[1].t + LM[3].t) / 2 + 0.1;                         // groundwater, between the station and the cave
 const T_CENTER = LM[LM.length - 1].t;
-const T_HERE = T_CENTER + 0.25;
-const FADE = [T_CENTER + 4.3, T_CENTER + 5.1], END = FADE[1] + 0.15, DURATION = END + 3.6;
-const CAPTIONS = [[3.4, 6.5, 'Someone dug a hole to the center of the Earth.'], [6.7, 9.6, 'Now someone has to jump in.']];
-LM.forEach((l, i) => CAPTIONS.push([l.t - 0.9, Math.min(l.t + 2.9, (LM[i + 1]?.t ?? 99) - 1.0), l.cap]));
-CAPTIONS[CAPTIONS.length - 1][1] = T_CENTER + 2.4;
-CAPTIONS.push([T_CENTER + 2.5, FADE[0], 'Then you keep going. Right out the other side.']);
+const T_HERE = T_CENTER;
+const T_TAIL_END = SAY.tail + VO.tail.dur;
+const FADE = [T_TAIL_END + 0.2, T_TAIL_END + 0.9], END = FADE[1] + 0.15, DURATION = END + 3.6;
+
+const NUMS = [['three hundred feet', '300 feet'], ['seven thousand feet', '7,000 feet'], ['two and a half miles', '2.5 miles'], ['a hundred and fifty degrees', '150°F'],
+  ['seven and a half miles', '7.5 miles'], ['point two percent', '0.2%'], ['twenty-two miles', '22 miles'], ['a hundred miles', '100 miles'], ['eighteen hundred miles', '1,800 miles'],
+  ['twenty-two thousand miles an hour', '22,000 mph'], ['four thousand miles', '4,000 miles']];
+// captions: the narration a clause at a time (long clauses split evenly), timed to the voice
+function buildCaptions() {
+  const out = [];
+  for (const [key, at] of Object.entries(SAY)) {
+    const ws = [];
+    for (const [w, s, e] of VO[key].words) {
+      if (ws.length && /^[-']/.test(w)) { const p = ws[ws.length - 1]; p[0] += w; p[2] = e; } else ws.push([w, s, e]);
+    }
+    // numbers read as digits on screen
+    for (const [say, show] of NUMS) {
+      const k = say.split(' ');
+      for (let i = 0; i + k.length <= ws.length; i++) {
+        if (k.every((x, j) => ws[i + j][0].toLowerCase().replace(/[^a-z-]/g, '') === x)) {
+          const p = ws[i + k.length - 1][0].match(/[,.?!]$/)?.[0] ?? '';
+          ws.splice(i, k.length, [show + p, ws[i][1], ws[i + k.length - 1][2]]);
+        }
+      }
+    }
+    const clauses = [[]];
+    ws.forEach((w, i) => { clauses[clauses.length - 1].push(w); if (/[,.?!…:]$/.test(w[0]) && i < ws.length - 1) clauses.push([]); });
+    const chunks = [];
+    for (const c of clauses) { const n = Math.ceil(c.length / 5), per = Math.ceil(c.length / n); for (let i = 0; i < c.length; i += per) chunks.push(c.slice(i, i + per)); }
+    chunks.forEach((c, i) => { const next = chunks[i + 1]; out.push([at + c[0][1], at + (next ? Math.min(next[0][1], c[c.length - 1][2] + 0.5) : c[c.length - 1][2] + 0.3), c.map((x) => x[0]).join(' ')]); });
+  }
+  out.sort((x, y) => x[0] - y[0]);
+  for (let i = 0; i < out.length - 1; i++) out[i][1] = Math.min(out[i][1], out[i + 1][0] - 0.01);
+  return out;
+}
+const CAPTIONS = buildCaptions();
 
 // the jumper's height in the scene over video time: real free fall for the first metres, then landmark to
 // landmark with no stops (monotone cubic through the keys), still falling as the camera holds at the centre
@@ -97,7 +144,7 @@ const PATH = (() => {
 const jumperY = (t) => (t < T_JUMP ? 0 : PATH(t));
 const depthNow = (t) => (t < T_JUMP ? 0 : depthAtY(Math.max(jumperY(t), LM[LM.length - 1].y)));
 
-const fmtDepth = (m) => { const ft = m * FT; if (ft < 30000) return `−${Math.round(ft).toLocaleString('en-US')} ft`; return `−${Math.round(m / 1609.34).toLocaleString('en-US')} mi`; };
+const fmtDepth = (m) => { const ft = m * FT; if (ft < 30000) return `−${Math.round(ft).toLocaleString('en-US')} ft`; const mi = m / 1609.34; return mi < 100 ? `−${mi.toFixed(1)} mi` : `−${Math.round(mi).toLocaleString('en-US')} mi`; };
 const fmtClock = (s) => { s = Math.max(0, s); const mm = Math.floor(s / 60), ss = Math.floor(s % 60); return `${mm}:${String(ss).padStart(2, '0')}`; };
 
 // ------------------------------------------------------------------ materials and textures
@@ -420,9 +467,9 @@ function camAt(t) {
   const ycam = t < T_CENTER - 1.4 ? yj : Math.max(lerp(yj, yHold, smooth(T_CENTER - 1.4, T_CENTER, t)), yHold);
   const LOOK = { subway: [-1, 0, 0.2], cave: [-0.6, 0, -1], mine: [1, 0, 0.1] };
   const lk = V(0, 0, 0); let w = 0;
-  for (const l of LM) if (LOOK[l.key]) { const g = Math.exp(-(((t - l.t) / 1.6) ** 2)); lk.add(V(...LOOK[l.key]).multiplyScalar(g)); w = Math.max(w, g); }
-  const pos = V(1.9 - lk.x * 0.7, ycam + lerp(4.0, 2.0, w), 1.8 - lk.z * 0.9 - 0.6 * w);
-  const look = V(lk.x * 9, ycam - lerp(2.6, 1.6, w), lk.z * 9);
+  for (const l of LM) if (LOOK[l.key]) { const g = Math.exp(-(((t - l.t) / 1.25) ** 2)); lk.add(V(...LOOK[l.key]).multiplyScalar(g)); w = Math.max(w, g); }
+  const pos = V(1.9 - lk.x * 0.7, ycam + lerp(5.6, 2.6, w), 1.8 - lk.z * 0.9 - 0.6 * w);
+  const look = V(lk.x * 9, ycam - lerp(0.6, 1.0, w), lk.z * 9);
   const dive = { pos, look };
   // into the hole without touching anything: first glide over the middle of the hole (staying above the
   // barriers), then drop down the shaft after the jumper
@@ -437,13 +484,16 @@ function buildAudio() {
   const A = [];
   const fx = (type, o) => A.push(Object.assign({ type }, o));
   const keysEvery = (f, step = 0.05) => { const ks = []; for (let t = 0; t <= DURATION; t += step) ks.push([+t.toFixed(2), +f(t).toFixed(3)]); return ks; };
+  for (const [key, at] of Object.entries(SAY)) A.push(S_(VO[key].file, at, { level: 1.35, free: true, verb: 0.03, fin: 0.005, fout: 0.03 }));
+  const talking = (t) => { let k = 0; for (const [key, at] of Object.entries(SAY)) k = Math.max(k, smooth(at - 0.15, at, t) * (1 - smooth(at + VO[key].dur, at + VO[key].dur + 0.25, t))); return k; };
+  A.push({ type: 'fxduck', keys: keysEvery((t) => 1 - 0.45 * talking(t), 0.04) });
   // "Silent Descent": entered so its big swell (70 s into the track) arrives with the liquid iron
   const off = Math.max(0, 70 - LM[8].t);
   A.push(S_('music/614.mp3', 0, { offset: off, level: 0.5, fin: 0.4, fout: 2.0, dur: DURATION,
-    keys: keysEvery((t) => (t < T_HERE - 0.3 ? 0.85 : t < T_HERE + 0.05 ? 0.15 : 1)) }));
+    keys: keysEvery((t) => (t < T_HERE - 0.3 ? 0.85 : t < T_HERE + 0.05 ? 0.15 : 1) * (1 - 0.5 * talking(t))) }));
   // the plaza: city room tone and a crowd that gasps when they jump
-  A.push(S_('sfx/367.wav', 0, { offset: 12, dur: T_JUMP + 3, level: 0.5, fout: 2.0 }));
-  fx('crowd', { t0: 0, t1: T_JUMP + 2.5, level: 0.32, swell: [[0, 0.55], [T_JUMP - 0.2, 0.6], [T_JUMP + 0.4, 1], [T_JUMP + 2.5, 0.15]] });
+  A.push(S_('sfx/367.wav', 0, { offset: 12, dur: T_JUMP + 3, level: 0.5, fout: 2.0, keys: keysEvery((t) => 1 - 0.5 * talking(t)) }));
+  fx('crowd', { t0: 0, t1: T_JUMP + 2.5, level: 0.3, swell: [[0, 0.4], [T_JUMP - 0.2, 0.45], [T_JUMP + 0.4, 1], [T_JUMP + 2.5, 0.15]] });
   fx('gasp', { t: T_JUMP + 0.12, level: 0.5 });
   fx('snap', { t: T_JUMP, size: 0.25, level: 0.6, seed: 2 });
   // falling: air rushing faster with the real speed, a whoosh past each landmark, a boom into each hotter layer
@@ -476,10 +526,18 @@ export default {
   title: 'What if you fell into a hole to the center of the Earth?',
   endFact: 'Falling the whole way in a vacuum takes about <b>19 minutes</b>. The deepest hole ever dug covers <b>0.2%</b> of it.',
   duration: DURATION,
-  titleIn: [-1, -0.5], titleOut: [2.9, 3.35],
+  titleIn: [-1, -0.5], titleOut: [-0.4, -0.3],              // no title card: the narration's first line is the hook
   fadeOut: FADE, endAt: END, endSpeed: 1.3,
   captions: CAPTIONS,
-  captionFade: 0.2,
+  captionFade: 0.06,
+  // the goal, always on screen: how much of the 3,959 miles he has fallen
+  goal(t) {
+    const a = smooth(0.3, 0.8, t) * (1 - smooth(FADE[0], FADE[1], t));
+    if (a <= 0) return null;
+    if (t >= T_HERE) return { label: 'GOAL REACHED ✓', pct: '100%', k: 1, from: 'SURFACE', to: 'THE CENTER', alpha: a };
+    const p = depthNow(t) / R_E * 100;
+    return { label: 'GOAL: THE CENTER', pct: p < 0.005 ? '0%' : p < 1 ? `${p.toFixed(2)}%` : p < 10 ? `${p.toFixed(1)}%` : `${Math.floor(p)}%`, k: p / 100, from: 'SURFACE', to: '3,959 MI', alpha: a };
+  },
   hud(t) {
     if (t >= FADE[1]) return null;
     const a = 1 - smooth(FADE[0], FADE[1], t);
@@ -514,7 +572,10 @@ export default {
     ROCK_U.uTime.value = t;
     // the four lamps nearest the camera light the rock and the props
     const near = st.groupsUnderground.lamps.slice().sort((a, b) => a.p.distanceTo(c.pos) - b.p.distanceTo(c.pos)).slice(0, 4);
-    near.forEach((L, i) => { ROCK_U.uLampP.value[i].copy(L.p); ROCK_U.uLampC.value[i].copy(L.col).multiplyScalar(1.4); ROCK_U.uLampR.value[i] = L.range; const P = st.pool[i]; P.position.copy(L.p); P.color.copy(L.col); P.intensity = 450; P.distance = L.range * 1.4; });
+    near.forEach((L, i) => { ROCK_U.uLampP.value[i].copy(L.p); ROCK_U.uLampC.value[i].copy(L.col).multiplyScalar(1.4); ROCK_U.uLampR.value[i] = L.range; const P = st.pool[i]; P.position.copy(L.p); P.color.copy(L.col); P.distance = L.range * 1.4;
+      // a lamp in the middle of the shaft would blow the jumper out white as they fall past it: cap the light on them
+      const tj = t - T_JUMP, jy = tj <= 0 ? 0 : jumperY(t) + 2.2 * tj * (1 - smooth(0.6, 1.6, tj));
+      const dj = Math.hypot(L.p.x, L.p.y - jy, L.p.z + (tj <= 0 ? 3.6 : 0.4)); P.intensity = Math.min(450, 3 * dj * dj); });
     // underground the sky and sun give way to the rock's own light
     const under = smooth(-2, -14, c.pos.y);
     st.hemi.intensity = lerp(1.1, 1.0, under); st.sun.intensity = lerp(2.6, 0.0, under);
@@ -551,4 +612,4 @@ export default {
   },
 };
 
-export const _debug = { LM, DY, depthAtY, yAtDepth, jumperY, depthNow, camAt, FALL, CAPTIONS, T_JUMP, T_CENTER, T_HERE, END, DURATION };
+export const _debug = { SAY, LM, DY, depthAtY, yAtDepth, jumperY, depthNow, camAt, FALL, CAPTIONS, T_JUMP, T_CENTER, T_HERE, END, DURATION };

@@ -1,0 +1,19 @@
+{
+  "id": "hole-center",
+  "voice": "am_liam",
+  "speed": 1.12,
+  "lines": {
+    "hook": "This guy is about to jump into a hole that goes straight to the center of the Earth.",
+    "goal": "That's almost four thousand miles. Let's see if he makes it.",
+    "subway": "Three hundred feet. The deepest subway station in the world.",
+    "cave": "Seven thousand feet. The deepest cave anyone has ever explored.",
+    "mine": "Two and a half miles. The deepest mine on Earth, where the rock is a hundred and fifty degrees.",
+    "kola": "Seven and a half miles. The deepest hole humans have ever dug. And he's only point two percent of the way.",
+    "moho": "Twenty-two miles. He just broke through the crust.",
+    "diamonds": "A hundred miles. This is where diamonds are made.",
+    "core": "Eighteen hundred miles. Almost halfway, and it's an ocean of liquid iron.",
+    "inner": "The inner core. As hot as the surface of the Sun.",
+    "center": "And he made it. The center of the Earth. Twenty-two thousand miles an hour, and he weighs nothing.",
+    "tail": "But he can't stop. He shoots straight out the other side, then falls back. Forever."
+  }
+}

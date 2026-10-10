@@ -34,6 +34,7 @@ const camera = new THREE.PerspectiveCamera(56, W / H, 1, 40000);
 const $ = (s) => document.querySelector(s);
 const ui = {
   title: $('#title'), titleT: $('#title .t'),
+  goal: $('#goal'), goalL: $('#goal .gl'), goalP: $('#goal .gp'), goalFill: $('#goal .fill'), goalDot: $('#goal .dot'), goal0: $('#goal .g0'), goal1: $('#goal .g1'),
   hud: $('#hud'), hudLabel: $('#hud .label'), hudValue: $('#hud .value'), hudSub: $('#hud .sub'),
   caption: $('#caption'), captionT: $('#caption span'),
   crack: $('#crack'), fade: $('#fade'), flash: $('#flash'), tint: $('#tint'), grain: $('#grain'), labels: $('#labels'),
@@ -88,6 +89,14 @@ function overlay(t) {
     setText(ui.hudLabel, h.label || ''); setText(ui.hudValue, h.value || ''); setText(ui.hudSub, h.sub || '');
     ui.hud.style.opacity = (h.alpha ?? 1).toFixed(3);
   } else ui.hud.style.opacity = '0';
+
+  // ---- goal bar: { label, pct (text), k (0..1 along the bar), from, to, alpha }
+  const gb = S.goal ? S.goal(t, ctx) : null;
+  if (gb) {
+    setText(ui.goalL, gb.label || ''); setText(ui.goalP, gb.pct || ''); setText(ui.goal0, gb.from || ''); setText(ui.goal1, gb.to || '');
+    const gk = clamp(gb.k ?? 0); ui.goalFill.style.width = (gk * 100).toFixed(2) + '%'; ui.goalDot.style.left = (gk * 100).toFixed(2) + '%';
+    ui.goal.style.opacity = (gb.alpha ?? 1).toFixed(3);
+  } else ui.goal.style.opacity = '0';
 
   // ---- captions
   let ca = 0, ct = '';
