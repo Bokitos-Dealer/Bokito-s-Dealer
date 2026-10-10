@@ -65,6 +65,7 @@ const LM = [
 LM.forEach((l) => { l.y = yAtDepth(l.d); });
 const T_JUMP = 8.4, T_FIRST = 11.2, STEP = 4.4;
 LM.forEach((l, i) => { l.t = T_FIRST + i * STEP + (i === LM.length - 1 ? 0.6 : 0); });
+LM[0].t = T_JUMP + 1.75;                                         // the pipes come up right after the jump
 const T_CENTER = LM[LM.length - 1].t;
 const T_HERE = T_CENTER + 0.25;
 const FADE = [T_CENTER + 4.3, T_CENTER + 5.1], END = FADE[1] + 0.15, DURATION = END + 3.6;
@@ -77,9 +78,9 @@ CAPTIONS.push([T_CENTER + 2.5, FADE[0], 'Then you keep going. Right out the othe
 // landmark with no stops (monotone cubic through the keys), still falling as the camera holds at the centre
 const PATH = (() => {
   const k = [];
-  const tFree = 1.6;                                           // 12.6 m of honest free fall
+  const tFree = 1.1;                                           // 6 m of honest free fall
   for (let i = 0; i <= 8; i++) { const tau = tFree * i / 8; k.push([T_JUMP + tau, -0.5 * G0 * tau * tau]); }
-  for (const l of LM) if (l.t > T_JUMP + tFree + 0.3) k.push([l.t, l.y]);
+  for (const l of LM) if (l.key !== 'pipes') k.push([l.t, l.y]);
   k.push([T_CENTER + 6, LM[LM.length - 1].y - 60]);
   const xs = k.map((p) => p[0]), ys = k.map((p) => p[1]), n = xs.length, d = [], m = new Array(n).fill(0);
   for (let i = 0; i < n - 1; i++) d.push((ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
@@ -315,10 +316,12 @@ function buildUnderground(scene, st, ppl) {
   // ---- pipes and cables cut where the shaft went through; the old sewer pours into it
   const yP = LM[0].y;
   const stubs = [[yP + 5, 0.32, '#3a74c8', 0.3], [yP + 3.2, 0.2, '#f0c020', 2.0], [yP + 1.6, 0.45, '#2b2b2b', 3.7], [yP - 0.6, 0.95, '#7b6a58', FAR_A], [yP - 3.4, 0.28, '#3a9a5c', 4.9], [yP + 6.5, 0.25, '#c23b2b', 5.6]];
+  const nearCam = (a) => Math.abs(Math.atan2(Math.sin(a - CAM_A), Math.cos(a - CAM_A))) < 0.75;   // nothing sticks out where the camera rides
   for (const [y, rad, col, a] of stubs) for (const s of [0, Math.PI]) {
-    const aa = a + s, len = 1.4;
-    const m = add(new THREE.CylinderGeometry(rad, rad, len, 20).rotateZ(Math.PI / 2).translate(RS - len / 2 + 0.55, 0, 0), std(col, { roughness: 0.5 }), 0, y, 0, [0, -aa, 0]);
-    add(new THREE.CircleGeometry(rad * 0.75, 20).rotateY(-Math.PI / 2).translate(RS - len + 0.56, 0, 0), glowM('#120e0b'), 0, y, 0, [0, -aa, 0]);
+    const aa = a + s, len = 1.1;
+    if (nearCam(aa)) continue;
+    const m = add(new THREE.CylinderGeometry(rad, rad, len, 20).rotateZ(Math.PI / 2).translate(RS - len / 2 + 0.4, 0, 0), std(col, { roughness: 0.5 }), 0, y, 0, [0, -aa, 0]);
+    add(new THREE.CircleGeometry(rad * 0.75, 20).rotateY(-Math.PI / 2).translate(RS - len + 0.41, 0, 0), glowM('#120e0b'), 0, y, 0, [0, -aa, 0]);
   }
   st.sewer = { a: FAR_A, y: yP - 0.6 };
   st.pour = [];
@@ -397,7 +400,7 @@ function buildUnderground(scene, st, ppl) {
   // ---- embers in the hot layers, streaming up past you (they show the speed where the walls are plain)
   st.embers = [];
   const emTex = (() => { const cv = canvas(64, 64), c = cv.getContext('2d'); const g = c.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.3, 'rgba(255,200,120,0.8)'); g.addColorStop(1, 'rgba(255,120,40,0)'); c.fillStyle = g; c.fillRect(0, 0, 64, 64); return ctex(cv); })();
-  for (let i = 0; i < 160; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: emTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false })); sp.scale.set(0.12, 0.6, 1); sp.visible = false; scene.add(sp); const a = r.float(0, Math.PI * 2), rr = Math.sqrt(r.next()) * (RS - 0.3); st.embers.push({ sp, x: Math.cos(a) * rr, z: Math.sin(a) * rr, ph: r.float(0, 40) }); }
+  for (let i = 0; i < 160; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: emTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false })); sp.scale.set(0.12, 0.6, 1); sp.visible = false; scene.add(sp); const a = r.float(0, Math.PI * 2), rr = Math.sqrt(r.next()) * (RS - 0.3); st.embers.push({ sp, x: Math.cos(a) * rr, z: Math.sin(a) * rr, ph: r.float(0, 40), off: Math.hypot(Math.cos(a) * rr - 1.9, Math.sin(a) * rr - 1.8) < 1.4 }); }
 
   // ---- the centre: a ring of light round the shaft
   st.centerRing = add(new THREE.TorusGeometry(RS - 0.1, 0.07, 8, 64), glowM('#ffffff'), 0, LM[10].y, 0, [Math.PI / 2, 0, 0]);
@@ -421,8 +424,11 @@ function camAt(t) {
   const pos = V(1.9 - lk.x * 0.7, ycam + lerp(4.0, 2.0, w), 1.8 - lk.z * 0.9 - 0.6 * w);
   const look = V(lk.x * 9, ycam - lerp(2.6, 1.6, w), lk.z * 9);
   const dive = { pos, look };
-  const k = smooth(T_JUMP - 0.2, T_JUMP + 1.6, t);
-  return { pos: surf.pos.clone().lerp(dive.pos, k), look: surf.look.clone().lerp(dive.look, k), fov: lerp(46, 72, k) };
+  // into the hole without touching anything: first glide over the middle of the hole (staying above the
+  // barriers), then drop down the shaft after the jumper
+  const k1 = smooth(T_JUMP - 0.3, T_JUMP + 0.9, t), k2 = smooth(T_JUMP + 0.7, T_JUMP + 1.9, t);
+  const cp = V(lerp(surf.pos.x, dive.pos.x, k1), lerp(lerp(surf.pos.y, 4.2, k1), dive.pos.y, k2), lerp(surf.pos.z, dive.pos.z, k1));
+  return { pos: cp, look: surf.look.clone().lerp(dive.look, k1), fov: lerp(46, 72, k1) };
 }
 
 // ------------------------------------------------------------------ sound
@@ -539,7 +545,7 @@ export default {
     // embers: fixed in the rock, so they rush up past the camera as fast as the walls do; only in the hot layers
     const hot = smooth(LM[6].t - 1.0, LM[6].t + 0.5, t) * (1 - smooth(T_CENTER + 3, T_CENTER + 4.5, t));
     const yc = c.pos.y;
-    for (const e of st.embers) { const yy = yc - 30 + ((e.ph - yc) % 40 + 40) % 40; e.sp.visible = hot > 0.01; e.sp.position.set(e.x, yy, e.z); e.sp.material.opacity = hot * 0.9; e.sp.material.color.set(t > LM[9].t ? '#fff4d6' : t > LM[8].t ? '#ffd27a' : '#ff9a4a'); }
+    for (const e of st.embers) { const yy = yc - 30 + ((e.ph - yc) % 40 + 40) % 40; e.sp.visible = hot > 0.01 && !e.off; e.sp.position.set(e.x, yy, e.z); e.sp.material.opacity = hot * 0.9; e.sp.material.color.set(t > LM[9].t ? '#fff4d6' : t > LM[8].t ? '#ffd27a' : '#ff9a4a'); }
     st.centerRing.material.color.setScalar(0.6 + 0.4 * smooth(T_HERE - 0.1, T_HERE + 0.3, t));
     st.ppl.update(t);
   },
