@@ -505,3 +505,16 @@ export function buildPlane() {
   g.traverse((m) => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
   return g;
 }
+
+// the town's buildings and trees for other sets: kit.building({ x, z, w, d, h, style, rot, box }), kit.trees([...])
+export function townKit() {
+  const mats = {
+    facade: FACADES.map((f) => new THREE.MeshStandardMaterial({ map: facadeTexture(f), roughness: 0.62, metalness: 0.0 })),
+    base: [new THREE.MeshStandardMaterial({ color: '#8d877d', roughness: 0.85 }), new THREE.MeshStandardMaterial({ color: '#5d5a55', roughness: 0.8 })],
+    roof: new THREE.MeshStandardMaterial({ color: '#9a958c', roughness: 0.9 }),
+    roofTop: new THREE.MeshStandardMaterial({ color: '#77736c', roughness: 0.95 }),
+    trunk: new THREE.MeshStandardMaterial({ color: '#6b4f36', roughness: 0.9 }),
+    leaf: new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.85, flatShading: true }),
+  };
+  return { mats, building: (o) => building(o, mats), trees: (list) => buildTrees(list, mats) };
+}
