@@ -293,6 +293,13 @@ function setupPost(cfg) {
 }
 function drawScene() {
   const sc = ctx.view?.scene ?? scene, cam = ctx.view?.camera ?? camera;
+  // layered views: each { scene, camera } drawn over the last with the depth cleared, far to near
+  // (a real-scale planet behind, a metre-scale set in front, each with its own near/far)
+  if (!composer && ctx.view?.layers) {
+    renderer.autoClear = false; renderer.clear();
+    ctx.view.layers.forEach((L, i) => { if (i) renderer.clearDepth(); renderer.render(L.scene, L.camera); });
+    renderer.autoClear = true; return;
+  }
   if (!composer) { renderer.render(sc, cam); return; }
   passes.render.scene = sc; passes.render.camera = cam;
   if (passes.ao) {

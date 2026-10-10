@@ -1,0 +1,19 @@
+{
+  "id": "space-ladder",
+  "voice": "am_liam",
+  "speed": 1.12,
+  "lines": {
+    "hook": "What if you built a ladder all the way to space, and climbed it?",
+    "goal": "Space starts sixty-two miles up. Let's see if he makes it.",
+    "tower": "Twenty-seven hundred feet. He just passed the tallest building on Earth.",
+    "halfair": "Eighteen thousand feet. Half of all the air on Earth is now below him.",
+    "everest": "Twenty-nine thousand feet. Higher than Everest. Without his suit, he'd pass out in about a minute.",
+    "plane": "Thirty-seven thousand feet. Planes fly here, and so did the highest flying bird ever recorded.",
+    "armstrong": "Sixty-two thousand feet. Up here, without a suit, his spit would literally boil.",
+    "skydive": "Twenty-five miles. The highest anyone has ever skydived from. And he's not even halfway.",
+    "meteors": "Fifty-three miles. The coldest air on the planet, minus a hundred and thirty degrees. Shooting stars burn up all around him.",
+    "space": "And he made it. Sixty-two miles. Space.",
+    "tail": "But if he lets go, he falls straight back down. To stay up here, you'd have to fly seventeen thousand miles an hour, sideways.",
+    "outro": "Space is close. Staying there is the hard part."
+  }
+}
