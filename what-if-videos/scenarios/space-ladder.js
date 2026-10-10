@@ -585,7 +585,10 @@ export default {
     st.sun.position.copy(c.look).addScaledVector(SUN, 30); st.sun.target.position.copy(c.look); st.sun.target.updateMatrixWorld();
     // the city fades into the cloud layer once he's above it (from there the planet below is the far layer)
     st.city.visible = yS < L.clouds.y + 15;
-    for (const s of st.clouds) s.material.opacity = 0.95 * (1 - smooth(L.clouds.y + 60, L.clouds.y + 120, yS));
+    // clouds thin out as they near the lens (no single-frame whiteouts); a soft white veil as he climbs through the layer
+    for (const s of st.clouds) s.material.opacity = 0.95 * (1 - smooth(L.clouds.y + 60, L.clouds.y + 120, yS)) * smooth(4, 30, s.position.distanceTo(c.pos));
+    const veil = Math.exp(-(((yS - L.clouds.y) / 18) ** 2)) * 0.55;
+    ctx.tint = veil > 0.01 ? { color: '#f2f5f8', opacity: veil, blend: 'normal' } : null;
     st.towerTip.material.color.setScalar(Math.sin(t * 6) > 0 ? 1 : 0.3).multiply(new THREE.Color('#ff4a3a'));
 
     // ---- the climber: hips rise two rungs a cycle; diagonal pairs of limbs move in turn and always land on rungs
