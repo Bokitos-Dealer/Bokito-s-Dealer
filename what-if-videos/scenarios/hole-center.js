@@ -577,7 +577,7 @@ export default {
     near.forEach((L, i) => { ROCK_U.uLampP.value[i].copy(L.p); ROCK_U.uLampC.value[i].copy(L.col).multiplyScalar(1.4); ROCK_U.uLampR.value[i] = L.range; const P = st.pool[i]; P.position.copy(L.p); P.color.copy(L.col); P.distance = L.range * 1.4;
       // a lamp in the middle of the shaft would blow the jumper out white as they fall past it: cap the light on them
       const tj = t - T_JUMP, jy = tj <= 0 ? 0 : jumperY(t) + 2.2 * tj * (1 - smooth(0.6, 1.6, tj));
-      const dj = Math.hypot(L.p.x, L.p.y - jy, L.p.z + (tj <= 0 ? 3.6 : 0.4)); P.intensity = Math.min(450, 3 * dj * dj); });
+      const dj = Math.hypot(L.p.x, Math.max(0, Math.abs(L.p.y - jy - 0.9) - 0.9), L.p.z + (tj <= 0 ? 3.6 : 0.4)); P.intensity = Math.min(450, 2 * dj * dj); });   // nearest point on the body, feet to head
     // underground the sky and sun give way to the rock's own light
     const under = smooth(-2, -14, c.pos.y);
     st.hemi.intensity = lerp(1.1, 1.0, under); st.sun.intensity = lerp(2.6, 0.0, under);
