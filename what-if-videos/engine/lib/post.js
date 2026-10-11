@@ -96,7 +96,7 @@ export class LayeredPass extends Pass {
         else { this.blend.material.uniforms.tSrc.value = this.layerRT.texture; this.blend.material.uniforms.uW.value = 1 / (k + 1); renderer.autoClear = false; this.blend.render(renderer); renderer.autoClear = true; }   // blend over what's there: no clear
       }
       ctx.poseAt(t);
-      this.drawLayers(renderer, this.layerRT);                 // depth (and the final pose) for the passes after
+      if (!mb.reuseDepth) this.drawLayers(renderer, this.layerRT);   // depth (and the final pose) for the passes after; else the last sub-frame's depth serves
       renderer.setRenderTarget(readBuffer);
       this.copy.material.uniforms.tSrc.value = this.accRT.texture; this.copy.render(renderer);
     } else {

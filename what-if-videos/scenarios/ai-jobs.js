@@ -567,7 +567,9 @@ export default {
     const c = camAt(t), c2 = camAt(t + 1 / 30);
     const v = c.pos.distanceTo(c2.pos) * 30, turn = c.look.clone().sub(c.pos).normalize().angleTo(c2.look.clone().sub(c2.pos).normalize()) * 30;
     const fast = c.shot === c2.shot && (v > 6 || turn > 0.5);
-    ctx.motionBlur = { samples: fast || trauma(t) > 0.2 || Math.abs(t - T_TRUCK - 0.6) < 0.6 ? 5 : 3, shutter: 0.5 };
+    ctx.motionBlur = { samples: fast || trauma(t) > 0.2 || Math.abs(t - T_TRUCK - 0.6) < 0.6 ? 4 : 2, shutter: 0.5, reuseDepth: true };
+    // shadows: drawn once per frame, not for every motion-blur sub-frame
+    ctx.renderer.shadowMap.autoUpdate = false; ctx.renderer.shadowMap.needsUpdate = true;
     if (DBG?.mb) ctx.motionBlur.samples = DBG.mb;
   },
 
