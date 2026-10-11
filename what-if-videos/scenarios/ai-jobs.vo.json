@@ -1,0 +1,37 @@
+{
+  "id": "ai-jobs",
+  "voice": {
+    "am_puck": 0.6,
+    "am_michael": 0.4
+  },
+  "speed": 1.08,
+  "pause": 0.3,
+  "lines": {
+    "hook": {
+      "say": "What if AI took your job... and then everyone else's?",
+      "speed": 1.06
+    },
+    "goal": "Let's fast-forward until the very last job is gone. The ending might surprise you.",
+    "screens": "First to go: anything done on a screen. Call centers. Data entry. Translators.",
+    "quiet": "Nobody makes an announcement. Companies just stop hiring... and young people feel it first.",
+    "safe": "Then it climbs the building. Coders. Lawyers. Accountants. People who were sure they were safe.",
+    "robots": "Plumbers and nurses feel fine... until robots get cheap. Trucks drive themselves. Warehouses go dark, because robots don't need the lights on.",
+    "hundred": {
+      "say": "And then, one morning... nobody goes to work. Ever again.",
+      "speed": 1.0,
+      "pause": 0.4
+    },
+    "twist": "Sounds like paradise, right? Here's the problem. No jobs means no paychecks... so who's buying anything?",
+    "fix": "So countries try something wild: tax the robots, and send everyone a check.",
+    "finland": "Finland actually tested free money. About six hundred dollars a month, no strings attached. People didn't get lazy... they got happier.",
+    "history": "And history has a twist. In 1900, nearly four in ten Americans farmed. Today? About one in a hundred. We didn't run out of work... we invented new kinds.",
+    "outro": {
+      "say": "So the real question isn't whether AI takes the jobs... it's who owns the AI.",
+      "speed": 1.04
+    },
+    "cta": {
+      "say": "Which job do you think goes last?",
+      "speed": 1.04
+    }
+  }
+}
