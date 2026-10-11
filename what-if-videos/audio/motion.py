@@ -373,5 +373,73 @@ def c_glide(m, c):
     place(m, t0, to_stereo(norm(y, 0.6), -0.15, 0.15), c, verb=0.3)
 
 
+def c_breath(m, c):
+    """Breathing inside a helmet: filtered noise in and out, a touch of mask resonance. times = [[t, depth 0..1], ...] (each an inhale+exhale)."""
+    r = rng_of(c)
+    for i, (t, dep) in enumerate(c['times']):
+        d_in, d_out = 0.55 + 0.25 * dep, 0.7 + 0.3 * dep
+        n = sec(d_in + d_out)
+        tt = np.arange(n) / SR
+        env = np.where(tt < d_in, np.sin(np.pi * 0.5 * tt / d_in) ** 2, np.cos(np.pi * 0.5 * np.clip((tt - d_in) / d_out, 0, 1)) ** 1.5)
+        x = r.standard_normal(n)
+        inh = bp(x, 900, 4200) * (tt < d_in)
+        exh = bp(x, 350, 2600) * (tt >= d_in)
+        res = bp(r.standard_normal(n), 1150, 1350, 1) * 0.6          # the helmet's small boxy resonance
+        y = (norm(inh) * 0.6 + norm(exh) * 0.9 + norm(res) * 0.25) * env * (0.55 + 0.45 * dep)
+        place(m, t, to_stereo(norm(y, 0.6 + 0.3 * dep), 0.0), c, verb=0.05)
+
+
+def c_clank(m, c):
+    """A gloved hand or boot landing on a metal rung: a dull thud and a short inharmonic ring."""
+    r = rng_of(c)
+    n = sec(0.45)
+    tt = np.arange(n) / SR
+    f0 = c.get('f', 520) * r.uniform(0.93, 1.07)
+    ring = sum(a * np.sin(2 * np.pi * f0 * k * tt + r.uniform(0, 6.28)) * np.exp(-tt / (0.09 / k ** 0.5)) for k, a in [(1, 1.0), (2.76, 0.6), (5.4, 0.35), (8.9, 0.2)])
+    thud = lp(r.standard_normal(n), 400) * np.exp(-tt / 0.018)
+    y = norm(ring) * 0.55 + norm(thud) * 0.8
+    place(m, c['t'], to_stereo(norm(y, 0.9), c.get('pan', 0.0)), c, verb=0.12)
+
+
+def c_chirp(m, c):
+    """A radio chirp in the helmet: two short band-limited tones with a click of static."""
+    r = rng_of(c)
+    n = sec(0.32)
+    tt = np.arange(n) / SR
+    f1, f2 = c.get('f', [1400, 1870])
+    tone = np.where(tt < 0.11, np.sin(2 * np.pi * f1 * tt), np.where(tt < 0.22, np.sin(2 * np.pi * f2 * tt), 0)) * np.clip(np.minimum(tt / 0.004, (0.22 - tt) / 0.01), 0, 1)
+    stat = bp(r.standard_normal(n), 1500, 5000) * np.exp(-tt / 0.02) * 0.4
+    y = bp(tone, 500, 3500) + stat
+    place(m, c['t'], to_stereo(norm(y, 0.7), 0.0), c, verb=0.05)
+
+
+def c_jet(m, c):
+    """A jet passing close: a roar that swells, a Doppler-falling whine, a rumble that trails off."""
+    r = rng_of(c)
+    t0, d = c['t'], c.get('dur', 4.0)
+    n = sec(d)
+    k = np.arange(n) / n
+    pk = c.get('peak', 0.45)
+    env = np.exp(-((k - pk) / 0.16) ** 2) * 0.85 + np.exp(-np.maximum(k - pk, 0) / 0.25) * (k > pk) * 0.35
+    x = r.standard_normal(n)
+    roar = lp(x, 900) * 0.8 + bp(x, 900, 3500) * 0.5
+    s = 1 / (1 + np.exp(-(k - pk) * 18))
+    whine = np.sin(2 * np.pi * np.cumsum(2400 * (1.25 - 0.45 * s)) / SR) * 0.15 + np.sin(2 * np.pi * np.cumsum(780 * (1.2 - 0.4 * s)) / SR) * 0.1
+    y = (norm(roar) + whine) * env
+    l, rr = pan_gains(np.clip((k - pk) * 2.5, -0.9, 0.9) * (1 if c.get('ltr', True) else -1))
+    out = np.stack([y * l, y * rr], axis=1)
+    place(m, t0, norm(out, 0.95), c, verb=0.25)
+
+
+def c_subdrop(m, c):
+    """A falling sine from about 70 Hz to 30 Hz under a hit."""
+    n = sec(c.get('dur', 1.4))
+    tt = np.arange(n) / SR
+    f = 32 + 40 * np.exp(-tt / 0.35)
+    y = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt / (c.get('dur', 1.4) * 0.45)) * np.clip(tt / 0.01, 0, 1)
+    place(m, c['t'], to_stereo(norm(y, 0.95), 0), c, verb=0.0)
+
+
 CUES = dict(flip=c_flip, sweep=c_sweep, count=c_count, rustle=c_rustle, snap=c_snap, slide=c_slide, creak=c_creak,
-            spring=c_spring, sparkle=c_sparkle, impact=c_impact, flyby=c_flyby, rush=c_rush, glide=c_glide)
+            spring=c_spring, sparkle=c_sparkle, impact=c_impact, flyby=c_flyby, rush=c_rush, glide=c_glide,
+            breath=c_breath, clank=c_clank, chirp=c_chirp, jet=c_jet, subdrop=c_subdrop)

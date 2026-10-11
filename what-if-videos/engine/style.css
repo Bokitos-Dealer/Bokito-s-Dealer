@@ -87,3 +87,15 @@ html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
 #end .e-handle { position: absolute; left: 0; right: 0; top: 1300px; font-family: 'InterW', sans-serif; font-weight: 700; font-size: 38px; color: #f3d9a2; }
 #end .e-follow { position: absolute; left: 0; right: 0; top: 1380px; font-family: 'InterW', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.24em; color: #fff; }
 #end .e-ask { position: absolute; left: 0; right: 0; top: 1432px; font-family: 'InterW', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.2em; color: rgba(185,195,240,0.8); }
+
+/* kinetic captions and the animated hook */
+#caption .cw { display: inline-block; font-weight: inherit; opacity: 0; color: rgba(255,255,255,0.92); transform-origin: 50% 80%; }
+#caption .cw.now { color: #ffffff; }
+#caption .cw.hl { color: #ffcf4a; font-style: italic; }
+#title .tw { display: inline-block; }
+#title .tw.hl { color: #ffcf4a; }
+#title .ticon { display: block; width: 168px; height: 168px; margin: 0 auto 18px; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.55)); }
+#title .ticon svg { width: 100%; height: 100%; }
+#goal .tick { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.55); transform: translate(-50%, -50%); box-shadow: 0 0 0 2px rgba(0,0,0,0.35); }
+#goal .tick.on { background: #ffcf4a; box-shadow: 0 0 10px rgba(255,200,80,0.9), 0 0 0 2px rgba(0,0,0,0.25); }
+#hud .sub, #hud .value { display: block; transform-origin: 0 60%; }

@@ -59,12 +59,16 @@ def main():
     tts = Kokoro(os.path.join(ROOT, 'assets/tts/model.onnx'), os.path.join(ROOT, 'assets/tts/voices.npz'))
     stt = WhisperModel('small.en', device='cpu', compute_type='int8')
     vid, voice, speed = spec['id'], spec.get('voice', 'af_heart'), spec.get('speed', 0.9)
+    if isinstance(voice, dict):                      # a blend of voices: {"am_puck": 0.6, "am_michael": 0.4}
+        voice = sum(w * tts.get_voice_style(v) for v, w in voice.items()).astype(np.float32)
     outdir = os.path.join(ROOT, 'assets', 'vo', vid); os.makedirs(outdir, exist_ok=True)
     result = {}
     for key, line in spec['lines'].items():
         text = line if isinstance(line, str) else line['say']
         sp = speed if isinstance(line, str) else line.get('speed', speed)
-        audio, sr = tts.create(text, voice=voice, speed=sp, lang='en-us')
+        opt = {} if isinstance(line, str) else line
+        audio, sr = tts.create(text, voice=voice, speed=sp, lang='en-us',
+                               sentence_pause=opt.get('pause', spec.get('pause', 0.3)), clause_pause=opt.get('clause', spec.get('clause', 0.12)))
         audio = level(trim(np.asarray(audio, dtype=np.float64), sr))
         path = os.path.join(outdir, f'{key}.wav')
         sf.write(path, audio.astype(np.float32), sr)

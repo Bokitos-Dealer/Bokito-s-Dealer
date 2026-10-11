@@ -8,6 +8,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { LayeredPass, DOFPass, GradePass } from './lib/post.js';
 
 const params = new URLSearchParams(location.search);
 const W = 1080, H = 1920;
@@ -81,13 +82,30 @@ function overlay(t) {
   const tIn = S.titleIn ?? [0, 0.01], tOut = S.titleOut ?? [2.6, 3.5];
   const ta = smooth(tIn[0], tIn[1], t) * (1 - smooth(tOut[0], tOut[1], t));
   ui.title.style.opacity = ta.toFixed(3);
-  setText(ui.titleT, S.title);
+  if (S.titleWords) {
+    // the hook: an icon pops, then the words rise in one after another; highlighted words in gold
+    if (!ui.titleT.dataset.built) {
+      ui.titleT.innerHTML = (S.titleIcon ? `<div class="ticon">${S.titleIcon}</div>` : '') + S.titleWords.map(([w, hl]) => `<span class="tw${hl ? ' hl' : ''}">${w}</span>`).join(' ');
+      ui.titleT.dataset.built = '1';
+    }
+    const t0 = S.titleAnimAt ?? tIn[1];
+    const ic = ui.titleT.querySelector('.ticon');
+    if (ic) { const k = clamp((t - t0) / 0.45); const e = k <= 0 ? 0 : 1 + 2.7 * Math.pow(k - 1, 3) + 1.7 * Math.pow(k - 1, 2); ic.style.opacity = clamp(k * 3).toFixed(3); ic.style.transform = `scale(${(0.6 + 0.4 * e).toFixed(3)}) rotate(${((1 - e) * -12).toFixed(2)}deg)`; }
+    ui.titleT.querySelectorAll('.tw').forEach((el, i) => {
+      const k = clamp((t - t0 - 0.12 - i * 0.07) / 0.32), e = 1 - Math.pow(1 - k, 4);
+      el.style.opacity = e.toFixed(3); el.style.transform = `translateY(${((1 - e) * 26).toFixed(1)}px)`;
+    });
+  } else setText(ui.titleT, S.title);
 
   // ---- HUD
   const h = S.hud ? S.hud(t, ctx) : null;
   if (h) {
     setText(ui.hudLabel, h.label || ''); setText(ui.hudValue, h.value || ''); setText(ui.hudValue2, h.value2 || ''); setText(ui.hudSub, h.sub || '');
     ui.hud.style.opacity = (h.alpha ?? 1).toFixed(3);
+    const sa = h.subAge ?? 9, sk = 1 - Math.pow(1 - clamp(sa / 0.45), 3);
+    ui.hudSub.style.opacity = sk.toFixed(3); ui.hudSub.style.transform = `translateX(${((1 - sk) * -24).toFixed(1)}px)`;
+    const pk = h.pop ?? 0;
+    ui.hudValue.style.transform = `scale(${(1 + 0.09 * pk).toFixed(4)})`; ui.hudValue.style.color = pk > 0.01 ? `rgb(255, ${Math.round(255 - 48 * pk)}, ${Math.round(255 - 180 * pk)})` : '';
   } else ui.hud.style.opacity = '0';
 
   // ---- goal bar: { label, pct (text), k (0..1 along the bar), from, to, alpha }
@@ -96,19 +114,35 @@ function overlay(t) {
     setText(ui.goalL, gb.label || ''); setText(ui.goalP, gb.pct || ''); setText(ui.goal0, gb.from || ''); setText(ui.goal1, gb.to || '');
     const gk = clamp(gb.k ?? 0); ui.goalFill.style.width = (gk * 100).toFixed(2) + '%'; ui.goalDot.style.left = (gk * 100).toFixed(2) + '%';
     ui.goal.style.opacity = (gb.alpha ?? 1).toFixed(3);
+    const ticks = gb.ticks || [], tr = ui.goal.querySelector('.track');
+    while (tr.querySelectorAll('.tick').length < ticks.length) { const e = document.createElement('i'); e.className = 'tick'; tr.insertBefore(e, ui.goalDot); }
+    tr.querySelectorAll('.tick').forEach((e, i) => { const tk = ticks[i]; if (!tk) { e.style.display = 'none'; return; } e.style.display = ''; e.style.left = (clamp(tk.k) * 100).toFixed(2) + '%'; e.className = 'tick' + (tk.on ? ' on' : ''); e.style.transform = `translate(-50%, -50%) scale(${(1 + 0.6 * (tk.pop ?? 0)).toFixed(3)})`; });
   } else ui.goal.style.opacity = '0';
 
   // ---- captions
-  let ca = 0, ct = '';
-  for (const [a, b, txt] of S.captions) {
-    if (t >= a - 0.01 && t <= b + 0.01) {
-      ct = txt;
+  let ca = 0, ct = '', cw = null, ci = -1;
+  S.captions.forEach(([a, b, txt, words], i) => {
+    if (ci < 0 && t >= a - 0.01 && t <= b + 0.01) {
+      ct = txt; cw = words; ci = i;
       const cf = S.captionFade ?? 0.4;
-      ca = smooth(a, a + cf, t) * (1 - smooth(b - cf, b, t));
-      break;
+      ca = (words ? 1 : smooth(a, a + cf, t)) * (1 - smooth(b - cf, b, t));
     }
-  }
-  setText(ui.captionT, ct);
+  });
+  if (cw) {
+    // each word pops in on its own beat (easeOutBack), the spoken one bright, keywords and numbers in gold
+    if (ui.captionT.dataset.ci !== String(ci)) {
+      ui.captionT.innerHTML = cw.map(([w, , hl]) => `<b class="cw${hl ? ' hl' : ''}">${w}</b>`).join(' ');
+      ui.captionT.dataset.ci = String(ci);
+    }
+    ui.captionT.querySelectorAll('.cw').forEach((el, i) => {
+      const tw = cw[i][1], k = clamp((t - tw + 0.05) / 0.2);
+      const e = k <= 0 ? 0 : 1 + 2.70158 * Math.pow(k - 1, 3) + 1.70158 * Math.pow(k - 1, 2);
+      el.style.opacity = clamp(k * 2.5).toFixed(3);
+      el.style.transform = `translateY(${((1 - e) * 14).toFixed(1)}px) scale(${(0.82 + 0.18 * e).toFixed(3)})`;
+      const next = cw[i + 1] ? cw[i + 1][1] : 1e9;
+      el.classList.toggle('now', t >= tw - 0.05 && t < next - 0.05);
+    });
+  } else { if (ui.captionT.dataset.ci) { ui.captionT.dataset.ci = ''; ui.captionT.textContent = ''; } setText(ui.captionT, ct); }
   ui.caption.style.opacity = ca.toFixed(3);
 
   // ---- labels pinned to points on screen: [{ x, y, text, alpha, big, side }]
@@ -263,9 +297,16 @@ function setupPost(cfg) {
   const rt = new THREE.WebGLRenderTarget(w, h, { type: THREE.HalfFloatType, samples: cfg.msaa ?? 0 });
   composer = new EffectComposer(renderer, rt);
   composer.setPixelRatio(1); composer.setSize(w, h);
-  passes.render = new RenderPass(scene, camera);
-  composer.addPass(passes.render);
-  if (cfg.ao) {
+  if (cfg.layered) {
+    // layered views (planet behind, set in front) with sub-frame motion blur, then depth of field
+    passes.layered = new LayeredPass(ctx, w, h);
+    composer.addPass(passes.layered);
+    if (cfg.dof) { passes.dof = new DOFPass(passes.layered); Object.assign(passes.dof.params, cfg.dof); composer.addPass(passes.dof); }
+  } else {
+    passes.render = new RenderPass(scene, camera);
+    composer.addPass(passes.render);
+  }
+  if (cfg.ao && !cfg.layered) {
     passes.ao = new GTAOPass(scene, camera, w, h, { samples: cfg.ao.samples ?? 12 });
     passes.ao.updateGtaoMaterial({ radius: cfg.ao.radius ?? 0.6, distanceExponent: 1, thickness: 1, scale: 1, samples: cfg.ao.samples ?? 12 });
     passes.ao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 12 });
@@ -278,6 +319,7 @@ function setupPost(cfg) {
   }
   passes.out = new OutputPass();
   composer.addPass(passes.out);
+  if (cfg.grade) { passes.grade = new GradePass(); Object.assign(passes.grade.params, cfg.grade); composer.addPass(passes.grade); }
   if (cfg.env) {
     // soft sky-gradient environment: ambient fill and gentle reflections, no hard light panels
     const envScene = new THREE.Scene();
@@ -301,6 +343,12 @@ function drawScene() {
     renderer.autoClear = true; return;
   }
   if (!composer) { renderer.render(sc, cam); return; }
+  if (passes.layered) {
+    if (passes.dof && ctx.dof) Object.assign(passes.dof.params, ctx.dof);
+    if (passes.grade) { if (ctx.gradeFx) Object.assign(passes.grade.params, ctx.gradeFx); passes.grade.params.frame = Math.round(ctx.t * FPS); }
+    if (passes.bloom) { const b = Object.assign({}, ctx.post.bloom, ctx.bloom || {}); passes.bloom.strength = b.strength; passes.bloom.radius = b.radius; passes.bloom.threshold = b.threshold; }
+    composer.render(); return;
+  }
   passes.render.scene = sc; passes.render.camera = cam;
   if (passes.ao) {
     passes.ao.scene = sc; passes.ao.camera = cam;

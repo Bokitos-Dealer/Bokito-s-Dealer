@@ -2,94 +2,94 @@
 export default {
  "hook": {
   "file": "vo/space-ladder/hook.wav",
-  "dur": 2.74,
-  "text": "What if you built a ladder all the way to space, and climbed it?",
+  "dur": 3.64,
+  "text": "What if you built a ladder all the way to space... and started climbing?",
   "words": [
    [
     "What",
     0.0,
-    0.12
+    0.14
    ],
    [
     "if",
-    0.12,
-    0.22
+    0.14,
+    0.24
    ],
    [
     "you",
-    0.22,
-    0.32
+    0.24,
+    0.38
    ],
    [
     "built",
-    0.32,
-    0.5
+    0.38,
+    0.56
    ],
    [
     "a",
-    0.5,
-    0.64
+    0.56,
+    0.72
    ],
    [
     "ladder",
-    0.64,
-    0.86
+    0.72,
+    0.98
    ],
    [
     "all",
-    0.86,
-    1.16
+    0.98,
+    1.34
    ],
    [
     "the",
-    1.16,
-    1.32
+    1.34,
+    1.48
    ],
    [
     "way",
-    1.32,
-    1.44
+    1.48,
+    1.64
    ],
    [
     "to",
-    1.44,
-    1.6
+    1.64,
+    1.8
    ],
    [
-    "space,",
-    1.6,
-    1.9
+    "space...",
+    1.8,
+    2.62
    ],
    [
     "and",
-    2.14,
-    2.2
+    2.62,
+    2.7
    ],
    [
-    "climbed",
-    2.2,
-    2.46
+    "started",
+    2.7,
+    3.04
    ],
    [
-    "it?",
-    2.46,
-    2.68
+    "climbing?",
+    3.04,
+    3.36
    ]
   ]
  },
  "goal": {
   "file": "vo/space-ladder/goal.wav",
-  "dur": 2.92,
-  "text": "Space starts sixty-two miles up. Let's see if he makes it.",
+  "dur": 3.93,
+  "text": "Space starts sixty-two miles straight up. No rocket. Just rungs.",
   "words": [
    [
     "Space",
     0.0,
-    0.24
+    0.28
    ],
    [
     "starts",
-    0.24,
+    0.28,
     0.54
    ],
    [
@@ -100,832 +100,991 @@ export default {
    [
     "miles",
     1.12,
-    1.34
+    1.4
+   ],
+   [
+    "straight",
+    1.4,
+    1.7
    ],
    [
     "up.",
-    1.34,
-    1.64
+    1.7,
+    1.98
    ],
    [
-    "Let's",
-    2.02,
-    2.16
+    "No",
+    2.38,
+    2.54
    ],
    [
-    "see",
-    2.16,
-    2.26
+    "rocket.",
+    2.54,
+    2.92
    ],
    [
-    "if",
-    2.26,
-    2.36
+    "Just",
+    3.22,
+    3.32
    ],
    [
-    "he",
-    2.36,
-    2.48
-   ],
-   [
-    "makes",
-    2.48,
-    2.66
-   ],
-   [
-    "it.",
-    2.66,
-    2.9
+    "rungs.",
+    3.32,
+    3.84
    ]
   ]
  },
  "tower": {
   "file": "vo/space-ladder/tower.wav",
-  "dur": 3.26,
-  "text": "Twenty-seven hundred feet. He just passed the tallest building on Earth.",
+  "dur": 4.23,
+  "text": "Half an hour in, you pass the tallest building on Earth... and you've barely started.",
   "words": [
    [
-    "Twenty-seven",
+    "Half",
     0.0,
-    0.46
+    0.2
    ],
    [
-    "hundred",
-    0.46,
-    0.82
+    "an",
+    0.2,
+    0.34
    ],
    [
-    "feet.",
-    0.82,
-    1.12
+    "hour",
+    0.34,
+    0.52
    ],
    [
-    "He",
-    1.48,
-    1.54
+    "in,",
+    0.52,
+    0.76
    ],
    [
-    "just",
-    1.54,
-    1.72
+    "you",
+    0.86,
+    0.94
    ],
    [
-    "passed",
-    1.72,
-    1.94
+    "pass",
+    0.94,
+    1.18
    ],
    [
     "the",
-    1.94,
-    2.12
+    1.18,
+    1.38
    ],
    [
     "tallest",
-    2.12,
-    2.38
+    1.38,
+    1.68
    ],
    [
     "building",
-    2.38,
-    2.72
+    1.68,
+    2.02
    ],
    [
     "on",
-    2.72,
-    2.96
+    2.02,
+    2.3
    ],
    [
-    "Earth.",
-    2.96,
-    3.14
+    "Earth...",
+    2.3,
+    3.06
+   ],
+   [
+    "and",
+    3.06,
+    3.12
+   ],
+   [
+    "you've",
+    3.12,
+    3.32
+   ],
+   [
+    "barely",
+    3.32,
+    3.56
+   ],
+   [
+    "started.",
+    3.56,
+    4.0
+   ]
+  ]
+ },
+ "sunrise": {
+  "file": "vo/space-ladder/sunrise.wav",
+  "dur": 4.97,
+  "text": "Keep climbing. Above the clouds, the sun comes up early, while the city below is still asleep.",
+  "words": [
+   [
+    "Keep",
+    0.0,
+    0.22
+   ],
+   [
+    "climbing.",
+    0.22,
+    0.6
+   ],
+   [
+    "Above",
+    0.84,
+    1.0
+   ],
+   [
+    "the",
+    1.0,
+    1.18
+   ],
+   [
+    "clouds,",
+    1.18,
+    1.56
+   ],
+   [
+    "the",
+    1.78,
+    1.86
+   ],
+   [
+    "sun",
+    1.86,
+    2.06
+   ],
+   [
+    "comes",
+    2.06,
+    2.34
+   ],
+   [
+    "up",
+    2.34,
+    2.56
+   ],
+   [
+    "early,",
+    2.56,
+    2.92
+   ],
+   [
+    "while",
+    3.18,
+    3.34
+   ],
+   [
+    "the",
+    3.34,
+    3.5
+   ],
+   [
+    "city",
+    3.5,
+    3.74
+   ],
+   [
+    "below",
+    3.74,
+    4.1
+   ],
+   [
+    "is",
+    4.1,
+    4.34
+   ],
+   [
+    "still",
+    4.34,
+    4.54
+   ],
+   [
+    "asleep.",
+    4.54,
+    4.86
    ]
   ]
  },
  "halfair": {
   "file": "vo/space-ladder/halfair.wav",
-  "dur": 3.52,
-  "text": "Eighteen thousand feet. Half of all the air on Earth is now below him.",
+  "dur": 3.63,
+  "text": "Your ears pop. Half of all the air on Earth is now below your boots.",
   "words": [
    [
-    "Eighteen",
+    "Your",
     0.0,
-    0.42
+    0.14
    ],
    [
-    "thousand",
-    0.42,
-    0.62
+    "ears",
+    0.14,
+    0.4
    ],
    [
-    "feet.",
-    0.62,
-    1.04
+    "pop.",
+    0.4,
+    0.78
    ],
    [
     "Half",
-    1.42,
-    1.5
+    1.08,
+    1.2
    ],
    [
     "of",
-    1.5,
-    1.66
+    1.2,
+    1.34
    ],
    [
     "all",
-    1.66,
-    1.78
+    1.34,
+    1.48
    ],
    [
     "the",
-    1.78,
-    1.9
+    1.48,
+    1.62
    ],
    [
     "air",
-    1.9,
-    2.08
+    1.62,
+    1.82
    ],
    [
     "on",
-    2.08,
-    2.24
+    1.82,
+    1.98
    ],
    [
     "Earth",
-    2.24,
-    2.42
+    1.98,
+    2.22
    ],
    [
     "is",
-    2.42,
-    2.64
+    2.22,
+    2.46
    ],
    [
     "now",
-    2.64,
-    2.9
+    2.46,
+    2.7
    ],
    [
     "below",
-    2.9,
-    3.16
+    2.7,
+    2.96
    ],
    [
-    "him.",
-    3.16,
-    3.42
+    "your",
+    2.96,
+    3.12
+   ],
+   [
+    "boots.",
+    3.12,
+    3.36
    ]
   ]
  },
  "everest": {
   "file": "vo/space-ladder/everest.wav",
-  "dur": 4.47,
-  "text": "Twenty-nine thousand feet. Higher than Everest. Without his suit, he'd pass out in about a minute.",
+  "dur": 3.82,
+  "text": "You're higher than Everest. Without the suit, you'd black out in about a minute.",
   "words": [
    [
-    "Twenty-nine",
+    "You're",
     0.0,
-    0.5
+    0.24
    ],
    [
-    "thousand",
-    0.5,
-    0.8
-   ],
-   [
-    "feet.",
-    0.8,
-    1.2
-   ],
-   [
-    "Higher",
-    1.5,
-    1.52
+    "higher",
+    0.24,
+    0.48
    ],
    [
     "than",
-    1.52,
-    1.8
+    0.48,
+    0.8
    ],
    [
     "Everest.",
-    1.8,
-    2.14
+    0.8,
+    1.18
    ],
    [
     "Without",
-    2.66,
-    2.8
+    1.62,
+    1.86
    ],
    [
-    "his",
-    2.8,
-    2.98
+    "the",
+    1.86,
+    2.06
    ],
    [
     "suit,",
-    2.98,
-    3.22
+    2.06,
+    2.32
    ],
    [
-    "he'd",
-    3.3,
-    3.44
+    "you'd",
+    2.48,
+    2.58
    ],
    [
-    "pass",
-    3.44,
-    3.6
+    "black",
+    2.58,
+    2.8
    ],
    [
     "out",
-    3.6,
-    3.82
+    2.8,
+    3.06
    ],
    [
     "in",
-    3.82,
-    3.96
+    3.06,
+    3.24
    ],
    [
     "about",
-    3.96,
-    4.14
+    3.24,
+    3.42
    ],
    [
     "a",
-    4.14,
-    4.26
+    3.42,
+    3.58
    ],
    [
     "minute.",
-    4.26,
-    4.36
+    3.58,
+    3.7
    ]
   ]
  },
  "plane": {
   "file": "vo/space-ladder/plane.wav",
-  "dur": 4.86,
-  "text": "Thirty-seven thousand feet. Planes fly here, and so did the highest flying bird ever recorded.",
+  "dur": 6.24,
+  "text": "A jet slides past at eye level. Inside, people are eating pretzels. Out here, it's seventy below.",
   "words": [
    [
-    "Thirty-seven",
+    "A",
     0.0,
-    0.52
+    0.12
    ],
    [
-    "thousand",
-    0.52,
-    0.86
+    "jet",
+    0.12,
+    0.36
    ],
    [
-    "feet.",
-    0.86,
-    1.22
+    "slides",
+    0.36,
+    0.7
    ],
    [
-    "Planes",
+    "past",
+    0.7,
+    1.18
+   ],
+   [
+    "at",
+    1.18,
+    1.4
+   ],
+   [
+    "eye",
+    1.4,
+    1.64
+   ],
+   [
+    "level.",
     1.64,
-    1.86
+    1.98
    ],
    [
-    "fly",
-    1.86,
-    2.14
-   ],
-   [
-    "here,",
-    2.14,
-    2.46
-   ],
-   [
-    "and",
-    2.62,
-    2.64
-   ],
-   [
-    "so",
-    2.64,
+    "Inside,",
+    2.44,
     2.8
    ],
    [
-    "did",
-    2.8,
-    2.94
+    "people",
+    3.06,
+    3.2
    ],
    [
-    "the",
-    2.94,
-    3.08
+    "are",
+    3.2,
+    3.44
    ],
    [
-    "highest",
-    3.08,
-    3.4
+    "eating",
+    3.44,
+    3.7
    ],
    [
-    "flying",
-    3.4,
-    3.78
+    "pretzels.",
+    3.7,
+    4.32
    ],
    [
-    "bird",
-    3.78,
-    4.04
+    "Out",
+    4.64,
+    4.76
    ],
    [
-    "ever",
-    4.04,
-    4.3
+    "here,",
+    4.76,
+    5.06
    ],
    [
-    "recorded.",
-    4.3,
-    4.72
+    "it's",
+    5.22,
+    5.36
+   ],
+   [
+    "seventy",
+    5.36,
+    5.62
+   ],
+   [
+    "below.",
+    5.62,
+    6.02
    ]
   ]
  },
  "armstrong": {
   "file": "vo/space-ladder/armstrong.wav",
-  "dur": 3.77,
-  "text": "Sixty-two thousand feet. Up here, without a suit, his spit would literally boil.",
+  "dur": 3.86,
+  "text": "At sixty-two thousand feet, the air is so thin that your spit would boil.",
   "words": [
    [
-    "Sixty-two",
+    "At",
     0.0,
-    0.56
+    0.14
+   ],
+   [
+    "sixty-two",
+    0.14,
+    0.68
    ],
    [
     "thousand",
-    0.56,
-    0.84
+    0.68,
+    0.94
    ],
    [
-    "feet.",
-    0.84,
-    1.26
+    "feet,",
+    0.94,
+    1.34
    ],
    [
-    "Up",
-    1.54,
-    1.68
-   ],
-   [
-    "here,",
-    1.68,
-    1.9
-   ],
-   [
-    "without",
-    2.0,
-    2.12
-   ],
-   [
-    "a",
-    2.12,
-    2.26
-   ],
-   [
-    "suit,",
-    2.26,
-    2.46
-   ],
-   [
-    "his",
-    2.56,
-    2.64
-   ],
-   [
-    "spit",
-    2.64,
-    2.86
-   ],
-   [
-    "would",
-    2.86,
-    3.02
-   ],
-   [
-    "literally",
-    3.02,
-    3.28
-   ],
-   [
-    "boil.",
-    3.28,
-    3.58
-   ]
-  ]
- },
- "skydive": {
-  "file": "vo/space-ladder/skydive.wav",
-  "dur": 4.62,
-  "text": "Twenty-five miles. The highest anyone has ever skydived from. And he's not even halfway.",
-  "words": [
-   [
-    "Twenty-five",
-    0.0,
-    0.56
-   ],
-   [
-    "miles.",
-    0.56,
-    0.92
-   ],
-   [
-    "The",
-    1.38,
-    1.46
-   ],
-   [
-    "highest",
-    1.46,
-    1.76
-   ],
-   [
-    "anyone",
-    1.76,
-    2.2
-   ],
-   [
-    "has",
-    2.2,
-    2.4
-   ],
-   [
-    "ever",
-    2.4,
-    2.66
-   ],
-   [
-    "skydived",
-    2.66,
-    3.18
-   ],
-   [
-    "from.",
-    3.18,
-    3.42
-   ],
-   [
-    "And",
-    3.66,
-    3.66
-   ],
-   [
-    "he's",
-    3.66,
-    3.82
-   ],
-   [
-    "not",
-    3.82,
-    3.98
-   ],
-   [
-    "even",
-    3.98,
-    4.18
-   ],
-   [
-    "halfway.",
-    4.18,
-    4.4
-   ]
-  ]
- },
- "meteors": {
-  "file": "vo/space-ladder/meteors.wav",
-  "dur": 6.27,
-  "text": "Fifty-three miles. The coldest air on the planet, minus a hundred and thirty degrees. Shooting stars burn up all around him.",
-  "words": [
-   [
-    "Fifty-three",
-    0.0,
-    0.48
-   ],
-   [
-    "miles.",
-    0.48,
-    0.82
-   ],
-   [
-    "The",
-    1.24,
-    1.32
-   ],
-   [
-    "coldest",
-    1.32,
+    "the",
+    1.66,
     1.7
    ],
    [
     "air",
     1.7,
-    1.9
+    1.88
    ],
    [
-    "on",
-    1.9,
-    2.06
+    "is",
+    1.88,
+    2.04
+   ],
+   [
+    "so",
+    2.04,
+    2.28
+   ],
+   [
+    "thin",
+    2.28,
+    2.6
+   ],
+   [
+    "that",
+    2.6,
+    2.84
+   ],
+   [
+    "your",
+    2.84,
+    2.98
+   ],
+   [
+    "spit",
+    2.98,
+    3.24
+   ],
+   [
+    "would",
+    3.24,
+    3.4
+   ],
+   [
+    "boil.",
+    3.4,
+    3.66
+   ]
+  ]
+ },
+ "skydive": {
+  "file": "vo/space-ladder/skydive.wav",
+  "dur": 4.12,
+  "text": "This is where the highest skydive in history began. And you're not even halfway.",
+  "words": [
+   [
+    "This",
+    0.0,
+    0.18
+   ],
+   [
+    "is",
+    0.18,
+    0.34
+   ],
+   [
+    "where",
+    0.34,
+    0.52
    ],
    [
     "the",
-    2.06,
-    2.18
+    0.52,
+    0.64
    ],
    [
-    "planet,",
-    2.18,
-    2.46
+    "highest",
+    0.64,
+    1.02
    ],
    [
-    "minus",
-    2.7,
-    2.8
+    "skydive",
+    1.02,
+    1.56
    ],
    [
-    "a",
-    2.8,
-    2.94
+    "in",
+    1.56,
+    1.74
    ],
    [
-    "hundred",
-    2.94,
+    "history",
+    1.74,
+    2.0
+   ],
+   [
+    "began.",
+    2.0,
+    2.48
+   ],
+   [
+    "And",
+    2.9,
+    3.0
+   ],
+   [
+    "you're",
+    3.0,
     3.14
    ],
    [
-    "and",
+    "not",
     3.14,
-    3.36
+    3.28
    ],
    [
-    "thirty",
-    3.36,
-    3.6
+    "even",
+    3.28,
+    3.52
    ],
    [
-    "degrees.",
-    3.6,
-    4.02
+    "halfway.",
+    3.52,
+    3.82
+   ]
+  ]
+ },
+ "black": {
+  "file": "vo/space-ladder/black.wav",
+  "dur": 2.31,
+  "text": "The sky turns black... in the middle of the day.",
+  "words": [
+   [
+    "The",
+    0.0,
+    0.14
    ],
+   [
+    "sky",
+    0.14,
+    0.34
+   ],
+   [
+    "turns",
+    0.34,
+    0.7
+   ],
+   [
+    "black...",
+    0.7,
+    1.38
+   ],
+   [
+    "in",
+    1.38,
+    1.4
+   ],
+   [
+    "the",
+    1.4,
+    1.5
+   ],
+   [
+    "middle",
+    1.5,
+    1.62
+   ],
+   [
+    "of",
+    1.62,
+    1.82
+   ],
+   [
+    "the",
+    1.82,
+    1.94
+   ],
+   [
+    "day.",
+    1.94,
+    2.16
+   ]
+  ]
+ },
+ "meteors": {
+  "file": "vo/space-ladder/meteors.wav",
+  "dur": 4.03,
+  "text": "Shooting stars burn up all around you, in the coldest air on the planet.",
+  "words": [
    [
     "Shooting",
-    4.54,
-    4.66
+    0.0,
+    0.3
    ],
    [
     "stars",
-    4.66,
-    5.04
+    0.3,
+    0.7
    ],
    [
     "burn",
-    5.04,
-    5.34
+    0.7,
+    1.02
    ],
    [
     "up",
-    5.34,
-    5.54
+    1.02,
+    1.22
    ],
    [
     "all",
-    5.54,
-    5.76
+    1.22,
+    1.46
    ],
    [
     "around",
-    5.76,
-    6.02
+    1.46,
+    1.78
    ],
    [
-    "him.",
-    6.02,
-    6.24
+    "you,",
+    1.78,
+    2.08
+   ],
+   [
+    "in",
+    2.3,
+    2.44
+   ],
+   [
+    "the",
+    2.44,
+    2.56
+   ],
+   [
+    "coldest",
+    2.56,
+    3.04
+   ],
+   [
+    "air",
+    3.04,
+    3.3
+   ],
+   [
+    "on",
+    3.3,
+    3.52
+   ],
+   [
+    "the",
+    3.52,
+    3.64
+   ],
+   [
+    "planet.",
+    3.64,
+    3.86
    ]
   ]
  },
  "space": {
   "file": "vo/space-ladder/space.wav",
-  "dur": 2.15,
-  "text": "And he made it. Sixty-two miles. Space.",
+  "dur": 1.26,
+  "text": "And then... you're in space.",
   "words": [
    [
     "And",
     0.0,
-    0.12
+    0.14
    ],
    [
-    "he",
-    0.12,
-    0.22
+    "then...",
+    0.14,
+    0.3
    ],
    [
-    "made",
-    0.22,
-    0.42
+    "you're",
+    0.3,
+    0.58
    ],
    [
-    "it.",
-    0.42,
-    0.6
+    "in",
+    0.58,
+    0.7
    ],
    [
-    "Sixty-two",
-    0.68,
-    1.12
-   ],
-   [
-    "miles.",
-    1.12,
-    1.48
-   ],
-   [
-    "Space.",
-    1.74,
-    1.9
+    "space.",
+    0.7,
+    0.98
    ]
   ]
  },
  "tail": {
   "file": "vo/space-ladder/tail.wav",
-  "dur": 6.07,
-  "text": "But if he lets go, he falls straight back down. To stay up here, you'd have to fly seventeen thousand miles an hour, sideways.",
+  "dur": 7.77,
+  "text": "Here's the catch. Let go, and you fall straight back down. To stay up here, you'd need to fly seventeen thousand miles an hour... sideways.",
   "words": [
    [
-    "But",
+    "Here's",
     0.0,
-    0.1
+    0.24
    ],
    [
-    "if",
-    0.1,
-    0.2
+    "the",
+    0.24,
+    0.38
    ],
    [
-    "he",
-    0.2,
-    0.3
+    "catch.",
+    0.38,
+    0.68
    ],
    [
-    "lets",
-    0.3,
-    0.48
-   ],
-   [
-    "go,",
-    0.48,
-    0.78
-   ],
-   [
-    "he",
+    "Let",
     0.88,
     0.98
    ],
    [
-    "falls",
+    "go,",
     0.98,
-    1.18
+    1.3
+   ],
+   [
+    "and",
+    1.48,
+    1.52
+   ],
+   [
+    "you",
+    1.52,
+    1.64
+   ],
+   [
+    "fall",
+    1.64,
+    1.84
    ],
    [
     "straight",
-    1.18,
-    1.48
+    1.84,
+    2.18
    ],
    [
     "back",
-    1.48,
-    1.72
+    2.18,
+    2.48
    ],
    [
     "down.",
-    1.72,
-    2.08
+    2.48,
+    2.86
    ],
    [
     "To",
-    2.52,
-    2.62
+    3.22,
+    3.32
    ],
    [
     "stay",
-    2.62,
-    2.84
+    3.32,
+    3.56
    ],
    [
     "up",
-    2.84,
-    3.0
+    3.56,
+    3.74
    ],
    [
     "here,",
-    3.0,
-    3.22
+    3.74,
+    3.98
    ],
    [
     "you'd",
-    3.4,
-    3.46
+    4.14,
+    4.22
    ],
    [
-    "have",
-    3.46,
-    3.58
+    "need",
+    4.22,
+    4.34
    ],
    [
     "to",
-    3.58,
-    3.7
+    4.34,
+    4.48
    ],
    [
     "fly",
-    3.7,
-    3.9
+    4.48,
+    4.72
    ],
    [
     "seventeen",
-    3.9,
-    4.2
+    4.72,
+    5.1
    ],
    [
     "thousand",
-    4.2,
-    4.62
+    5.1,
+    5.66
    ],
    [
     "miles",
-    4.62,
-    4.98
+    5.66,
+    6.08
    ],
    [
     "an",
-    4.98,
-    5.16
+    6.08,
+    6.28
    ],
    [
-    "hour,",
-    5.16,
-    5.36
+    "hour...",
+    6.28,
+    7.18
    ],
    [
     "sideways.",
-    5.46,
-    5.7
+    7.18,
+    7.32
    ]
   ]
  },
  "outro": {
   "file": "vo/space-ladder/outro.wav",
-  "dur": 2.32,
-  "text": "Space is close. Staying there is the hard part.",
+  "dur": 4.01,
+  "text": "Space is only an hour's drive away... if your car could go straight up.",
   "words": [
    [
     "Space",
     0.0,
-    0.24
+    0.32
    ],
    [
     "is",
-    0.24,
-    0.46
+    0.32,
+    0.54
    ],
    [
-    "close.",
-    0.46,
-    0.7
+    "only",
+    0.54,
+    0.82
    ],
    [
-    "Staying",
-    1.08,
-    1.26
+    "an",
+    0.82,
+    1.04
    ],
    [
-    "there",
-    1.26,
-    1.42
+    "hour's",
+    1.04,
+    1.5
    ],
    [
-    "is",
-    1.42,
-    1.6
+    "drive",
+    1.5,
+    1.74
    ],
    [
-    "the",
-    1.6,
-    1.72
+    "away...",
+    1.74,
+    2.6
    ],
    [
-    "hard",
-    1.72,
-    1.94
+    "if",
+    2.6,
+    2.68
    ],
    [
-    "part.",
-    1.94,
-    2.22
+    "your",
+    2.68,
+    2.8
+   ],
+   [
+    "car",
+    2.8,
+    3.04
+   ],
+   [
+    "could",
+    3.04,
+    3.26
+   ],
+   [
+    "go",
+    3.26,
+    3.42
+   ],
+   [
+    "straight",
+    3.42,
+    3.66
+   ],
+   [
+    "up.",
+    3.66,
+    3.92
    ]
   ]
  }

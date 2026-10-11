@@ -41,7 +41,7 @@ async function openPage(srv) {
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   page.on('console', (m) => { const t = m.text(); if (!t.includes('GL Driver') && !t.includes('GPU stall')) console.log('[page]', t); });
   page.on('pageerror', (e) => console.log('[page error]', e.message));
-  await page.goto(`http://localhost:${srv.address().port}/engine/index.html?scale=${scale}&layer=${layer}`);
+  await page.goto(`http://localhost:${srv.address().port}/engine/index.html?scale=${scale}&layer=${layer}&dbg=${encodeURIComponent(opt('dbg', ''))}`);
   await page.waitForFunction('window.WI_READY === true');
   const info = await page.evaluate((id) => window.WI.init(id), id);
   return { browser, page, info };

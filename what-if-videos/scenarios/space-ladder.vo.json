@@ -1,19 +1,38 @@
 {
   "id": "space-ladder",
-  "voice": "am_liam",
-  "speed": 1.12,
+  "voice": {
+    "am_puck": 0.6,
+    "am_michael": 0.4
+  },
+  "speed": 1.06,
+  "pause": 0.32,
   "lines": {
-    "hook": "What if you built a ladder all the way to space, and climbed it?",
-    "goal": "Space starts sixty-two miles up. Let's see if he makes it.",
-    "tower": "Twenty-seven hundred feet. He just passed the tallest building on Earth.",
-    "halfair": "Eighteen thousand feet. Half of all the air on Earth is now below him.",
-    "everest": "Twenty-nine thousand feet. Higher than Everest. Without his suit, he'd pass out in about a minute.",
-    "plane": "Thirty-seven thousand feet. Planes fly here, and so did the highest flying bird ever recorded.",
-    "armstrong": "Sixty-two thousand feet. Up here, without a suit, his spit would literally boil.",
-    "skydive": "Twenty-five miles. The highest anyone has ever skydived from. And he's not even halfway.",
-    "meteors": "Fifty-three miles. The coldest air on the planet, minus a hundred and thirty degrees. Shooting stars burn up all around him.",
-    "space": "And he made it. Sixty-two miles. Space.",
-    "tail": "But if he lets go, he falls straight back down. To stay up here, you'd have to fly seventeen thousand miles an hour, sideways.",
-    "outro": "Space is close. Staying there is the hard part."
+    "hook": {
+      "say": "What if you built a ladder all the way to space... and started climbing?",
+      "speed": 1.08
+    },
+    "goal": "Space starts sixty-two miles straight up. No rocket. Just rungs.",
+    "tower": "Half an hour in, you pass the tallest building on Earth... and you've barely started.",
+    "sunrise": "Keep climbing. Above the clouds, the sun comes up early, while the city below is still asleep.",
+    "halfair": "Your ears pop. Half of all the air on Earth is now below your boots.",
+    "everest": "You're higher than Everest. Without the suit, you'd black out in about a minute.",
+    "plane": "A jet slides past at eye level. Inside, people are eating pretzels. Out here, it's seventy below.",
+    "armstrong": "At sixty-two thousand feet, the air is so thin that your spit would boil.",
+    "skydive": "This is where the highest skydive in history began. And you're not even halfway.",
+    "black": {
+      "say": "The sky turns black... in the middle of the day.",
+      "speed": 1.0
+    },
+    "meteors": "Shooting stars burn up all around you, in the coldest air on the planet.",
+    "space": {
+      "say": "And then... you're in space.",
+      "speed": 0.96,
+      "pause": 0.45
+    },
+    "tail": "Here's the catch. Let go, and you fall straight back down. To stay up here, you'd need to fly seventeen thousand miles an hour... sideways.",
+    "outro": {
+      "say": "Space is only an hour's drive away... if your car could go straight up.",
+      "speed": 1.02
+    }
   }
 }
