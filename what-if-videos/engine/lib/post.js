@@ -25,11 +25,11 @@ export class LayeredPass extends Pass {
       uniforms: { tSrc: { value: null }, uW: { value: 1 } }, transparent: true, depthTest: false, depthWrite: false,
       blending: THREE.CustomBlending, blendSrc: THREE.SrcAlphaFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
       vertexShader: quadVS,
-      fragmentShader: 'uniform sampler2D tSrc; uniform float uW; varying vec2 vUv; void main(){ gl_FragColor = vec4(texture2D(tSrc, vUv).rgb, uW); }',
+      fragmentShader: 'uniform sampler2D tSrc; uniform float uW; varying vec2 vUv; void main(){ vec3 c = texture2D(tSrc, vUv).rgb; if (any(isnan(c)) || any(isinf(c))) c = vec3(0.0); gl_FragColor = vec4(min(c, vec3(64.0)), uW); }',
     }));
     this.copy = new FullScreenQuad(new THREE.ShaderMaterial({
       uniforms: { tSrc: { value: null } }, depthTest: false, depthWrite: false, vertexShader: quadVS,
-      fragmentShader: 'uniform sampler2D tSrc; varying vec2 vUv; void main(){ gl_FragColor = vec4(texture2D(tSrc, vUv).rgb, 1.0); }',
+      fragmentShader: 'uniform sampler2D tSrc; varying vec2 vUv; void main(){ vec3 c = texture2D(tSrc, vUv).rgb; if (any(isnan(c)) || any(isinf(c))) c = vec3(0.0); gl_FragColor = vec4(min(c, vec3(64.0)), 1.0); }',
     }));
     this.depthTexture = this.layerRT.depthTexture;
     this.nearCamera = null;
@@ -77,7 +77,7 @@ export class LayeredPass extends Pass {
         this.drawNear(renderer, this.layerRT, [halton(k + 1, 2) - 0.5, halton(k + 1, 3) - 0.5]);
         renderer.setRenderTarget(this.accRT);
         if (k === 0) { this.copy.material.uniforms.tSrc.value = this.layerRT.texture; this.copy.render(renderer); }
-        else { this.blend.material.uniforms.tSrc.value = this.layerRT.texture; this.blend.material.uniforms.uW.value = 1 / (k + 1); this.blend.render(renderer); }
+        else { this.blend.material.uniforms.tSrc.value = this.layerRT.texture; this.blend.material.uniforms.uW.value = 1 / (k + 1); renderer.autoClear = false; this.blend.render(renderer); renderer.autoClear = true; }   // blend over what's there: no clear
       }
       ctx.poseAt(t);
       this.drawNear(renderer, this.layerRT);                     // depth and the final pose for the passes after
@@ -93,7 +93,7 @@ export class LayeredPass extends Pass {
         this.drawLayers(renderer, this.layerRT, [halton(k + 1, 2) - 0.5, halton(k + 1, 3) - 0.5]);
         renderer.setRenderTarget(this.accRT);
         if (k === 0) { this.copy.material.uniforms.tSrc.value = this.layerRT.texture; this.copy.render(renderer); }
-        else { this.blend.material.uniforms.tSrc.value = this.layerRT.texture; this.blend.material.uniforms.uW.value = 1 / (k + 1); this.blend.render(renderer); }
+        else { this.blend.material.uniforms.tSrc.value = this.layerRT.texture; this.blend.material.uniforms.uW.value = 1 / (k + 1); renderer.autoClear = false; this.blend.render(renderer); renderer.autoClear = true; }   // blend over what's there: no clear
       }
       ctx.poseAt(t);
       this.drawLayers(renderer, this.layerRT);                 // depth (and the final pose) for the passes after

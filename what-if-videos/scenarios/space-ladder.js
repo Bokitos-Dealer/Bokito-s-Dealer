@@ -766,7 +766,7 @@ export default {
     renderer.toneMappingExposure = 1.0;
     ctx.grain = 0; ctx.vignette = 0; ctx.handheld = 0;
     ctx.grade = { brightness: 1.0, contrast: 1.0, saturate: 1.0, sepia: 0 };
-    ctx.post = { layered: true, bloom: { strength: 0.42, radius: 0.55, threshold: 0.82 }, dof: { focus: 5, aperture: 0.0045, maxBlur: 0.011, farBlur: 0.35 },
+    ctx.post = { layered: true, bloom: { strength: 0.42, radius: 0.55, threshold: 2.4 }, dof: { focus: 5, aperture: 0.0045, maxBlur: 0.011, farBlur: 0.35 },
       grade: { contrast: 1.12, saturation: 1.1, lift: [0.0, 0.006, 0.02], gain: [1.03, 1.0, 0.97], split: 0.1, vignette: 0.32, grain: 0.04, ca: 0.0016 } };
     const st = this.st = {};
     window.__st = st;
@@ -788,12 +788,13 @@ export default {
     // motion blur: more sub-frames while the world streams past or the camera shakes, fewer when it's calm
     const v = Math.abs(SET(t + 0.02) - SET(t - 0.02)) / 0.04;
     ctx.motionBlur = { samples: v > 25 || trauma(t) > 0.2 ? 5 : 3, shutter: 0.5, farOnce: true };
+    if (DBG?.mb) ctx.motionBlur.samples = DBG.mb;
   },
 
   pose(ctx, t) {
     const st = this.st, F = st.far, N = st.near;
     const c = camAt(t);
-    if (DBG) { c.pos = V(...DBG.pos); c.look = V(...DBG.look); c.fov = DBG.fov ?? c.fov; c.rot = { x: 0, y: 0, z: 0 }; }
+    if (DBG?.pos) { c.pos = V(...DBG.pos); c.look = V(...DBG.look); c.fov = DBG.fov ?? c.fov; c.rot = { x: 0, y: 0, z: 0 }; }
     const yS = SET(t), alt = altAt(t), hy = hipY(t);
     poseCamera(N.cam, c);
     const camAlt = Math.max(1, alt + (c.pos.y - hy) + 1.05);
@@ -805,7 +806,7 @@ export default {
     ctx.view = { layers: [{ scene: F.scene, camera: F.cam }, { scene: N.scene, camera: N.cam }], beforeDraw: (r) => { const prev = r.getRenderTarget(); r.setRenderTarget(F.skyRT); r.render(F.skyScene, F.skyCam); r.setRenderTarget(prev); } };
     // light from the atmosphere at his height
     const Lt = lightAt(camAlt);
-    ctx.renderer.toneMappingExposure = 1.05;
+    ctx.renderer.toneMappingExposure = 0.36;
     F.U.uExpo.value = exposureAt(camAlt);
     F.U.uTime.value = t;
     F.U.uSunCol.value.setRGB(Lt.sunCol[0], 0.12 + 0.88 * Lt.sunCol[1], 0.05 + 0.95 * Lt.sunCol[2]).multiplyScalar(Math.max(Lt.sunK, 0.45) * (Lt.sunK > 0.002 ? 1 : Lt.sunK / 0.002));
@@ -916,7 +917,7 @@ export default {
     if (F.iss.visible) { F.iss.position.copy(issPos(t, camAlt)); const s = 15000 * (0.9 + 0.1 * Math.sin(t * 13)); F.iss.scale.set(s, s, 1); }
     // depth of field: focus on him; the sky and planet a touch soft (less so once he's in space)
     const kk = camKeys(t);
-    if (DBG) { ctx.dof = { focus: 10, aperture: 0, farBlur: 0 }; } else ctx.dof = { focus: c.pos.distanceTo(V(0, hy + 0.7, -0.38)), aperture: 0.0032 * (1 - clamp(kk.aim * 1.8)), farBlur: lerp(0.18, 0.05, smooth(30000, 80000, camAlt)) * (1 - clamp(kk.aim * 1.8)) };
+    if (DBG?.pos) { ctx.dof = { focus: 10, aperture: 0, farBlur: 0 }; } else ctx.dof = { focus: c.pos.distanceTo(V(0, hy + 0.7, -0.38)), aperture: 0.0032 * (1 - clamp(kk.aim * 1.8)), farBlur: lerp(0.18, 0.05, smooth(30000, 80000, camAlt)) * (1 - clamp(kk.aim * 1.8)) };
     // cars on the avenues, people
     {
       const C = st.cars, pa = C.g.attributes.position.array, ca = C.g.attributes.color.array;
