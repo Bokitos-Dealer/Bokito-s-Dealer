@@ -20,6 +20,7 @@ export class LayeredPass extends Pass {
     const opt = { type: THREE.HalfFloatType };
     this.layerRT = new THREE.WebGLRenderTarget(w, h, Object.assign({ depthTexture: new THREE.DepthTexture(w, h) }, opt));
     this.accRT = new THREE.WebGLRenderTarget(w, h, opt);
+    this.farRT = new THREE.WebGLRenderTarget(w, h, opt);
     this.blend = new FullScreenQuad(new THREE.ShaderMaterial({
       uniforms: { tSrc: { value: null }, uW: { value: 1 } }, transparent: true, depthTest: false, depthWrite: false,
       blending: THREE.CustomBlending, blendSrc: THREE.SrcAlphaFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
@@ -33,7 +34,26 @@ export class LayeredPass extends Pass {
     this.depthTexture = this.layerRT.depthTexture;
     this.nearCamera = null;
   }
-  setSize(w, h) { this.layerRT.setSize(w, h); this.accRT.setSize(w, h); }
+  setSize(w, h) { this.layerRT.setSize(w, h); this.accRT.setSize(w, h); this.farRT.setSize(w, h); }
+  // the far layer once into farRT (it is the costly one and barely moves within a frame)
+  drawFar(renderer) {
+    const v = this.ctx.view, F = v.layers[0];
+    if (v.beforeDraw) v.beforeDraw(renderer);
+    renderer.setRenderTarget(this.farRT); renderer.setClearColor(0x000000, 1); renderer.clear(true, true, true);
+    renderer.render(F.scene, F.camera);
+  }
+  // the near layers over a copy of it, optionally jittered
+  drawNear(renderer, target, jitter = null) {
+    const v = this.ctx.view, layers = v.layers.slice(1), W = target.width, H = target.height;
+    if (jitter) for (const L of layers) L.camera.setViewOffset(W, H, jitter[0], jitter[1], W, H);
+    renderer.setRenderTarget(target); renderer.clear(true, true, true);
+    this.copy.material.uniforms.tSrc.value = this.farRT.texture; this.copy.render(renderer);
+    renderer.autoClear = false; renderer.clearDepth();
+    for (const L of layers) { renderer.render(L.scene, L.camera); renderer.clearDepth(); }
+    renderer.autoClear = true;
+    if (jitter) for (const L of layers) L.camera.clearViewOffset();
+    this.nearCamera = layers[layers.length - 1].camera;
+  }
   drawLayers(renderer, target, jitter = null) {
     const v = this.ctx.view, layers = v.layers ?? [{ scene: v.scene, camera: v.camera }];
     if (v.beforeDraw) v.beforeDraw(renderer);              // e.g. a low-res sky that must be drawn first
@@ -49,6 +69,22 @@ export class LayeredPass extends Pass {
   }
   render(renderer, writeBuffer, readBuffer) {
     const ctx = this.ctx, mb = ctx.motionBlur;
+    if (mb && mb.samples > 1 && ctx.poseAt && ctx.view.layers?.length > 1 && mb.farOnce) {
+      const n = mb.samples, t = ctx.t, sh = (mb.shutter ?? 0.5) / ctx.FPS;
+      ctx.poseAt(t); this.drawFar(renderer);
+      for (let k = 0; k < n; k++) {
+        ctx.poseAt(t - sh / 2 + sh * (k + 0.5) / n, k);
+        this.drawNear(renderer, this.layerRT, [halton(k + 1, 2) - 0.5, halton(k + 1, 3) - 0.5]);
+        renderer.setRenderTarget(this.accRT);
+        if (k === 0) { this.copy.material.uniforms.tSrc.value = this.layerRT.texture; this.copy.render(renderer); }
+        else { this.blend.material.uniforms.tSrc.value = this.layerRT.texture; this.blend.material.uniforms.uW.value = 1 / (k + 1); this.blend.render(renderer); }
+      }
+      ctx.poseAt(t);
+      this.drawNear(renderer, this.layerRT);                     // depth and the final pose for the passes after
+      renderer.setRenderTarget(readBuffer);
+      this.copy.material.uniforms.tSrc.value = this.accRT.texture; this.copy.render(renderer);
+      return;
+    }
     if (mb && mb.samples > 1 && ctx.poseAt) {
       // average sub-frames spread over the shutter (centred on the frame time), then the frame itself on top
       const n = mb.samples, t = ctx.t, sh = (mb.shutter ?? 0.5) / ctx.FPS;
@@ -93,7 +129,7 @@ export class DOFPass extends Pass {
           float c0 = coc(vUv);
           vec3 acc = texture2D(tColor, vUv).rgb; float wsum = 1.0;
           if (c0 > 0.0004) {
-            const int N = 40;
+            const int N = 26;
             for (int i = 1; i < N; i++) {
               float r = sqrt(float(i) / float(N)), a = float(i) * 2.39996323;
               vec2 o = vec2(cos(a) * uAspect, sin(a)) * r * c0;

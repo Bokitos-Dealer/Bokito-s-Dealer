@@ -787,7 +787,7 @@ export default {
     this.pose(ctx, t);
     // motion blur: more sub-frames while the world streams past or the camera shakes, fewer when it's calm
     const v = Math.abs(SET(t + 0.02) - SET(t - 0.02)) / 0.04;
-    ctx.motionBlur = { samples: v > 25 || trauma(t) > 0.2 ? 5 : 3, shutter: 0.5 };
+    ctx.motionBlur = { samples: v > 25 || trauma(t) > 0.2 ? 5 : 3, shutter: 0.5, farOnce: true };
   },
 
   pose(ctx, t) {
