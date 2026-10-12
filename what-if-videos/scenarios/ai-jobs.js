@@ -569,7 +569,7 @@ export default {
     const fast = c.shot === c2.shot && (v > 6 || turn > 0.5);
     // the slow high shots (crown, flats, penthouse) go without sub-frames: in them, averaged sub-frames trip a software-rasterizer bug (stray giant triangles)
     const single = (t >= SAY.fix && t < SAY.history) || t >= SAY.outro;
-    ctx.motionBlur = { samples: fast || trauma(t) > 0.2 || Math.abs(t - T_TRUCK - 0.6) < 0.6 ? 4 : single ? 1 : 2, shutter: 0.5, reuseDepth: true };
+    ctx.motionBlur = { samples: single ? 1 : fast || trauma(t) > 0.2 || Math.abs(t - T_TRUCK - 0.6) < 0.6 ? 4 : 2, shutter: 0.5, reuseDepth: true };
     // shadows: drawn once per frame, not for every motion-blur sub-frame
     ctx.renderer.shadowMap.autoUpdate = !!DBG?.shadowAll; ctx.renderer.shadowMap.needsUpdate = true;
     if (DBG?.depthAgain) ctx.motionBlur.reuseDepth = false;
