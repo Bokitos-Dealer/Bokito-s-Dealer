@@ -541,7 +541,7 @@ export default {
       const path = dir > 0 ? [[-260, z], [260, z]] : [[260, z], [-260, z]];
       const xAt = (t) => (dir > 0 ? -260 : 260) + dir * (t - t0) * v;
       if (Math.abs(xAt(T_ROBOT) + 12) < 70) continue;                // nothing pops in or out near the camera at the swap
-      const c = veh.add(Object.assign(robo ? { type: vr.pick(['sedan', 'suv']), paint: '#eef0f2' } : {}, { path, v, t0, loop: false, visible: (t) => t >= t0 && t <= t0 + 520 / v && (robo ? t >= T_ROBOT : t < T_ROBOT) && (t < SAY.hundred || t > SAY.twist) }));
+      const c = veh.add(Object.assign(robo ? { type: vr.pick(['sedan', 'suv']), paint: '#eef0f2' } : {}, { path, v, t0, loop: false, visible: (t) => t >= t0 && t <= t0 + 520 / v && (robo ? t >= T_ROBOT : t < T_ROBOT) && (t < SAY.hundred || t > SAY.twist) && !(t >= T_PROBLEM && t < SAY.fix) }));
       if (robo) st.robocars.push(c);
     }
     st.truck = veh.add({ type: 'van', path: [[260, 22.0], [-260, 22.0]], v: 11, t0: T_TRUCK + 0.6 - 272 / 11, loop: false, paint: '#f2f4f6', visible: (t) => t > T_TRUCK - 6 && t < SAY.hundred });
