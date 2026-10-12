@@ -153,7 +153,7 @@ const SHOTS = [
   { t0: SAY.fix, keys: [                                                              // the crown, the coins, into the flats
     k(SAY.fix, [8, 64, 24], [-3, 59, 0], 42),
     k(T_TAX - 0.1, [14, 64, 30], [-3, 58, 0], 44),
-    k(T_TAX + 1.1, [70, 34, 58], [6, 26, 14], 50),
+    k(T_TAX + 1.1, [44, 40, 60], [6, 26, 14], 50),      // stays inside the open block: the city towers start at x ±52
     k(SAY.finland - 0.1, [38, 12, 6], [15, 7, 30], 44),
     k(SAY.finland + 2.8, [13, 8, 16], [13, 6.5, 32], 40),
     k(SAY.finland + 5.4, [9, 4.5, 18], [11, 3.5, 32], 40),
