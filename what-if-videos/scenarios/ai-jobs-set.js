@@ -421,7 +421,7 @@ export function buildStreet(st, IU) {
   ground.receiveShadow = false; g.add(ground); st.groundU = ground.material.uniforms;
   // kerbs along the avenue
   const kerb = patchInterior(new THREE.MeshStandardMaterial({ color: '#8b8a86', roughness: 0.9 }), IU, 'kerb');
-  for (const z of [14, 24]) { const k = new THREE.Mesh(new THREE.BoxGeometry(600, 0.15, 0.3), kerb); k.position.set(0, 0.075, z); g.add(k); }
+  for (const z of [14, 24]) { const k = new THREE.Mesh(new THREE.BoxGeometry(600, 0.15, 0.3, 60, 1, 1), kerb); k.position.set(0, 0.075, z); g.add(k); }
   // street lamps: poles with a warm head
   const poleM = patchInterior(new THREE.MeshStandardMaterial({ color: '#3a3d42', roughness: 0.5, metalness: 0.6 }), IU, 'pole');
   const headM = new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.2, 1.3), toneMapped: false }); st.lampHeadM = headM;
@@ -491,7 +491,7 @@ export function buildCity(st, env) {
 export function buildSky(st) {
   const U = { uZen: { value: new THREE.Color() }, uHor: { value: new THREE.Color() }, uGlow: { value: new THREE.Color() }, uSun: { value: V(0, 0.2, -1).normalize() }, uStars: { value: 1 }, uDisc: { value: 0 } };
   st.skyU = U;
-  const sky = new THREE.Mesh(new THREE.SphereGeometry(3500, 48, 24), new THREE.ShaderMaterial({
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(3000, 64, 32), new THREE.ShaderMaterial({
     uniforms: U, side: THREE.BackSide, depthWrite: false, depthTest: false, fog: false,
     vertexShader: 'varying vec3 vD; void main(){ vD = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',      // a plain sphere inside the far plane (xyww sat on it and got clipped at random)
     fragmentShader: `uniform vec3 uZen, uHor, uGlow, uSun; uniform float uStars, uDisc; varying vec3 vD;

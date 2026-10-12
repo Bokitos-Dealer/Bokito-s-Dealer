@@ -567,20 +567,26 @@ export default {
     const c = camAt(t), c2 = camAt(t + 1 / 30);
     const v = c.pos.distanceTo(c2.pos) * 30, turn = c.look.clone().sub(c.pos).normalize().angleTo(c2.look.clone().sub(c2.pos).normalize()) * 30;
     const fast = c.shot === c2.shot && (v > 6 || turn > 0.5);
-    ctx.motionBlur = { samples: fast || trauma(t) > 0.2 || Math.abs(t - T_TRUCK - 0.6) < 0.6 ? 4 : 2, shutter: 0.5, reuseDepth: true };
+    // the slow high shots (crown, flats, penthouse) go without sub-frames: in them, averaged sub-frames trip a software-rasterizer bug (stray giant triangles)
+    const single = (t >= SAY.fix && t < SAY.history) || t >= SAY.outro;
+    ctx.motionBlur = { samples: fast || trauma(t) > 0.2 || Math.abs(t - T_TRUCK - 0.6) < 0.6 ? 4 : single ? 1 : 2, shutter: 0.5, reuseDepth: true };
     // shadows: drawn once per frame, not for every motion-blur sub-frame
-    ctx.renderer.shadowMap.autoUpdate = false; ctx.renderer.shadowMap.needsUpdate = true;
+    ctx.renderer.shadowMap.autoUpdate = !!DBG?.shadowAll; ctx.renderer.shadowMap.needsUpdate = true;
+    if (DBG?.depthAgain) ctx.motionBlur.reuseDepth = false;
     if (DBG?.mb) ctx.motionBlur.samples = DBG.mb;
+    if (DBG?.only != null) ctx.motionBlur.only = DBG.only;
+    if (DBG?.nojit) ctx.motionBlur.noJitter = true;
   },
 
   pose(ctx, t) {
+    if (DBG?.dt) t += DBG.dt;
     // sub-frames never reach across a cut
     if (shotIdx(t) !== shotIdx(ctx.t)) t = ctx.t;
     const st = this.st, IU = st.IU;
     const c = camAt(t);
     if (DBG?.pos) { c.pos = V(...DBG.pos); c.look = V(...DBG.look); c.fov = DBG.fov ?? c.fov; c.rot = { x: 0, y: 0, z: 0 }; }
     const onStage = c.stage && !DBG?.city;
-    const cam = onStage ? st.stage.cam : (st.cam ??= new THREE.PerspectiveCamera(40, W / H, 0.05, 6000));
+    const cam = onStage ? st.stage.cam : (st.cam ??= new THREE.PerspectiveCamera(40, W / H, 0.25, 4200));
     poseCamera(cam, c);
     ctx.view = { scene: onStage ? st.stage.scene : st.scene, camera: cam };
     const look = c.look;
@@ -703,6 +709,8 @@ export default {
       put('lidar', p.x, top, p.z, p.h, 1, R2); put('ring', p.x, top, p.z, p.h, 1, R2);
     }
     for (const kk of Object.keys(cnt)) { B[kk].count = cnt[kk]; B[kk].instanceMatrix.needsUpdate = true; }
+    if (DBG?.nobloom) ctx.bloom = { strength: 0 };
+    if (DBG?.nodof) ctx.dof = { focus: 10, aperture: 0, farBlur: 0 };
     if (DBG?.hide) for (const h of DBG.hide) { const o = { veh: st.veh.group, ppl: st.ppl.group, city: st.city, coins: st.coins.im, tower: st.tower, store: st.store, flats: st.flats, street: st.street, bots: st.bots.body.parent }[h]; if (o) o.visible = false; }
   },
 

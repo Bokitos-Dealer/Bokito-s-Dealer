@@ -90,10 +90,10 @@ export class LayeredPass extends Pass {
       const n = mb.samples, t = ctx.t, sh = (mb.shutter ?? 0.5) / ctx.FPS;
       for (let k = 0; k < n; k++) {
         ctx.poseAt(t - sh / 2 + sh * (k + 0.5) / n, k);
-        this.drawLayers(renderer, this.layerRT, [halton(k + 1, 2) - 0.5, halton(k + 1, 3) - 0.5]);
+        this.drawLayers(renderer, this.layerRT, mb.noJitter ? null : [halton(k + 1, 2) - 0.5, halton(k + 1, 3) - 0.5]);
         renderer.setRenderTarget(this.accRT);
-        if (k === 0) { this.copy.material.uniforms.tSrc.value = this.layerRT.texture; this.copy.render(renderer); }
-        else { this.blend.material.uniforms.tSrc.value = this.layerRT.texture; this.blend.material.uniforms.uW.value = 1 / (k + 1); renderer.autoClear = false; this.blend.render(renderer); renderer.autoClear = true; }   // blend over what's there: no clear
+        if (k === 0 || mb.only === k) { this.copy.material.uniforms.tSrc.value = this.layerRT.texture; this.copy.render(renderer); }
+        else if (mb.only == null) { this.blend.material.uniforms.tSrc.value = this.layerRT.texture; this.blend.material.uniforms.uW.value = 1 / (k + 1); renderer.autoClear = false; this.blend.render(renderer); renderer.autoClear = true; }   // blend over what's there: no clear
       }
       ctx.poseAt(t);
       if (!mb.reuseDepth) this.drawLayers(renderer, this.layerRT);   // depth (and the final pose) for the passes after; else the last sub-frame's depth serves
