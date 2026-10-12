@@ -703,6 +703,7 @@ export default {
       put('lidar', p.x, top, p.z, p.h, 1, R2); put('ring', p.x, top, p.z, p.h, 1, R2);
     }
     for (const kk of Object.keys(cnt)) { B[kk].count = cnt[kk]; B[kk].instanceMatrix.needsUpdate = true; }
+    if (DBG?.hide) for (const h of DBG.hide) { const o = { veh: st.veh.group, ppl: st.ppl.group, city: st.city, coins: st.coins.im, tower: st.tower, store: st.store, flats: st.flats, street: st.street, bots: st.bots.body.parent }[h]; if (o) o.visible = false; }
   },
 
   poseStage(ctx, t) {

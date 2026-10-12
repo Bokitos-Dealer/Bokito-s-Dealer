@@ -379,7 +379,7 @@ export function buildFlats(st, IU, env) {
 // ------------------------------------------------------------------ the street: ground, kerbs, lamps
 export function buildStreet(st, IU) {
   const g = new THREE.Group(); st.street = g;
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000).rotateX(-Math.PI / 2), new THREE.ShaderMaterial({
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000, 160, 160).rotateX(-Math.PI / 2), new THREE.ShaderMaterial({      // small tiles: one huge quad clips badly near the camera
     uniforms: { uStreet: IU.uStreet, uDay: { value: 0 }, uAmb: { value: new THREE.Color(0.05, 0.06, 0.09) }, uSun: { value: new THREE.Color(0, 0, 0) }, uFogC: { value: new THREE.Color() }, uFogD: { value: 0.004 } },
     vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
     fragmentShader: `uniform float uStreet, uDay, uFogD; uniform vec3 uAmb, uSun, uFogC; varying vec3 vW;
@@ -492,8 +492,8 @@ export function buildSky(st) {
   const U = { uZen: { value: new THREE.Color() }, uHor: { value: new THREE.Color() }, uGlow: { value: new THREE.Color() }, uSun: { value: V(0, 0.2, -1).normalize() }, uStars: { value: 1 }, uDisc: { value: 0 } };
   st.skyU = U;
   const sky = new THREE.Mesh(new THREE.SphereGeometry(3500, 48, 24), new THREE.ShaderMaterial({
-    uniforms: U, side: THREE.BackSide, depthWrite: false, fog: false,
-    vertexShader: 'varying vec3 vD; void main(){ vD = normalize(position); vec4 p = projectionMatrix * modelViewMatrix * vec4(position, 1.0); gl_Position = p.xyww; }',
+    uniforms: U, side: THREE.BackSide, depthWrite: false, depthTest: false, fog: false,
+    vertexShader: 'varying vec3 vD; void main(){ vD = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',      // a plain sphere inside the far plane (xyww sat on it and got clipped at random)
     fragmentShader: `uniform vec3 uZen, uHor, uGlow, uSun; uniform float uStars, uDisc; varying vec3 vD;
       float h1(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
       void main(){
