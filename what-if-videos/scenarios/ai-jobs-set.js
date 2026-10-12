@@ -10,6 +10,7 @@
 // person works at it, cyan once AI has taken over), from uniforms the scenario drives with time.
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { Rng, clamp, lerp, smooth } from '../engine/lib/rng.js';
 
 export const FH = 4, HX = 15, HZ = 8, NFL = 14;                 // floor height, tower half-width and half-depth, floors 0..13
@@ -121,13 +122,22 @@ function boxBatch(mat, opt = {}) {
   const list = [];
   return {
     add(w, h, d, x, y, z, color = '#ffffff', ry = 0) { list.push({ w, h, d, x, y, z, color, ry }); },
+    // one merged mesh with vertex colours (static, so no need for instancing; instanced batches drew stray shards in SwiftShader)
     build(parent) {
-      const geo = opt.round ? new RoundedBoxGeometry(1, 1, 1, 2, opt.round) : new THREE.BoxGeometry(1, 1, 1);
-      const im = new THREE.InstancedMesh(geo, mat, Math.max(1, list.length));
+      const unit = (opt.round ? new RoundedBoxGeometry(1, 1, 1, 2, opt.round) : new THREE.BoxGeometry(1, 1, 1)).toNonIndexed();
+      unit.deleteAttribute('uv');
       const M = new THREE.Matrix4(), q = new THREE.Quaternion(), c = new THREE.Color();
-      list.forEach((b, i) => { q.setFromAxisAngle(V(0, 1, 0), b.ry); M.compose(V(b.x, b.y, b.z), q, V(b.w, b.h, b.d)); im.setMatrixAt(i, M); im.setColorAt(i, c.set(b.color)); });
-      im.count = list.length; im.castShadow = opt.cast ?? true; im.receiveShadow = true;
-      parent.add(im); return im;
+      const parts = list.map((b) => {
+        q.setFromAxisAngle(V(0, 1, 0), b.ry); M.compose(V(b.x, b.y, b.z), q, V(b.w, b.h, b.d));
+        const g = unit.clone().applyMatrix4(M); c.set(b.color);
+        const n = g.attributes.position.count, col = new Float32Array(n * 3);
+        for (let i = 0; i < n; i++) col.set([c.r, c.g, c.b], i * 3);
+        g.setAttribute('color', new THREE.BufferAttribute(col, 3)); return g;
+      });
+      mat.vertexColors = true;
+      const mesh = new THREE.Mesh(parts.length ? mergeGeometries(parts) : unit, mat);
+      mesh.castShadow = opt.cast ?? true; mesh.receiveShadow = true;
+      parent.add(mesh); return mesh;
     },
   };
 }
