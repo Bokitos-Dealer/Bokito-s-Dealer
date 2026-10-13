@@ -759,7 +759,7 @@ export default {
         for (const [x, z] of LAWN_NIGHT) spots.push(V(x, 2.25, z));
         for (let i = 0; i < 12; i++) { const R = ROOMS[i]; spots.push(V(R.x + 1.8, R.y + 2.6, 29.5)); spots.push(V(R.x - 1.6, R.y + 1.4, 30)); }
         for (let f = 1; f <= 12; f += 1) spots.push(V(-12 + (f % 5) * 6, f * FH + 2.4, 8.4));
-        spots.forEach((p, i) => { if (n >= st.badges.length) return; const t0 = T_NOTIF + 0.05 + hash(i, 1) * 1.6, u = clamp((t - t0) / 0.22); const b = st.badges[n++]; b.visible = u > 0; const s = (u < 1 ? 0.9 * Math.sin(u * Math.PI * 0.6) / 0.81 : 0.9 + 0.05 * Math.sin((t - t0) * 6 + i)) * (p.y > 10 ? 2.2 : 0.55); b.position.copy(p).add(V(0, 0.15 * Math.sin((t - t0) * 3 + i), 0)); b.scale.set(s, s, 1); });
+        spots.forEach((p, i) => { if (n >= st.badges.length) return; const t0 = T_NOTIF + 0.05 + hash(i, 1) * 1.6, u = clamp((t - t0) / 0.22); const b = st.badges[n++]; b.visible = u > 0 && b.position.distanceTo(c.pos) > 7; const s = (u < 1 ? 0.9 * Math.sin(u * Math.PI * 0.6) / 0.81 : 0.9 + 0.05 * Math.sin((t - t0) * 6 + i)) * (p.y > 10 ? 2.2 : 0.55); b.position.copy(p).add(V(0, 0.15 * Math.sin((t - t0) * 3 + i), 0)); b.scale.set(s, s, 1); });
       }
       for (let i = n; i < st.badges.length; i++) st.badges[i].visible = false; }
   },
