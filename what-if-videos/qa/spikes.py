@@ -1,24 +1,14 @@
-"""Flag sudden frame-to-frame jumps away from shot cuts (popping lights, flicker, a limb snapping round).
-
-usage: python3 qa/spikes.py output/<id>/frames cuts.json
-cuts.json: {"cuts": [shot start times, s], "HERE": s}  (node qa/cuts.mjs <scenario> writes it)
-"""
-import numpy as np, glob, sys, os, json
+"""Frame QA: find single-frame glitches, big jumps (should only be planned cuts) and dark shards.
+usage: python3 -I qa/spikes.py output/<id>/frames"""
+import os, sys
+import numpy as np
 from PIL import Image
-
-spec = json.load(open(sys.argv[2]))
-cuts = spec['cuts'] + ([spec['HERE']] if 'HERE' in spec else [])
-fs = {int(os.path.basename(f)[:5]): f for f in glob.glob(sys.argv[1] + '/*.jpg')}
-small = {}
-def get(i):
-    if i not in small: small[i] = np.asarray(Image.open(fs[i]).convert('L').resize((108, 192)), dtype=np.float32)
-    return small[i]
-d = {i: np.abs(get(i) - get(i - 1)).mean() for i in sorted(fs) if i - 1 in fs}
-print('frames', len(fs), 'pairs', len(d))
-for i in sorted(d):
-    t = i / 30
-    if any(abs(t - c) < 0.07 for c in cuts): continue
-    nb = [d[j] for j in range(i - 6, i + 7) if j != i and j in d]
-    if not nb: continue
-    med = np.median(nb) + 0.3
-    if d[i] > 3 * med and d[i] > 2.0: print(f"spike t={t:.2f} frame {i} diff {d[i]:.1f} (neighbour median {med:.1f})")
+d = sys.argv[1]; fs = sorted(f for f in os.listdir(d) if f.endswith('.jpg'))
+A = [np.asarray(Image.open(os.path.join(d, f)).convert('L').resize((108, 192))).astype(float) for f in fs]
+D = lambda a, b: np.abs(A[a] - A[b]).mean()
+iso = sorted(((D(i - 1, i) + D(i, i + 1) - D(i - 1, i + 1), i) for i in range(1, len(A) - 1)), reverse=True)
+print('frames', len(A))
+print('isolated spikes (frame looks unlike both neighbours; >15 is suspicious):', [(round(s, 1), i, f'{i/30:.2f}s') for s, i in iso[:12]])
+big = sorted(((D(i - 1, i), i) for i in range(1, len(A))), reverse=True)
+print('largest jumps (should be your cuts):', [(round(s, 1), i, f'{i/30:.2f}s') for s, i in big[:16]])
+print('dark shards (>5% near-black pixels):', [i for i, a in enumerate(A) if (a < 12).mean() > 0.05 and a.mean() > 30][:30])
