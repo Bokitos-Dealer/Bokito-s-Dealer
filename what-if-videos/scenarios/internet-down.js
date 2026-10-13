@@ -104,8 +104,8 @@ const CALLER = { x: 9.5, z: 10.6, h: -2.4 };
 const k = (t, p, l, fov) => ({ t, p, l, fov });
 const SHOTS = [
   { t0: -1, keys: [                                                      // over his shoulder at the phone, then out of the flat and up over the city
-    k(0.0, [15.39, 4.61, 32.94], [15.344, 4.403, 33.245], 40),          // straight down the screen (phone at 15.34, 4.33, 33.2), low in frame under the title
-    k(T_DOWN + 0.4, [15.38, 4.58, 32.98], [15.344, 4.398, 33.24], 34),
+    k(0.0, [15.394, 4.731, 32.867], [15.344, 4.451, 33.277], 40),       // straight down the screen (hand at 15.34, 4.33, 33.2), low in frame under the title
+    k(T_DOWN + 0.4, [15.39, 4.652, 32.885], [15.344, 4.404, 33.244], 35),
     k(SAY.goal - 0.1, [15.45, 5.3, 33.05], [15.3, 4.3, 33.2], 42),      // up over his head, then out of the flat
     k(SAY.goal + 1.2, [15, 6.0, 26.5], [15, 4.5, 34], 44),
     k(SAY.goal + 3.4, [30, 34, 18], [2, 10, 22], 46),                   // over the avenue: flats, store, the tower's dead screens
@@ -141,8 +141,8 @@ const SHOTS = [
     k(T_GPS - 0.1, [-14, 1.4, 15.0], [2, 1.0, 10.5], 38),
   ] },
   { t0: T_GPS - 0.05, keys: [                                            // a map that still knows where you are, then up to the satellite
-    k(T_GPS - 0.05, [5.38, 1.416, 10.841], [5.356, 1.214, 10.546], 40),  // the map on her screen (phone at 5.36, 1.12, 10.61)
-    k(T_SKY - 0.25, [5.375, 1.40, 10.82], [5.356, 1.212, 10.55], 34),
+    k(T_GPS - 0.05, [5.40, 1.474, 10.97], [5.356, 1.194, 10.56], 40),   // the map on her screen (hand at 5.36, 1.12, 10.61)
+    k(T_SKY - 0.25, [5.39, 1.44, 10.92], [5.356, 1.193, 10.562], 35),
   ] },
   { t0: T_SKY - 0.25, keys: [                                            // low in front of her, up to the open sky over the avenue (the tower is behind the camera)
     k(T_SKY - 0.25, [5.2, 0.9, 9.0], [5.6, 24, 60], 48),
@@ -739,7 +739,7 @@ export default {
       st.hphone.visible = show && st.phoneMesh.count > 0;
       if (st.hphone.visible) {
         st.phoneMesh.getMatrixAt(0, st.hphone.matrix);
-        st.hphone.matrix.multiply(new THREE.Matrix4().makeScale(1.09, 1.09, 1.09)); st.hphone.matrixWorldNeedsUpdate = true;
+        st.hphone.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 0.05, 0)).multiply(new THREE.Matrix4().makeScale(1.5, 1.5, 1.5));   // big enough to clear the blocky hand st.hphone.matrixWorldNeedsUpdate = true;
         const map = t > T_GPS - 0.2 ? st.phoneTex.map : t > T_DOWN ? st.phoneTex.off : st.phoneTex.loading;
         st.hscreen.material.map = map; st.spin.visible = map === st.phoneTex.loading; st.spin.rotation.z = -Math.floor(t * 12) * Math.PI / 6;
       }
