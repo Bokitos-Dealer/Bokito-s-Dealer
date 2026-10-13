@@ -32,10 +32,11 @@ export function makeIU() {
     uWarm: { value: new Array(NFL).fill(1) }, uFlipT: { value: new Array(NFL).fill(1e4) },
     uStore: { value: [1, 1, 1] }, uApt: { value: new Array(12).fill(1) }, uAptCol: { value: new THREE.Color(1, 0.78, 0.5) },
     uStreet: { value: 1 }, uDayIn: { value: 0 }, uLobby: { value: 1 }, uPent: { value: 1 },
+    uFlipCol: { value: new THREE.Color(0.15, 0.85, 1.35) },    // the glow of a flipped screen (cyan = AI)
   };
 }
 const INTERIOR_GLSL = `
-  uniform float uTime, uHeroT, uStreet, uDayIn, uLobby, uPent;
+  uniform float uTime, uHeroT, uStreet, uDayIn, uLobby, uPent; uniform vec3 uFlipCol;
   uniform float uWarm[${NFL}]; uniform float uFlipT[${NFL}]; uniform float uStore[3]; uniform float uApt[12]; uniform vec3 uAptCol;
   float deskK(int f, float ci, float ri){
     float t0 = (f == 2 && ci == 2.0 && ri == 0.0) ? uHeroT : uFlipT[f] + 0.16 * ci + 0.1 * ri;
@@ -56,11 +57,11 @@ const INTERIOR_GLSL = `
         vec3 sp = vec3(-11.5 + ci * 5.0, float(f) * 4.0 + 1.13, 3.0 - ri * 4.5 - 0.22);
         vec3 d = sp - p; float dd = dot(d, d);
         float k = deskK(f, ci, ri);
-        vec3 sc = mix(vec3(0.75, 0.85, 1.0) * 0.8, vec3(0.15, 0.85, 1.35) * 1.5, k);
+        vec3 sc = mix(vec3(0.75, 0.85, 1.0) * 0.8, uFlipCol * 1.5, k);
         float face = (0.25 + 0.75 * max(dot(n, normalize(d)), 0.0)) * smoothstep(-0.05, 0.25, p.z - sp.z);
         L += sc * exp(-dd / 0.9) * face * 1.3;
         float fl = smoothstep(uFlipT[f], uFlipT[f] + 1.2, uTime);
-        L += vec3(0.04, 0.32, 0.46) * fl * (0.3 + 0.2 * up);
+        L += uFlipCol * vec3(0.27, 0.37, 0.34) * fl * (0.3 + 0.2 * up);
       }
     } else if (p.x > -22.2 && p.x < 2.2 && p.z > 27.8 && p.z < 44.2 && p.y < 8.2) {
       int s = clamp(int(floor((p.x + 22.0) / 8.0)), 0, 2);
@@ -204,13 +205,13 @@ export function buildTower(st, IU, env, opts = {}) {
   facade.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, IU);
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vFW;').replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvFW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
-    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>\nvarying vec3 vFW;\nuniform float uTime, uPent, uLobby; uniform float uWarm[${NFL}]; uniform float uFlipT[${NFL}];`)
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>\nvarying vec3 vFW;\nuniform float uTime, uPent, uLobby; uniform vec3 uFlipCol; uniform float uWarm[${NFL}]; uniform float uFlipT[${NFL}];`)
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
         { int f = clamp(int(floor(vFW.y / 4.0)), 0, ${NFL - 1}); float yl = fract(vFW.y / 4.0);
           float u = abs(vFW.x) > 14.9 ? vFW.z : vFW.x;
           float mull = step(0.06, fract(u / 1.6)) * step(0.12, yl) * step(yl, 0.94);
           float fl = smoothstep(uFlipT[f], uFlipT[f] + 1.2, uTime);
-          vec3 c = vec3(1.0, 0.8, 0.55) * uWarm[f] * 0.9 + vec3(0.1, 0.75, 1.1) * fl * 0.55;
+          vec3 c = vec3(1.0, 0.8, 0.55) * uWarm[f] * 0.9 + uFlipCol * vec3(0.67, 0.88, 0.81) * fl * 0.55;
           if (f == 13) c = vec3(1.0, 0.6, 0.22) * uPent * 1.4;
           if (f == 0) c = vec3(1.0, 0.8, 0.55) * uLobby;
           totalEmissiveRadiance += c * mull * 0.6; }`);
