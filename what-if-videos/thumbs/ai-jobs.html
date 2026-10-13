@@ -23,7 +23,7 @@
   .bar .row { display: flex; justify-content: space-between; align-items: baseline; font-family: 'InterW'; font-weight: 800; font-size: 34px; letter-spacing: 0.14em; }
   .bar .row b { font-family: 'Mont'; font-weight: 900; font-size: 74px; letter-spacing: 0; color: #6ff6ff; text-shadow: 0 0 22px rgba(60,220,255,0.7); }
   .track { height: 30px; margin-top: 18px; border-radius: 15px; background: linear-gradient(90deg, #6ff6ff, #2a8dff); box-shadow: 0 0 24px rgba(60,200,255,0.7); }
-  .tag { position: absolute; left: 0; right: 0; top: 1572px; text-align: center; font-family: 'InterW'; font-weight: 800; font-size: 36px; letter-spacing: 0.16em; color: #ffd34d;
+  .tag { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'InterW'; font-weight: 800; font-size: 36px; letter-spacing: 0.16em; color: #ffd34d;
     text-shadow: 0 0 18px rgba(0,0,0,0.9); }
   /* variant: the screen close-up */
   .screen .title { top: 230px; }
@@ -36,14 +36,13 @@
   <div class="bg" id="bg"></div>
   <div class="shade"></div>
   <div class="title"><div class="l1">WHAT IF AI TOOK</div><div class="l2" id="l2">EVERY JOB?</div></div>
-  <div class="bar" id="bar"><div class="row"><span>JOBS DONE BY AI</span><b>100%</b></div><div class="track"></div></div>
   <div class="tag" id="tag">THE ENDING ISN’T WHAT YOU THINK</div>
 </div>
 <script>
   const v = new URLSearchParams(location.search).get('v') || 'tower';
   document.getElementById('bg').style.backgroundImage = `url(/thumbs/ai-jobs-bg-${v}.jpg)`;
   if (v !== 'screen') document.getElementById('cover').classList.add('tower');
-  if (v === 'screen') { document.getElementById('cover').classList.add('screen'); document.getElementById('l2').textContent = 'YOUR JOB?'; document.getElementById('bar').style.display = 'none'; }
+  if (v === 'screen') { document.getElementById('cover').classList.add('screen'); document.getElementById('l2').textContent = 'YOUR JOB?'; }
 </script>
 </body>
 </html>
