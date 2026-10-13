@@ -104,20 +104,20 @@ const CALLER = { x: 9.5, z: 10.6, h: -2.4 };
 const k = (t, p, l, fov) => ({ t, p, l, fov });
 const SHOTS = [
   { t0: -1, keys: [                                                      // over his shoulder at the phone, then out of the flat and up over the city
-    k(0.0, [15.55, 4.95, 32.05], [15.24, 4.52, 32.95], 34),
-    k(T_DOWN + 0.4, [15.5, 4.92, 32.15], [15.24, 4.52, 32.95], 30),
-    k(SAY.goal - 0.1, [15.6, 5.0, 31.8], [15.2, 4.6, 33.2], 36),
+    k(0.0, [15.39, 4.61, 32.94], [15.344, 4.403, 33.245], 40),          // straight down the screen (phone at 15.34, 4.33, 33.2), low in frame under the title
+    k(T_DOWN + 0.4, [15.38, 4.58, 32.98], [15.344, 4.398, 33.24], 34),
+    k(SAY.goal - 0.1, [15.45, 5.3, 33.05], [15.3, 4.3, 33.2], 42),      // up over his head, then out of the flat
     k(SAY.goal + 1.2, [15, 6.0, 26.5], [15, 4.5, 34], 44),
-    k(SAY.goal + 3.4, [12, 24, 6], [4, 14, 30], 46),
-    k(SAY.day1, [10, 46, -24], [0, 16, 24], 44),
+    k(SAY.goal + 3.4, [30, 34, 18], [2, 10, 22], 46),                   // over the avenue: flats, store, the tower's dead screens
+    k(SAY.day1, [34, 48, 10], [0, 14, 16], 44),
   ] },
   { t0: SAY.day1, keys: [                                                // along the flats: everyone staring at a phone that won't load
     k(SAY.day1, [9, 4.6, 21], [9, 4.2, 34], 40),
     k(SAY.cash, [19, 5.2, 21.5], [19, 4.4, 34], 40),
   ] },
   { t0: SAY.cash, keys: [                                                // the card terminal
-    k(SAY.cash, [-1.35, 1.62, 30.35], [-0.95, 1.25, 31.15], 36),
-    k(T_CASHONLY - 0.05, [-1.2, 1.55, 30.55], [-0.95, 1.24, 31.15], 30),
+    k(SAY.cash, [-0.42, 1.74, 30.58], [-0.95, 1.24, 31.12], 38),       // past the customer's shoulder (she stands at -0.95, 30.35)
+    k(T_CASHONLY - 0.05, [-0.5, 1.6, 30.68], [-0.95, 1.23, 31.12], 30),
   ] },
   { t0: T_CASHONLY - 0.05, keys: [                                       // outside: CASH ONLY goes up, the queue gives up
     k(T_CASHONLY - 0.05, [-11.5, 1.65, 22.6], [-10.5, 1.9, 29], 42),
@@ -133,26 +133,29 @@ const SHOTS = [
     k(SAY.day3, [-10.5, 4.0, 19.5], [-10, 11.0, 28], 36),
   ] },
   { t0: SAY.day3, keys: [                                                // day three: down an aisle as the shelves empty
-    k(SAY.day3, [-6.5, 1.75, 30.6], [-6.5, 1.2, 40], 44),
-    k(SAY.twist, [-6.5, 1.65, 33.6], [-6.5, 1.1, 42], 40),
+    k(SAY.day3, [-6.5, 2.75, 30.4], [-6.5, 0.9, 39], 44),              // high, over the shoppers' heads
+    k(SAY.twist, [-6.5, 2.6, 33.2], [-6.5, 0.8, 42], 40),
   ] },
   { t0: SAY.twist, keys: [                                               // dusk: everyone outside
     k(SAY.twist, [-17, 1.2, 15.5], [0, 1.0, 10.5], 40),
     k(T_GPS - 0.1, [-14, 1.4, 15.0], [2, 1.0, 10.5], 38),
   ] },
   { t0: T_GPS - 0.05, keys: [                                            // a map that still knows where you are, then up to the satellite
-    k(T_GPS - 0.05, [5.85, 1.62, 11.75], [5.5, 1.08, 10.75], 34),
-    k(T_SKY - 0.3, [5.8, 1.66, 11.7], [5.5, 1.1, 10.75], 30),
-    k(T_SKY + 0.9, [6.2, 1.5, 12.6], [3, 30, -20], 50),
-    k(T_RADIO - 0.05, [6.3, 1.5, 12.8], [0, 40, -30], 52),
+    k(T_GPS - 0.05, [5.38, 1.416, 10.841], [5.356, 1.214, 10.546], 40),  // the map on her screen (phone at 5.36, 1.12, 10.61)
+    k(T_SKY - 0.25, [5.375, 1.40, 10.82], [5.356, 1.212, 10.55], 34),
+  ] },
+  { t0: T_SKY - 0.25, keys: [                                            // low in front of her, up to the open sky over the avenue (the tower is behind the camera)
+    k(T_SKY - 0.25, [5.2, 0.9, 9.0], [5.6, 24, 60], 48),
+    k(T_SKY + 0.9, [5.15, 0.85, 8.9], [5.8, 36, 60], 50),
+    k(T_RADIO - 0.05, [5.1, 0.8, 8.8], [6, 42, 60], 52),
   ] },
   { t0: T_RADIO - 0.05, keys: [                                          // the radio circle
     k(T_RADIO - 0.05, [-4, 2.2, 15.6], [-4, 0.5, 10.6], 40),
     k(T_CALL - 0.05, [-2.5, 2.0, 15.2], [-4, 0.5, 10.6], 36),
   ] },
   { t0: T_CALL - 0.05, keys: [                                           // a phone call goes through
-    k(T_CALL - 0.05, [11.4, 1.7, 12.3], [9.4, 1.55, 10.5], 32),
-    k(SAY.day5, [11.0, 1.7, 12.6], [9.4, 1.55, 10.5], 30),
+    k(T_CALL - 0.05, [11.6, 1.72, 11.6], [9.5, 1.62, 10.6], 40),
+    k(SAY.day5, [11.3, 1.7, 11.4], [9.5, 1.62, 10.6], 36),
   ] },
   { t0: SAY.day5, keys: [                                                // day five: the street belongs to the kids
     k(SAY.day5, [-18, 1.1, 19.0], [0, 1.0, 19.5], 40),
@@ -267,7 +270,7 @@ for (let f = 1; f <= 12; f++) for (let ri = 0; ri < 3; ri++) for (let ci = 0; ci
   WORKERS.push({ f, s, ts, tw, w: walker([[s.x, s.z], [s.x, za], [10, za], [10, -1.8], [12.6, -1.8]], tw, 1.5 + 0.2 * hash(f, ci), Math.PI) });
 }
 const QUEUE = Array.from({ length: 8 }, (_, i) => ({ x: -3.2 - i * 1.05, z: 26.4 + (i % 2) * 0.25, tShrug: T_CASHONLY + 0.6 + i * 0.12, tGo: T_CASHONLY + 1.3 + i * 0.16 }));
-const SHOPPERS = [[-11.5, 0], [-6.5, 2.1], [-16.5, 4.3], [-1.5, 1.2], [-6.5, 5.6]];
+const SHOPPERS = [[-11.5, 0], [-6.5, 9.0], [-16.5, 4.3], [-1.5, 1.2], [-11.5, 5.6]];   // one in the camera's aisle, far end at day three
 const RADIO_RING = Array.from({ length: 9 }, (_, i) => { const a = i / 9 * Math.PI * 2 + 0.3; return { x: LAWN_C.x + Math.cos(a) * 1.55, z: LAWN_C.z + Math.sin(a) * 1.0, h: Math.atan2(LAWN_C.x - (LAWN_C.x + Math.cos(a)), LAWN_C.z - (LAWN_C.z + Math.sin(a))) }; });
 const KIDS = Array.from({ length: 6 }, (_, i) => ({ cx: -4 + i * 3.4, cz: 18.6 + (i % 2) * 2.2, r: 1.2 + 0.4 * (i % 3), w: 1.4 + 0.2 * i, ph: i * 1.3 }));
 const kidAt = (q, t) => { const a = t * q.w / q.r + q.ph; return { x: q.cx + Math.cos(a) * q.r, z: q.cz + Math.sin(a) * q.r * 0.7, h: Math.atan2(-Math.sin(a), Math.cos(a) * 0.7), moving: 1, dist: t * q.w }; };
@@ -310,10 +313,10 @@ function phoneTex(kind) {
     c.fillStyle = '#1f6feb'; c.fillRect(0, 60, 360, 70); c.fillStyle = '#fff'; c.font = '800 30px InterW, Arial'; c.fillText('Messages', 180, 106);
     for (let i = 0; i < 5; i++) { c.fillStyle = '#1b2029'; c.fillRect(20, 160 + i * 92, 320, 74); c.fillStyle = '#39414f'; c.fillRect(36, 178 + i * 92, 180, 14); c.fillRect(36, 204 + i * 92, 120, 12); }
   } else if (kind === 'off') {
-    wifiOff(c, 180, 300, 110, '#c7ced8');
-    c.fillStyle = '#ffffff'; c.font = '800 34px InterW, Arial'; c.fillText('No internet', 180, 390);
-    c.fillStyle = '#9aa3ad'; c.font = '600 22px InterW, Arial'; c.fillText('Check your connection', 180, 430); c.fillText('and try again', 180, 460);
-    c.fillStyle = '#1f6feb'; c.fillRect(110, 510, 140, 56); c.fillStyle = '#fff'; c.font = '800 24px InterW, Arial'; c.fillText('RETRY', 180, 547);
+    wifiOff(c, 180, 150, 110, '#ff6b6b');                                // high on the screen: the hand covers the bottom half
+    c.fillStyle = '#ffffff'; c.font = '900 44px InterW, Arial'; c.fillText('No internet', 180, 250);
+    c.fillStyle = '#9aa3ad'; c.font = '600 24px InterW, Arial'; c.fillText('Check your connection', 180, 292);
+    c.fillStyle = '#1f6feb'; c.fillRect(110, 320, 140, 56); c.fillStyle = '#fff'; c.font = '800 24px InterW, Arial'; c.fillText('RETRY', 180, 357);
   } else if (kind === 'map') {
     c.strokeStyle = '#ffffff'; c.lineWidth = 26; for (let i = 0; i < 6; i++) { c.beginPath(); c.moveTo(-20, 120 + i * 120); c.lineTo(380, 60 + i * 130); c.stroke(); }
     c.lineWidth = 18; for (let i = 0; i < 4; i++) { c.beginPath(); c.moveTo(40 + i * 100, 60); c.lineTo(80 + i * 90, 720); c.stroke(); }
@@ -339,11 +342,11 @@ function offlineScreen() {
   return ctex(cv);
 }
 function terminalTex(kind) {
-  const cv = canvas(320, 240), c = cv.getContext('2d');
-  c.fillStyle = kind === 'no' ? '#2a0a0e' : '#0d1a12'; c.fillRect(0, 0, 320, 240);
+  const cv = canvas(240, 324), c = cv.getContext('2d');
+  c.fillStyle = kind === 'no' ? '#2a0a0e' : '#0d1a12'; c.fillRect(0, 0, 240, 324);
   c.textAlign = 'center';
-  if (kind === 'no') { c.fillStyle = '#ff3b3b'; c.font = '900 64px InterW, Arial'; c.fillText('✕', 160, 92); c.font = '900 40px InterW, Arial'; c.fillText('DECLINED', 160, 150); c.fillStyle = '#ff9a9a'; c.font = '700 20px InterW, Arial'; c.fillText('NO CONNECTION', 160, 190); }
-  else { c.fillStyle = '#9fffb8'; c.font = '800 34px InterW, Arial'; c.fillText('$24.90', 160, 80); c.fillStyle = '#ffffff'; c.font = '800 30px InterW, Arial'; c.fillText('TAP OR INSERT', 160, 140); c.fillText('CARD', 160, 180); }
+  if (kind === 'no') { c.fillStyle = '#ff3b3b'; c.font = '900 92px InterW, Arial'; c.fillText('✕', 120, 130); c.font = '900 38px InterW, Arial'; c.fillText('DECLINED', 120, 200); c.fillStyle = '#ff9a9a'; c.font = '700 20px InterW, Arial'; c.fillText('NO CONNECTION', 120, 246); }
+  else { c.fillStyle = '#9fffb8'; c.font = '800 44px InterW, Arial'; c.fillText('$24.90', 120, 92); c.font = '700 22px InterW, Arial'; c.fillText('(€22.90)', 120, 124); c.fillStyle = '#ffffff'; c.font = '800 30px InterW, Arial'; c.fillText('TAP OR', 120, 206); c.fillText('INSERT CARD', 120, 244); }
   return ctex(cv);
 }
 function billboardTex(kind) {
@@ -542,12 +545,13 @@ export default {
       P.colors = P.list.map((b, i) => { const k = new THREE.Color(); P.im.getColorAt(i, k); return k; });
       P.im.instanceColor.needsUpdate = true; }
     // ---- the card terminal on the till
-    { const g = new THREE.Group(); g.position.copy(TERM); g.rotation.y = Math.PI; scene.add(g); st.term = g;
-      const body = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.05, 0.19), patchInterior(new THREE.MeshStandardMaterial({ color: '#202327', roughness: 0.4 }), IU, 'term'));
-      body.position.y = 0.025; body.rotation.x = -0.35; g.add(body);
+    { const g = new THREE.Group(); g.position.copy(TERM); scene.add(g); st.term = g;
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.035, 0.19), patchInterior(new THREE.MeshStandardMaterial({ color: '#202327', roughness: 0.4 }), IU, 'term'));
+      body.position.y = 0.06; body.rotation.x = -0.64; g.add(body);                  // top face toward the customer (-z)
+      const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.05, 0.05, 16), body.material); stand.position.y = 0.025; g.add(stand);
       st.termTex = { tap: terminalTex('tap'), no: terminalTex('no') };
-      st.termScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.085, 0.064), new THREE.MeshBasicMaterial({ map: st.termTex.tap, toneMapped: false, color: new THREE.Color(1.2, 1.2, 1.2) }));
-      st.termScreen.position.set(0, 0.053, -0.035); st.termScreen.rotation.x = -1.22; st.termScreen.rotation.y = Math.PI; g.add(st.termScreen); }
+      st.termScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.085, 0.115), new THREE.MeshBasicMaterial({ map: st.termTex.tap, toneMapped: false, color: new THREE.Color(1.2, 1.2, 1.2) }));
+      st.termScreen.position.set(0, 0.0181, 0.02); st.termScreen.rotation.set(-Math.PI / 2, 0, Math.PI); body.add(st.termScreen); }
     // ---- the billboard on the supermarket roof
     { st.billTex = { ad: billboardTex('ad'), offline: billboardTex('offline'), flights: billboardTex('flights'), back: billboardTex('back') };
       const frame = new THREE.Mesh(new THREE.BoxGeometry(BILL.w + 0.5, BILL.h + 0.5, 0.4), patchInterior(new THREE.MeshStandardMaterial({ color: '#25282e', roughness: 0.5, metalness: 0.5 }), IU, 'billframe'));
@@ -591,9 +595,9 @@ export default {
     P.lookUp2 = (ph, t, s) => ({ head: -0.6, torso: -0.1, armR: 1.1, armRr: 0.32 });
     P.cheer = (ph, t, s) => ({ armR: 2.3 + 0.25 * Math.sin(t * 8 + s), armRr: -0.2, armL: 1.1, armLr: -0.3, head: 0.2, drop: -0.04 * Math.abs(Math.sin(t * 8 + s)) });
     // the hero first, so his phone is phone instance 0 during the hook
-    ppl.add({ x: HERO.x, z: HERO.z, y: HERO.y, h: HERO.h, poses: [[0, 'holdPhone']], phone: (t) => t < SAY.day1, phoneTilt: -0.55, visible: (t) => t < SAY.day1, shirt: '#34495e', pants: '#2c3e50', hair: 'short', skin: '#c68a62', hairC: '#1d1612', longSleeve: true });
+    ppl.add({ x: HERO.x, z: HERO.z, y: HERO.y, h: HERO.h, poses: [[0, 'holdPhone']], phone: (t) => t < SAY.day1, phoneTilt: 0.6, visible: (t) => t < SAY.day1, shirt: '#34495e', pants: '#2c3e50', hair: 'short', skin: '#c68a62', hairC: '#1d1612', longSleeve: true });
     // the person on the lawn with the map is phone instance 0 during the twist
-    ppl.add({ x: GPS_P.x, z: GPS_P.z, h: GPS_P.h, poses: [[0, 'holdPhone'], [T_SKY + 0.2, 'lookUp2', 0.5]], phone: (t) => t > T_GPS - 0.2 && t < T_RADIO, phoneTilt: -0.55, visible: (t) => t > SAY.twist - 0.3 && t < SAY.day5, shirt: '#e67e22', pants: '#3b4a6b', hair: 'bun' });
+    ppl.add({ x: GPS_P.x, z: GPS_P.z, h: GPS_P.h, poses: [[0, 'holdPhone'], [T_SKY + 0.2, 'lookUp2', 0.5]], phone: (t) => t > T_GPS - 0.2 && t < T_RADIO, phoneTilt: 0.6, visible: (t) => t > SAY.twist - 0.3 && t < SAY.day5, shirt: '#e67e22', pants: '#3b4a6b', hair: 'bun' });
     ppl.add({ x: CALLER.x, z: CALLER.z, h: CALLER.h, poses: [[0, 'idle'], [T_CALL - 0.4, 'phoneCall', 0.4]], phone: (t) => t > T_CALL - 0.3 && t < SAY.day5, phoneTilt: 0.2, noGlow: true, visible: (t) => t > SAY.twist - 0.3 && t < SAY.day5, shirt: '#2a9d8f', pants: '#2c3e50', hair: 'short' });
     for (const [room, dx, z, h] of FLAT_PPL) {
       const R = ROOMS[room], sit = room === 3 || room === 9;
@@ -667,7 +671,8 @@ export default {
     if (shotIdx(t) !== shotIdx(ctx.t)) t = ctx.t;                      // sub-frames never reach across a cut
     const st = this.st, IU = st.IU;
     const c = camAt(t);
-    if (DBG?.pos) { c.pos = V(...DBG.pos); c.look = V(...DBG.look); c.fov = DBG.fov ?? c.fov; c.rot = { x: 0, y: 0, z: 0 }; }
+    const OV = (typeof window !== 'undefined' && window.__cam) || DBG;
+    if (OV?.pos) { c.pos = V(...OV.pos); c.look = V(...OV.look); c.fov = OV.fov ?? c.fov; c.rot = { x: 0, y: 0, z: 0 }; }
     if (c.stage) {
       poseCamera(st.globe.cam, c);
       ctx.view = { scene: st.globe.scene, camera: st.globe.cam };
@@ -680,7 +685,7 @@ export default {
     poseCamera(cam, c);
     ctx.view = { scene: st.scene, camera: cam };
     const look = c.look;
-    ctx.dof = DBG?.pos ? { focus: 10, aperture: 0, farBlur: 0 } : { focus: c.pos.distanceTo(look), aperture: 0.004, farBlur: 0.22 };
+    ctx.dof = OV?.pos ? { focus: 10, aperture: 0, farBlur: 0 } : { focus: c.pos.distanceTo(look), aperture: 0.004, farBlur: 0.22 };
 
     // ---- light
     const L = todAt(t);
@@ -776,7 +781,7 @@ export default {
 };
 
 // helpers used by labels (pure functions of t)
-function satPos(t) { const u = (t - T_GPS) / (T_RADIO - T_GPS); return V(lerp(-60, 40, u), 140 + 10 * Math.sin(u * 3), lerp(-150, -170, u)); }
+function satPos(t) { const u = (t - T_GPS) / (T_RADIO - T_GPS); return V(lerp(-25, 25, u), 150 + 10 * Math.sin(u * 3), lerp(150, 165, u)); }   // over the avenue, where the sky is open
 function cutMidLocal() { const pts = CABLES[CUT_I] && arcPoints(CITIES[CABLES[CUT_I][0]], CITIES[CABLES[CUT_I][1]]); return pts[24].clone(); }
 function globeRot(t) { return 0.35 + (t - SAY.real) * 0.03; }
 function cutMid(t) { return cutMidLocal().applyAxisAngle(V(0, 1, 0), globeRot(t)); }
