@@ -396,7 +396,7 @@ function buildAudio() {
   fx('sample', { file: 'sfx/1022.wav', t: T_DOWN, level: 0.5 });
   fx('chirp', { t: T_DOWN + 0.2, level: 0.14, seed: 5, f: [900, 420] });
   fx('sample', { file: 'sfx/2604.wav', t: SAY.goal + 1.0, level: 0.35 });
-  fx('count', { t0: T_OFFLINE, t1: T_OFFLINE + 1.0, level: 0.1, seed: 6 });
+  fx('count', { t0: T_OFFLINE, t1: T_OFFLINE + 1.0, from: 18, to: 30, level: 0.1, seed: 6 });
   // card declined: two low beeps; CASH ONLY slaps on the glass; the queue sighs
   for (const dt of [0, 0.18]) fx('chirp', { t: T_DECLINE + dt, level: 0.2, seed: 7, f: [520, 380] });
   fx('sample', { file: 'sfx/2380.wav', t: T_CASHONLY + 0.05, level: 0.45 });
@@ -415,7 +415,7 @@ function buildAudio() {
   // day five: kids playing
   A.push(S_('sfx/1193.wav', SAY.day5, { offset: 3, dur: SAY.cost - SAY.day5 + 0.2, level: 0.3, fin: 0.3, fout: 0.3 }));
   fx('sample', { file: 'sfx/2605.wav', t: SAY.cost - 0.1, level: 0.3 });
-  fx('count', { t0: SAY.cost + 0.3, t1: SAY.real - 0.4, level: 0.08, seed: 9 });
+  fx('count', { t0: SAY.cost + 0.3, t1: SAY.real - 0.4, from: 22, to: 36, level: 0.08, seed: 9 });
   // the cable cut
   fx('sample', { file: 'sfx/2604.wav', t: SAY.real - 0.1, level: 0.3 });
   A.push(S_('sfx/1022.wav', T_CUT, { level: 0.45, free: true }));
