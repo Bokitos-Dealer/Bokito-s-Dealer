@@ -1,0 +1,20 @@
+{
+  "id": "internet-down",
+  "voice": { "am_puck": 0.6, "am_michael": 0.4 },
+  "speed": 1.08,
+  "pause": 0.3,
+  "lines": {
+    "hook": { "say": "What if the entire internet went down... for a whole week?", "speed": 1.06 },
+    "goal": "Five and a half billion people, offline at once. Let's count the days, and see what still works on day seven.",
+    "day1": "Day one. You wake up, and nothing loads. Messages stuck. Your bank app, spinning forever.",
+    "cash": "At the store, every card gets declined. Cash only... and almost nobody carries cash anymore.",
+    "day2": "Day two. Offices send everyone home. Flights are grounded. In 2024, one bad software update cancelled thousands of flights in a single day.",
+    "day3": "Day three. Delivery trucks run on apps. Shelves start emptying, and fresh food goes first.",
+    "twist": "But here's what surprises everyone. Your GPS still works... it's satellites, not the internet. Radio still works. Even a plain phone call might still get through.",
+    "day5": "By day five, people do something strange. They knock on their neighbors' doors.",
+    "cost": "Every single day offline costs the world about forty-three billion dollars.",
+    "real": "So could this really happen? Almost impossible. The internet has no off switch. It's hundreds of cables under the ocean... cut one, and the data simply finds another way.",
+    "day7": "On day seven, it all comes back... and every notification from the whole week arrives at once.",
+    "cta": { "say": "Be honest. How long would you last offline?", "speed": 1.04 }
+  }
+}

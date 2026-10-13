@@ -167,9 +167,9 @@ function aiScreen() {
   c.fillStyle = 'rgba(60,200,255,0.35)'; c.fillRect(106, 284, 300, 8); c.fillStyle = 'rgba(120,240,255,0.95)'; c.fillRect(106, 284, 236, 8);
   return ctex(cv);
 }
-function screenMaterial(IU) {
+function screenMaterial(IU, aTex = null) {
   return new THREE.ShaderMaterial({
-    uniforms: { tH: { value: humanScreen() }, tA: { value: aiScreen() }, uTime: IU.uTime, uBright: { value: 1.6 } },
+    uniforms: { tH: { value: humanScreen() }, tA: { value: aTex ?? aiScreen() }, uTime: IU.uTime, uBright: { value: 1.6 } },
     vertexShader: `attribute float aT0; attribute float aSeed; uniform float uTime; varying vec2 vUv; varying float vK, vS;
       void main(){ vUv = uv; vK = clamp((uTime - aT0) / 0.35, 0.0, 1.0); vS = aSeed; gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0); }`,
     fragmentShader: `uniform sampler2D tH, tA; uniform float uTime, uBright; varying vec2 vUv; varying float vK, vS;
@@ -187,7 +187,8 @@ function screenMaterial(IU) {
 }
 
 // ------------------------------------------------------------------ the tower
-export function buildTower(st, IU, env) {
+export function buildTower(st, IU, env, opts = {}) {
+  const depts = opts.depts ?? DEPTS;
   const g = new THREE.Group(); st.tower = g;
   const std = (c, o = {}, key = c) => patchInterior(new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.8 }, o)), IU, key);
   const white = std('#8f8b84', {}, 'slab'), carpet = std('#3e444c', { roughness: 0.95 }, 'carpet'), wall = std('#a29e95', {}, 'wall');
@@ -245,7 +246,7 @@ export function buildTower(st, IU, env) {
   for (let f = 1; f <= 12; f++) for (const x of [-14.2, 14.2 - 4.6]) { if (r.chance(0.7)) { desks.add(0.5, 0.45, 0.5, x, f * FH + 0.22, 6.6, '#7a5a3a'); chairs.add(0.7, 0.9, 0.7, x, f * FH + 0.9, 6.6, '#3f7a3f'); } }
   desks.build(g); chairs.build(g); mons.build(g);
   // the screens themselves
-  const sm = screenMaterial(IU); st.screenMat = sm;
+  const sm = screenMaterial(IU, opts.screenA ? opts.screenA() : null); st.screenMat = sm;
   const sIm = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.6, 0.36), sm, screens.length);
   const aT0 = new Float32Array(screens.length), aSeed = new Float32Array(screens.length);
   screens.forEach((s, i) => { const M = new THREE.Matrix4().makeTranslation(s.p.x, s.p.y, s.p.z - 0.0); sIm.setMatrixAt(i, M); aT0[i] = 1e4; aSeed[i] = r.next(); });
@@ -254,7 +255,7 @@ export function buildTower(st, IU, env) {
   // a department name on the back wall of each floor; lift doors and a green exit sign on the core
   st.signs = [];
   for (let f = 1; f <= 12; f++) {
-    const tx = textTexture([[DEPTS[f], 150, 800]], { w: 2048, h: 256, fg: '#2b3440' });
+    const tx = textTexture([[depts[f], 150, 800]], { w: 2048, h: 256, fg: '#2b3440' });
     const m = patchInterior(new THREE.MeshStandardMaterial({ map: tx, transparent: true, roughness: 0.7 }), IU, 'sign');
     const p = new THREE.Mesh(new THREE.PlaneGeometry(9, 1.125), m); p.position.set(-3, f * FH + 2.75, -HZ + 0.02); g.add(p); st.signs.push(p);
   }
@@ -302,7 +303,7 @@ export function buildTower(st, IU, env) {
 }
 
 // ------------------------------------------------------------------ the supermarket across the street
-export function buildStore(st, IU, env) {
+export function buildStore(st, IU, env, opts = {}) {
   const g = new THREE.Group(); st.store = g;
   const S = STORE, cx = (S.x0 + S.x1) / 2, cz = (S.z0 + S.z1) / 2, W = S.x1 - S.x0, D = S.z1 - S.z0;
   const std = (c, o = {}, key = c) => patchInterior(new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.8 }, o)), IU, key);
@@ -321,15 +322,25 @@ export function buildStore(st, IU, env) {
   for (let x = S.x0; x <= S.x1 + 0.01; x += 3) add(new THREE.BoxGeometry(0.12, S.h - 1.4, 0.14), std('#30353c', { metalness: 0.6 }, 'mull2'), x, (S.h - 1.4) / 2, S.z0);
   // shelves running back from the window, stocked; robots work the aisles
   const sb = boxBatch(std('#ffffff', { roughness: 0.7 }, 'shelf'));
+  const prods = [];
   const pr = new Rng(8), PC = ['#e63946', '#f1c40f', '#2a9d8f', '#e76f51', '#457b9d', '#8ecae6', '#ffb703', '#6a4c93', '#f4a261', '#90be6d'];
   for (const x of [-19, -14, -9, -4]) {
     sb.add(0.9, 2.2, 9, x, 1.1 + 0.2, 37.5, '#c8ccd2');
     for (let lvl = 0; lvl < 4; lvl++) for (let k = 0; k < 18; k++) for (const sx of [-1, 1]) {
-      const h = pr.float(0.22, 0.36); sb.add(0.3, h, 0.42, x + sx * 0.6, 0.45 + lvl * 0.52 + h / 2, 33.4 + k * 0.48, pr.pick(PC));
+      const h = pr.float(0.22, 0.36), b = [0.3, h, 0.42, x + sx * 0.6, 0.45 + lvl * 0.52 + h / 2, 33.4 + k * 0.48, pr.pick(PC)];
+      if (opts.dynamicProducts) prods.push(b); else sb.add(...b);
     }
   }
   sb.add(2.4, 1.0, 0.9, -1.5, 0.7, 31.5, '#3b3f46'); sb.add(2.4, 1.0, 0.9, -1.5, 0.7, 33.8, '#3b3f46');     // tills
   sb.build(g);
+  // products that can sell out one by one: an instanced mesh sized to the stock (never drawn past its buffer)
+  if (opts.dynamicProducts) {
+    const im = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), std('#ffffff', { roughness: 0.7 }, 'prod'), prods.length);
+    const M = new THREE.Matrix4(), c = new THREE.Color();
+    prods.forEach((b, i) => { M.compose(V(b[3], b[4], b[5]), new THREE.Quaternion(), V(b[0], b[1], b[2])); im.setMatrixAt(i, M); im.setColorAt(i, c.set(b[6])); });
+    im.count = prods.length; im.castShadow = im.receiveShadow = true; im.frustumCulled = false; g.add(im);
+    st.products = { im, list: prods };
+  }
   // stacks of cartons by the window: they grow while nobody buys
   const cart = new THREE.InstancedMesh(new RoundedBoxGeometry(0.62, 0.46, 0.5, 2, 0.03), std('#b88a57', { roughness: 0.9 }, 'carton'), 256);   // = 8 levels x 8 stacks x 4: never draw past the buffer
   cart.castShadow = cart.receiveShadow = true; cart.frustumCulled = false; g.add(cart);
@@ -337,8 +348,10 @@ export function buildStore(st, IU, env) {
   const STACKS = [[-12.55, 29.6], [-10.45, 29.6], [-12.55, 30.8], [-10.45, 30.8], [-12.55, 32.0], [-10.45, 32.0], [-14.6, 29.6], [-8.4, 29.6]];
   for (let lvl = 0; lvl < 8; lvl++) for (const [bx, bz] of STACKS) for (let k = 0; k < 4; k++) st.cartons.slots.push({ x: bx + (k % 2) * 0.66 - 0.33, z: bz + Math.floor(k / 2) * 0.54 - 0.27, y: 0.2 + 0.23 + lvl * 0.47, r: (pr.next() - 0.5) * 0.12 });
   // sale posters on the glass: 50%, 70%, 90% off
-  st.sale = [['SALE', '50% OFF'], ['SALE', '70% OFF'], ['EVERYTHING', '90% OFF']].map(([a, b], i) => {
-    const m = new THREE.MeshBasicMaterial({ map: textTexture([[a, 150, 900], [b, 190, 900]], { w: 1024, h: 768, bg: i === 2 ? '#ffd23c' : '#e01e37', border: 20, fg: i === 2 ? '#141414' : '#ffffff' }), color: new THREE.Color(1.15, 1.15, 1.15), toneMapped: false, side: THREE.DoubleSide });
+  const posters = opts.posters ?? [[['SALE', 150], ['50% OFF', 190]], [['SALE', 150], ['70% OFF', 190]], [['EVERYTHING', 150], ['90% OFF', 190], '#ffd23c', '#141414']];
+  st.sale = posters.map((P, i) => {
+    const lines = P.filter((x) => Array.isArray(x)).map(([t, sz]) => [t, sz, 900]), bg = P.find((x) => typeof x === 'string') ?? '#e01e37', fg = P.filter((x) => typeof x === 'string')[1] ?? '#ffffff';
+    const m = new THREE.MeshBasicMaterial({ map: textTexture(lines, { w: 1024, h: 768, bg, border: 20, fg }), color: new THREE.Color(1.15, 1.15, 1.15), toneMapped: false, side: THREE.DoubleSide });
     const p = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.82), m); p.position.set(-11.5, 2.75, S.z0 - 0.06 - i * 0.01); p.rotation.y = Math.PI; p.visible = false; g.add(p); return p;
   });
   return g;
