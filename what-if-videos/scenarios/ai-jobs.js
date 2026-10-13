@@ -304,13 +304,13 @@ function buildAudio() {
   A.push({ type: 'fxduck', keys: keysEvery((t) => 1 - 0.5 * talking(t), 0.04) });
   // music: a tense sci-fi score until no job is left, a beat of silence, a pulse under the problem, then a hopeful one
   A.push(S_('music/464.mp3', 0, { offset: 6, level: 0.5, fin: 0.3, fout: 0.08, dur: T_ZERO + 0.05, keys: keysEvery((t) => (t < T_ZERO - 0.55 ? 1 : 0.15) * (1 - 0.7 * talking(t))) }));
-  fx('pulse', { t0: T_PROBLEM, t1: SAY.fix - 0.1, bpm: [84, 132], level: 0.32 });
+  fx('pulse', { t0: T_PROBLEM + 0.75, t1: SAY.fix - 0.1, bpm: [84, 132], level: 0.3 });
   A.push(S_('music/606.mp3', SAY.fix - 0.2, { offset: 14, level: 0.5, fin: 0.6, fout: 2.4, dur: DURATION - SAY.fix + 0.2, keys: keysEvery((t) => 1 - 0.68 * talking(t)) }));
   // the office: keyboards, a hum; the city at night; birds on the first free morning
   const clicks = []; { const cr = new Rng(5); for (let t = 0.05; t < HERO_T; t += cr.float(0.06, 0.16)) clicks.push(t); }
   clicks.forEach((t, i) => fx('sample', { file: 'sfx/1117.wav', t, level: 0.16 + 0.08 * hash(i, 1), pan: -0.2 + 0.4 * hash(i, 2) }));
   A.push(S_('sfx/2678.wav', 0, { dur: SAY.hundred + 1, level: 0.38, fin: 0.5, fout: 1.5, keys: keysEvery((t) => (t < SAY.quiet ? 0.35 : t < SAY.safe ? 1 : t < SAY.robots ? 0.5 : 1) * (1 - 0.5 * talking(t))) }));
-  A.push(S_('sfx/367.wav', SAY.twist, { offset: 4, dur: T_PROBLEM - SAY.twist + 0.15, level: 0.7, fin: 0.05, fout: 0.1 }));
+  fx('sample', { file: 'sfx/367.wav', t: SAY.twist, offset: 4, dur: T_PROBLEM - SAY.twist + 0.1, level: 0.4, fin: 0.05, fout: 0.08 });
   // every flip: a glitch and a falling chirp; floors going dark: a heavy switch
   fx('sample', { file: 'sfx/1022.wav', t: HERO_T, level: 0.5 });
   for (let f = 1; f <= 12; f++) {
@@ -338,7 +338,6 @@ function buildAudio() {
   A.push(S_('sfx/2896.wav', T_ZERO, { level: 0.75, free: true }));
   A.push({ type: 'subdrop', t: T_ZERO, dur: 1.6, level: 0.5, free: true });
   // here's the problem: a stop, a thud; the cartons; the tills
-  A.push(S_('sfx/563.wav', T_PROBLEM - 0.2, { level: 0.32, free: true }));
   for (let n = 0; n < 10; n++) fx('sample', { file: 'sfx/2364.wav', t: T_PROBLEM + 0.6 + n * 0.42, level: 0.12, pan: -0.4 + 0.08 * n });
   fx('sample', { file: 'sfx/2380.wav', t: wordT('twist', 'paychecks') + 0.05, level: 0.4 });
   fx('sample', { file: 'sfx/2380.wav', t: wordT('twist', 'buying') + 0.05, level: 0.4 });
