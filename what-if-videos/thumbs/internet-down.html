@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cover: What if the internet went down?</title>
+<style>
+  @font-face { font-family: 'Mont'; font-weight: 900; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'InterW'; font-weight: 800; src: url(/node_modules/@fontsource/inter/files/inter-latin-800-normal.woff2) format('woff2'); }
+  html, body { margin: 0; background: #000; }
+  .cover { position: relative; width: 1080px; height: 1920px; overflow: hidden; color: #fff; font-family: 'Mont', sans-serif; background: #03060d; }
+  .bg { position: absolute; left: -40px; right: -40px; top: 330px; height: 1700px; background-size: cover; background-position: 22% center;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 300px); mask-image: linear-gradient(180deg, transparent 0, #000 300px); }
+  .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,6,13,0.9) 0%, rgba(3,6,13,0.55) 22%, rgba(3,6,13,0) 42%, rgba(3,6,13,0) 72%, rgba(3,6,13,0.8) 100%); }
+  .title { position: absolute; left: 50px; right: 50px; top: 250px; text-align: center; }
+  .l1 { font-weight: 900; font-size: 86px; line-height: 1.02; letter-spacing: -1px; text-shadow: 0 6px 24px rgba(0,0,0,0.8); }
+  .l2 { font-weight: 900; font-size: 172px; line-height: 0.95; letter-spacing: -3px; margin-top: 16px; color: #ff6a5c;
+    text-shadow: 0 0 30px rgba(255,70,60,0.75), 0 0 90px rgba(255,40,40,0.5), 0 8px 26px rgba(0,0,0,0.6); }
+  .wifi { display: block; margin: 0 auto 26px; width: 150px; height: 150px; filter: drop-shadow(0 0 22px rgba(255,80,70,0.8)); }
+  .tag { position: absolute; left: 0; right: 0; top: 1490px; text-align: center; font-family: 'InterW'; font-weight: 800; font-size: 40px; letter-spacing: 0.16em; color: #ffd34d; text-shadow: 0 0 18px rgba(0,0,0,0.95), 0 2px 6px rgba(0,0,0,0.9); }
+</style>
+</head>
+<body>
+<div class="cover" id="cover">
+  <div class="bg" id="bg"></div>
+  <div class="shade"></div>
+  <div class="title">
+    <svg class="wifi" viewBox="0 0 100 100" fill="none" stroke="#ff6a5c" stroke-width="8" stroke-linecap="round">
+      <path d="M12 42 A55 55 0 0 1 88 42"/><path d="M25 56 A36 36 0 0 1 75 56"/><path d="M38 70 A18 18 0 0 1 62 70"/><circle cx="50" cy="82" r="5" fill="#ff6a5c" stroke="none"/>
+      <path d="M16 16 L84 92" stroke="#ffffff" stroke-width="9"/>
+    </svg>
+    <div class="l1">WHAT IF THE INTERNET</div><div class="l2">WENT DOWN?</div>
+  </div>
+  <div class="tag">FOR A WHOLE WEEK</div>
+</div>
+<script>
+  const v = new URLSearchParams(location.search).get('v') || 'globe';
+  document.getElementById('bg').style.backgroundImage = `url(/thumbs/internet-down-bg-${v}.jpg)`;
+</script>
+</body>
+</html>
