@@ -331,7 +331,7 @@ export function buildStore(st, IU, env) {
   sb.add(2.4, 1.0, 0.9, -1.5, 0.7, 31.5, '#3b3f46'); sb.add(2.4, 1.0, 0.9, -1.5, 0.7, 33.8, '#3b3f46');     // tills
   sb.build(g);
   // stacks of cartons by the window: they grow while nobody buys
-  const cart = new THREE.InstancedMesh(new RoundedBoxGeometry(0.62, 0.46, 0.5, 2, 0.03), std('#b88a57', { roughness: 0.9 }, 'carton'), 220);
+  const cart = new THREE.InstancedMesh(new RoundedBoxGeometry(0.62, 0.46, 0.5, 2, 0.03), std('#b88a57', { roughness: 0.9 }, 'carton'), 256);   // = 8 levels x 8 stacks x 4: never draw past the buffer
   cart.castShadow = cart.receiveShadow = true; cart.frustumCulled = false; g.add(cart);
   st.cartons = { im: cart, slots: [] };
   const STACKS = [[-12.55, 29.6], [-10.45, 29.6], [-12.55, 30.8], [-10.45, 30.8], [-12.55, 32.0], [-10.45, 32.0], [-14.6, 29.6], [-8.4, 29.6]];
