@@ -112,7 +112,11 @@ const SHOTS = [
     k(SAY.goal - 0.05, [30, 30, 20], [2, 10, 22], 48),
     k(SAY.day1, [34, 46, 10], [0, 14, 16], 44),
   ] },
-  { t0: SAY.day1, keys: [                                                // along the flats: everyone staring at a phone that won't load
+  { t0: SAY.day1, keys: [                                                // he wakes and reaches for his phone: close on the screen (same frame as the hook)
+    k(SAY.day1, [15.388, 4.64, 32.91], [15.344, 4.402, 33.243], 33),
+    k(wordT('day1', 'nothing'), [15.388, 4.64, 32.91], [15.344, 4.402, 33.243], 33),
+  ] },
+  { t0: wordT('day1', 'nothing') + 0.12, keys: [                         // along the flats: everyone staring at a phone that won't load
     k(SAY.day1, [9, 4.6, 21], [9, 4.2, 34], 40),
     k(SAY.cash, [19, 5.2, 21.5], [19, 4.4, 34], 40),
   ] },
@@ -201,7 +205,10 @@ const shotIdx = (t) => { let i = 0; while (i < CUTS.length - 1 && t >= CUTS[i + 
 const punchAt = (t) => { const s0 = SHOTS[shotOf(t)].t0; let f = 1; for (const [t0, k] of PUNCH) if (t >= t0 && t0 >= s0) f = k; return f; };
 // chapter stamps: a big DAY n slams in on each day (day one gets its own beat of silence before the voice)
 const STAMPS = [[SAY.day1 - 0.9, SAY.day1 + 0.6, 'DAY 1'], [SAY.day2 - 0.08, SAY.day2 + 0.85, 'DAY 2'], [SAY.day3 - 0.08, SAY.day3 + 0.85, 'DAY 3'],
-  [SAY.day5 - 0.08, SAY.day5 + 0.85, 'DAY 5'], [W_('day7', 'seven') - 0.12, W_('day7', 'seven') + 0.95, 'DAY 7']];
+  [SAY.day5 - 0.08, SAY.day5 + 0.85, 'DAY 5'], [W_('day7', 'seven') - 0.12, W_('day7', 'seven') + 0.95, 'DAY 7'],
+  [wordT('twist', 'crazy') - 0.05, wordT('twist', 'crazy') + 1.0, 'THE TWIST'], [wordT('cost', 'forty') - 0.1, wordT('cost', 'forty') + 1.2, '$43B A DAY'],
+  [wordT('real', 'happen') - 0.1, wordT('real', 'almost') - 0.05, 'COULD IT HAPPEN?'], [wordT('real', 'almost') - 0.05, wordT('real', 'impossible') + 0.9, 'ALMOST IMPOSSIBLE'],
+  [wordT('cta', 'how') - 0.1, wordT('cta', 'how') + 1.8, 'HOW LONG?']];
 // a white flash on the big cuts (each new day, the twist, the globe, the comeback)
 const FLASHES = [SAY.day1, SAY.day2, SAY.day3, SAY.twist, SAY.day5, SAY.real, T_BACK];
 function crAt(keys, t, f) {
@@ -369,7 +376,7 @@ function terminalTex(kind) {
   c.fillStyle = kind === 'no' ? '#2a0a0e' : '#0d1a12'; c.fillRect(0, 0, 240, 324);
   c.textAlign = 'center';
   if (kind === 'no') { c.fillStyle = '#ff3b3b'; c.font = '900 92px InterW, Arial'; c.fillText('✕', 120, 130); c.font = '900 38px InterW, Arial'; c.fillText('DECLINED', 120, 200); c.fillStyle = '#ff9a9a'; c.font = '700 20px InterW, Arial'; c.fillText('NO CONNECTION', 120, 246); }
-  else { c.fillStyle = '#9fffb8'; c.font = '800 44px InterW, Arial'; c.fillText('$24.90', 120, 92); c.font = '700 22px InterW, Arial'; c.fillText('(€22.90)', 120, 124); c.fillStyle = '#ffffff'; c.font = '800 30px InterW, Arial'; c.fillText('TAP OR', 120, 206); c.fillText('INSERT CARD', 120, 244); }
+  else { c.fillStyle = '#9fffb8'; c.font = '800 44px InterW, Arial'; c.fillText('$4.90', 120, 92); c.font = '700 22px InterW, Arial'; c.fillText('(€4.50)', 120, 124); c.fillStyle = '#ffffff'; c.font = '800 30px InterW, Arial'; c.fillText('TAP OR', 120, 206); c.fillText('INSERT CARD', 120, 244); }
   return ctex(cv);
 }
 function billboardTex(kind) {
@@ -480,7 +487,7 @@ const CAPTION_CSS = `#title { display: none !important; }
 #caption .cw { color: #ffffff; }
 #caption .cw.hl { color: #ffd84a; font-style: normal; }
 #daystamp { position: absolute; left: 0; right: 0; top: 520px; text-align: center; opacity: 0; pointer-events: none; transform-origin: 50% 50%; }
-#daystamp b { display: block; font-family: 'MontB', sans-serif; font-weight: 900; font-size: 250px; line-height: 1; letter-spacing: -6px; color: #fff;
+#daystamp b { display: block; white-space: nowrap; font-family: 'MontB', sans-serif; font-weight: 900; font-size: 250px; line-height: 1; letter-spacing: -6px; color: #fff;
   text-shadow: ${OUTLINE}, 0 0 40px rgba(255,90,70,0.85), 0 0 110px rgba(255,60,40,0.55), 0 16px 40px rgba(0,0,0,0.6); }
 #daystamp i { display: block; margin: 18px auto 0; height: 16px; border-radius: 8px; background: linear-gradient(90deg, #ff6b6b, #ffb347); box-shadow: 0 0 22px rgba(255,110,80,0.9), 0 0 0 4px #000; }
 `;
@@ -527,6 +534,8 @@ export default {
   },
   labels(t) {
     const out = [], c = camAt(t);
+    // fixed spot on the screen (px): for labels that must always show, whatever the camera does
+    const callS = (t0, t1, x, y, text, side) => { const a = smooth(t0, t0 + 0.3, t) * (1 - smooth(t1 - 0.3, t1, t)); if (a <= 0.001) return; out.push({ x, y, text, alpha: a, big: false, side }); };
     const call = (t0, t1, p, text, side, big = false) => {
       const a = smooth(t0, t0 + 0.3, t) * (1 - smooth(t1 - 0.3, t1, t)); if (a <= 0.001) return;
       const s = toScreen(c, p); if (!s.ok || (!big && s.y < 470)) return;
@@ -534,9 +543,14 @@ export default {
     };
     call(wordT('day1', 'messages') - 0.1, SAY.cash - 0.1, V(ROOMS[1].x + 0.4, ROOMS[1].y + 2.0, 33.0), 'MESSAGES: NOT SENT', 'right');
     call(wordT('day1', 'your') - 0.1, SAY.cash - 0.1, V(ROOMS[2].x - 0.8, ROOMS[2].y + 2.0, 33.6), 'BANK APP: LOADING…', 'left');
+    callS(wordT('cash', 'coffee') - 0.1, T_DECLINE, 560, 640, 'COFFEE: $4.90', 'right');
+    callS(wordT('cash', 'carry') - 0.1, SAY.day2 - 0.1, 300, 700, 'CASH IN YOUR WALLET?', 'right');
+    call(wordT('day2', 'offices') - 0.1, T_FLIGHTS - 0.1, seatPos(3, 2, 1).add(V(0, 1.8, 0)), 'OFFICES: SENT HOME', 'right');
+    callS(T_2024, SAY.day3 - 0.1, 760, 520, 'JULY 2024 · 10,000+ FLIGHTS', 'left');
+    callS(wordT('day3', 'fresh') - 0.1, SAY.twist - 0.1, 780, 700, 'FRESH FOOD GOES FIRST', 'left');
     call(wordT('day1', 'maps') - 0.1, SAY.cash - 0.1, V(ROOMS[1].x + 2.4, ROOMS[1].y + 1.4, 33.3), 'MAPS: NO SIGNAL', 'left');
     call(wordT('day3', 'shelves') - 0.05, SAY.twist - 0.1, V(-6.5, 1.55, 33.9), 'SHELVES: EMPTYING', 'right');
-    call(wordT('day5', 'knock') - 0.1, SAY.cost - 0.1, V(-8.0, 2.1, 19.6), 'KNOCKING ON DOORS', 'left');
+    call(wordT('day5', 'knock') - 0.1, SAY.cost - 0.1, V(-8.0, 2.1, 19.6), 'KNOCKING ON DOORS · TALKING', 'left');
     call(T_FLIGHTS + 0.2, SAY.day3 - 0.1, V(BILL.x - 4, BILL.y - BILL.h / 2 - 0.2, BILL.z - 0.05), 'EVERY FLIGHT GROUNDED', 'right');
     call(T_SKY + 0.6, T_RADIO - 0.1, satPos(t), 'GPS SATELLITE · 20,200 KM', 'right');
     call(T_RADIO + 0.2, T_CALL - 0.1, V(LAWN_C.x, 0.9, LAWN_C.z), 'BATTERY RADIO', 'right');
@@ -642,7 +656,7 @@ export default {
     P.lookUp2 = (ph, t, s) => ({ head: -0.6, torso: -0.1, armR: 1.1, armRr: 0.32 });
     P.cheer = (ph, t, s) => ({ armR: 2.3 + 0.25 * Math.sin(t * 8 + s), armRr: -0.2, armL: 1.1, armLr: -0.3, head: 0.2, drop: -0.04 * Math.abs(Math.sin(t * 8 + s)) });
     // the hero first, so his phone is phone instance 0 during the hook
-    ppl.add({ x: HERO.x, z: HERO.z, y: HERO.y, h: HERO.h, poses: [[0, 'holdPhone']], phone: (t) => t < SAY.day1, phoneTilt: 0.6, visible: (t) => t < SAY.day1, shirt: '#34495e', pants: '#2c3e50', hair: 'short', skin: '#c68a62', hairC: '#1d1612', longSleeve: true });
+    ppl.add({ x: HERO.x, z: HERO.z, y: HERO.y, h: HERO.h, poses: [[0, 'holdPhone']], phone: (t) => t < wordT('day1', 'nothing') + 0.2, phoneTilt: 0.6, visible: (t) => t < wordT('day1', 'nothing') + 0.2, shirt: '#34495e', pants: '#2c3e50', hair: 'short', skin: '#c68a62', hairC: '#1d1612', longSleeve: true });
     // the person on the lawn with the map is phone instance 0 during the twist
     ppl.add({ x: GPS_P.x, z: GPS_P.z, h: GPS_P.h, poses: [[0, 'holdPhone'], [T_SKY + 0.2, 'lookUp2', 0.5]], phone: (t) => t > T_GPS - 0.2 && t < T_RADIO, phoneTilt: 0.6, visible: (t) => t > SAY.twist - 0.3 && t < SAY.day5, shirt: '#e67e22', pants: '#3b4a6b', hair: 'bun' });
     ppl.add({ x: CALLER.x, z: CALLER.z, h: CALLER.h, poses: [[0, 'idle'], [T_CALL - 0.4, 'phoneCall', 0.4]], phone: (t) => t > T_CALL - 0.3 && t < SAY.day5, phoneTilt: 0.2, noGlow: true, visible: (t) => t > SAY.twist - 0.3 && t < SAY.day5, shirt: '#2a9d8f', pants: '#2c3e50', hair: 'short' });
@@ -718,7 +732,7 @@ export default {
       if (!S_) st.stamp.style.opacity = '0';
       else {
         const [a, b, txt] = S_, u = clamp((t - a) / 0.2), back = u <= 0 ? 0 : 1 + 2.70158 * Math.pow(u - 1, 3) + 1.70158 * Math.pow(u - 1, 2), out = clamp((t - (b - 0.18)) / 0.18);
-        if (st.stamp.firstChild.textContent !== txt) st.stamp.firstChild.textContent = txt;
+        if (st.stamp.firstChild.textContent !== txt) { st.stamp.firstChild.textContent = txt; st.stamp.firstChild.style.fontSize = Math.min(250, 900 / (txt.length * 0.6)).toFixed(0) + 'px'; }
         st.stamp.style.opacity = (clamp(u * 3) * (1 - out)).toFixed(3);
         st.stamp.style.transform = `scale(${((1.9 - 0.9 * back) * (1 + 0.035 * (t - a)) * (1 + 0.25 * out)).toFixed(4)})`;
         st.stamp.lastChild.style.width = `${(clamp((t - a - 0.12) / 0.3) * 520).toFixed(0)}px`;
@@ -795,12 +809,13 @@ export default {
     st.veh.lampU.k = 0.5 + 2.5 * L.street;
     // the close-up phone rides on phone instance 0 (the hero in the hook, the woman with the map at dusk)
     {
-      const show = (t < SAY.day1 && t > -1) || (t > T_GPS - 0.2 && t < T_RADIO);
+      const show = (t < wordT('day1', 'nothing') + 0.2 && t > -1) || (t > T_GPS - 0.2 && t < T_RADIO);
       st.hphone.visible = show && st.phoneMesh.count > 0;
       if (st.hphone.visible) {
         st.phoneMesh.getMatrixAt(0, st.hphone.matrix);
         st.hphone.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 0.05, 0)).multiply(new THREE.Matrix4().makeScale(1.5, 1.5, 1.5));   // big enough to clear the blocky hand st.hphone.matrixWorldNeedsUpdate = true;
-        const map = t > T_GPS - 0.2 ? st.phoneTex.map : t > T_DOWN ? st.phoneTex.off : st.phoneTex.loading;
+        const wake = t > wordT('day1', 'you') - 0.1 && t < wordT('day1', 'nothing');   // he wakes: the screen tries again, spinning
+        const map = t > T_GPS - 0.2 ? st.phoneTex.map : (t > T_DOWN && !wake) ? st.phoneTex.off : st.phoneTex.loading;
         st.hscreen.material.map = map; st.spin.visible = map === st.phoneTex.loading; st.spin.rotation.z = -Math.floor(t * 12) * Math.PI / 6;
       }
     }
