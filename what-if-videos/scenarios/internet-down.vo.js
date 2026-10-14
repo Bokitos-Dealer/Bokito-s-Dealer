@@ -442,8 +442,8 @@ export default {
  },
  "day3": {
   "file": "vo/internet-down/day3.wav",
-  "dur": 3.64,
-  "text": "Day three. The shelves start emptying. Because the trucks run on apps.",
+  "dur": 3.4,
+  "text": "Day three. The shelves start emptying. Fresh food goes first.",
   "words": [
    [
     "Day",
@@ -457,53 +457,43 @@ export default {
    ],
    [
     "The",
-    1.08,
+    0.98,
     1.08
    ],
    [
     "shelves",
     1.08,
-    1.32
+    1.3
    ],
    [
     "start",
-    1.32,
-    1.62
+    1.3,
+    1.6
    ],
    [
     "emptying.",
-    1.62,
-    2.08
+    1.6,
+    2.04
    ],
    [
-    "Because",
+    "Fresh",
     2.34,
     2.46
    ],
    [
-    "the",
+    "food",
     2.46,
-    2.62
+    2.7
    ],
    [
-    "trucks",
-    2.62,
-    2.84
+    "goes",
+    2.7,
+    2.96
    ],
    [
-    "run",
-    2.84,
-    3.06
-   ],
-   [
-    "on",
-    3.06,
-    3.22
-   ],
-   [
-    "apps.",
-    3.22,
-    3.48
+    "first.",
+    2.96,
+    3.26
    ]
   ]
  },

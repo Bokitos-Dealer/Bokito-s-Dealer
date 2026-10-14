@@ -189,7 +189,7 @@ const PUNCH = [                                                         // jump 
   [W_('day1', 'nothing'), 0.78], [W_('day1', 'your'), 1], [W_('day1', 'just'), 0.72],
   [T_DECLINE, 0.62], [W_('cash', 'and'), 0.82],
   [W_('day2', 'offices'), 0.8], [W_('day2', 'grounded'), 0.72], [W_('day2', 'thousands'), 0.86],
-  [W_('day3', 'because'), 0.8], [W_('twist', 'crazy'), 0.78],
+  [W_('day3', 'fresh'), 0.8], [W_('twist', 'crazy'), 0.78],
   [W_('twist', 'works', 1), 0.74], [W_('twist', 'might'), 0.8],
   [W_('day5', 'they'), 0.8], [W_('day5', 'and'), 0.66],
   [W_('cost', 'forty'), 0.78], [W_('real', 'honestly'), 0.86], [W_('real', 'almost'), 0.76], [W_('real', 'hundreds'), 1],
@@ -534,6 +534,9 @@ export default {
     };
     call(wordT('day1', 'messages') - 0.1, SAY.cash - 0.1, V(ROOMS[1].x + 0.4, ROOMS[1].y + 2.0, 33.0), 'MESSAGES: NOT SENT', 'right');
     call(wordT('day1', 'your') - 0.1, SAY.cash - 0.1, V(ROOMS[2].x - 0.8, ROOMS[2].y + 2.0, 33.6), 'BANK APP: LOADING…', 'left');
+    call(wordT('day1', 'maps') - 0.1, SAY.cash - 0.1, V(ROOMS[1].x + 2.4, ROOMS[1].y + 1.4, 33.3), 'MAPS: NO SIGNAL', 'left');
+    call(wordT('day3', 'shelves') - 0.05, SAY.twist - 0.1, V(-6.5, 1.55, 33.9), 'SHELVES: EMPTYING', 'right');
+    call(wordT('day5', 'knock') - 0.1, SAY.cost - 0.1, V(-8.0, 2.1, 19.6), 'KNOCKING ON DOORS', 'left');
     call(T_FLIGHTS + 0.2, SAY.day3 - 0.1, V(BILL.x - 4, BILL.y - BILL.h / 2 - 0.2, BILL.z - 0.05), 'EVERY FLIGHT GROUNDED', 'right');
     call(T_SKY + 0.6, T_RADIO - 0.1, satPos(t), 'GPS SATELLITE · 20,200 KM', 'right');
     call(T_RADIO + 0.2, T_CALL - 0.1, V(LAWN_C.x, 0.9, LAWN_C.z), 'BATTERY RADIO', 'right');
