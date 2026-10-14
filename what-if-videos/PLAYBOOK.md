@@ -21,6 +21,31 @@ Claude-Session: <your session URL>
 
 No pull requests. Never put model names in commits.
 
+## 0.5 The v2 standard (what the channel owner asked for after episode 1)
+
+The owner's feedback on v1: too slow, the voice rushed with no natural stops, graphics flat, retention weak. Every
+episode now follows `scenarios/internet-down.js` v2:
+
+- **Voice:** Kokoro `{am_puck 0.6, am_michael 0.4}` (the owner picked it over Chatterbox), `speed 1.12`, `pause 0.34`,
+  `beat 0.42`. Write `|` in a line for a deliberate human pause: after every section opener ("Day one. | You wake
+  up…"), before and after punchlines ("Declined. | Cash only. |"), after rhetorical questions ("Flights? | Grounded.").
+  The voice must never sound rushed; the pace comes from the editing, not from talking faster.
+- **Script:** conversational, like a person telling a friend: contractions, "honestly?", "trust me", "be honest",
+  short sentences, staccato on the payoff ("Every. | Single. | Notification."). Open a loop in line 2 ("trust me,
+  day seven is the wildest part"). 65–72 s total (over a minute qualifies for TikTok Creator Rewards).
+- **No title card.** The hook is spoken from frame 4 (`GAP.hook 0.12`) and shown as captions immediately; hide
+  `#title`.
+- **Captions:** `CAPTION_CSS` from internet-down.js: Montserrat 900, uppercase, 98 px, heavy black outline,
+  2–3 words per chunk (`Math.ceil(c.length / 3)`), keywords in yellow, at y ≈ 1150.
+- **Picture change every 1.5–2.5 s:** shots plus `PUNCH` jump zooms (`[time, crop 0.58–0.86]`, back to 1 to reset)
+  on the words that land. Punches are cuts too (`CUTS`, `shotIdx`), so motion blur never smears across them.
+- **Hits:** white flash frames on every new day/act (`FLASHES`), camera shake (`SHAKES`) on each impact word, a
+  whoosh into every shot and a soft click on every punch.
+- **Grade:** contrast 1.17, saturation 1.16, split 0.16, vignette 0.34, bloom 0.62 at threshold 1.1; DOF aperture
+  0.003.
+- **Close-ups of small props** (phones, terminals): the blocky hand hides half of a real-size phone, so draw a
+  1.5× hero copy offset up its own axis, and aim the camera along the screen normal (probe the instance matrix).
+
 ## 1. Topic and research
 
 - Topics are things people actually worry about and want the outcome of.
