@@ -25,9 +25,9 @@ const DBG = (() => { try { const q = typeof location !== 'undefined' && new URLS
 
 // ------------------------------------------------------------------ the story, timed by the narration
 const ORDER = ['hook', 'goal', 'day1', 'cash', 'day2', 'day3', 'twist', 'day5', 'cost', 'real', 'day7', 'cta'];
-const GAP = { hook: 0.12, goal: 0.3, cost: 0.3, real: 0.4, day7: 0.4, cta: 0.35 };   // the hook starts at once
+const GAP = { hook: 0.12, goal: 0.25, cost: 0.25, real: 0.35, day7: 0.35, cta: 0.3 };   // the hook starts at once
 const SAY = {};
-{ let t = 0; for (const k of ORDER) { SAY[k] = t + (GAP[k] ?? 0.28); t = SAY[k] + VO[k].dur; } }
+{ let t = 0; for (const k of ORDER) { SAY[k] = t + (GAP[k] ?? 0.2); t = SAY[k] + VO[k].dur; } }
 const wordT = (key, word, nth = 0) => { let n = 0; for (const [w, s] of VO[key].words) if (w.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(word.replace(/'/g, '')) && n++ === nth) return SAY[key] + s; throw new Error(`no "${word}" in ${key}`); };
 const endOf = (k) => SAY[k] + VO[k].dur;
 const T_END_TALK = endOf('cta');
@@ -177,8 +177,8 @@ const SHOTS = [
     k(SAY.cta, [6, 7, 16], [8, 4, 30], 46),
   ] },
   { t0: SAY.cta, keys: [                                                 // away over the city
-    k(SAY.cta, [6, 7, 16], [8, 4, 30], 46),
-    k(DURATION, [30, 60, -40], [5, 10, 30], 44),
+    k(SAY.cta, [6, 7, 16], [8, 4, 30], 46),                              // ease back from the cheering flats (clear of the tower: z > 8)
+    k(DURATION, [3, 9.5, 11], [8, 4.5, 30], 50),
   ] },
 ];
 const shotOf = (t) => { let i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1].t0) i++; return i; };
