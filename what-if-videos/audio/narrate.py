@@ -67,9 +67,15 @@ def main():
         text = line if isinstance(line, str) else line['say']
         sp = speed if isinstance(line, str) else line.get('speed', speed)
         opt = {} if isinstance(line, str) else line
-        audio, sr = tts.create(text, voice=voice, speed=sp, lang='en-us',
-                               sentence_pause=opt.get('pause', spec.get('pause', 0.3)), clause_pause=opt.get('clause', spec.get('clause', 0.12)))
-        audio = level(trim(np.asarray(audio, dtype=np.float64), sr))
+        # " | " marks a beat: a deliberate human pause (spec "beat", default 0.42 s) between parts of a line
+        parts, sr = [], 24000
+        for seg in [x.strip() for x in text.split('|') if x.strip()]:
+            a_, sr = tts.create(seg, voice=voice, speed=sp, lang='en-us',
+                                sentence_pause=opt.get('pause', spec.get('pause', 0.3)), clause_pause=opt.get('clause', spec.get('clause', 0.12)))
+            if parts: parts.append(np.zeros(int(opt.get('beat', spec.get('beat', 0.42)) * sr)))
+            parts.append(trim(np.asarray(a_, dtype=np.float64), sr))
+        audio = level(np.concatenate(parts))
+        text = ' '.join(x.strip() for x in text.split('|'))
         path = os.path.join(outdir, f'{key}.wav')
         sf.write(path, audio.astype(np.float32), sr)
         a16 = resample_poly(audio, 2, 3).astype(np.float32)

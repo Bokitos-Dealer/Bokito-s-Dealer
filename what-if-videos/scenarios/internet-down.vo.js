@@ -2,8 +2,8 @@
 export default {
  "hook": {
   "file": "vo/internet-down/hook.wav",
-  "dur": 2.98,
-  "text": "What if the entire internet went down... for a whole week?",
+  "dur": 3.98,
+  "text": "What if the internet just... died? Everywhere. For a whole week.",
   "words": [
    [
     "What",
@@ -18,166 +18,106 @@ export default {
    [
     "the",
     0.26,
-    0.4
-   ],
-   [
-    "entire",
-    0.4,
-    0.84
+    0.38
    ],
    [
     "internet",
-    0.84,
-    1.2
+    0.38,
+    0.68
    ],
    [
-    "went",
-    1.2,
-    1.48
+    "just...",
+    0.68,
+    1.64
    ],
    [
-    "down...",
-    1.48,
-    2.18
+    "died?",
+    1.64,
+    1.64
    ],
    [
-    "for",
-    2.18,
-    2.26
+    "Everywhere.",
+    2.36,
+    2.6
+   ],
+   [
+    "For",
+    3.18,
+    3.3
    ],
    [
     "a",
-    2.26,
-    2.4
+    3.3,
+    3.42
    ],
    [
     "whole",
-    2.4,
-    2.56
+    3.42,
+    3.56
    ],
    [
-    "week?",
-    2.56,
-    2.84
+    "week.",
+    3.56,
+    3.84
    ]
   ]
  },
  "goal": {
   "file": "vo/internet-down/goal.wav",
-  "dur": 6.15,
-  "text": "Five and a half billion people, offline at once. Let's count the days, and see what still works on day seven.",
+  "dur": 2.31,
+  "text": "And trust me, day seven is the wildest part.",
   "words": [
    [
-    "Five",
+    "And",
     0.0,
-    0.28
+    0.16
    ],
    [
-    "and",
-    0.28,
-    0.42
+    "trust",
+    0.16,
+    0.3
    ],
    [
-    "a",
-    0.42,
-    0.5
-   ],
-   [
-    "half",
-    0.5,
-    0.72
-   ],
-   [
-    "billion",
-    0.72,
-    1.02
-   ],
-   [
-    "people,",
-    1.02,
-    1.54
-   ],
-   [
-    "offline",
-    1.74,
-    2.08
-   ],
-   [
-    "at",
-    2.08,
-    2.32
-   ],
-   [
-    "once.",
-    2.32,
-    2.72
-   ],
-   [
-    "Let's",
-    3.16,
-    3.34
-   ],
-   [
-    "count",
-    3.34,
-    3.54
-   ],
-   [
-    "the",
-    3.54,
-    3.72
-   ],
-   [
-    "days,",
-    3.72,
-    3.96
-   ],
-   [
-    "and",
-    4.16,
-    4.26
-   ],
-   [
-    "see",
-    4.26,
-    4.46
-   ],
-   [
-    "what",
-    4.46,
-    4.66
-   ],
-   [
-    "still",
-    4.66,
-    4.92
-   ],
-   [
-    "works",
-    4.92,
-    5.2
-   ],
-   [
-    "on",
-    5.2,
-    5.46
+    "me,",
+    0.3,
+    0.56
    ],
    [
     "day",
-    5.46,
-    5.62
+    0.64,
+    0.74
    ],
    [
-    "seven.",
-    5.62,
-    5.92
+    "seven",
+    0.74,
+    1.12
+   ],
+   [
+    "is",
+    1.12,
+    1.42
+   ],
+   [
+    "the",
+    1.42,
+    1.54
+   ],
+   [
+    "wildest",
+    1.54,
+    1.98
+   ],
+   [
+    "part.",
+    1.98,
+    2.28
    ]
   ]
  },
  "day1": {
   "file": "vo/internet-down/day1.wav",
-  "dur": 4.77,
-  "text": "Day one. You wake up, and nothing loads. Messages stuck. Your bank app, spinning forever.",
+  "dur": 6.12,
+  "text": "Day one. You wake up, grab your phone... nothing. No messages. No maps. Your bank app? Just spinning.",
   "words": [
    [
     "Day",
@@ -187,161 +127,191 @@ export default {
    [
     "one.",
     0.16,
-    0.38
+    0.46
    ],
    [
     "You",
-    0.54,
-    0.54
+    1.0,
+    1.1
    ],
    [
     "wake",
-    0.54,
-    0.72
+    1.1,
+    1.22
    ],
    [
     "up,",
-    0.72,
-    0.92
+    1.22,
+    1.42
    ],
    [
-    "and",
-    0.94,
-    1.04
+    "grab",
+    1.54,
+    1.66
    ],
    [
-    "nothing",
-    1.04,
-    1.3
+    "your",
+    1.66,
+    1.86
    ],
    [
-    "loads.",
-    1.3,
-    1.74
+    "phone...",
+    1.86,
+    2.82
    ],
    [
-    "Messages",
-    2.34,
-    2.34
+    "nothing.",
+    2.82,
+    2.9
    ],
    [
-    "stuck.",
-    2.34,
-    2.84
+    "No",
+    3.14,
+    3.2
+   ],
+   [
+    "messages.",
+    3.2,
+    3.54
+   ],
+   [
+    "No",
+    3.98,
+    4.08
+   ],
+   [
+    "maps.",
+    4.08,
+    4.32
    ],
    [
     "Your",
-    3.3,
-    3.36
+    4.46,
+    4.52
    ],
    [
     "bank",
-    3.36,
-    3.56
+    4.52,
+    4.68
    ],
    [
-    "app,",
-    3.56,
-    3.86
+    "app?",
+    4.68,
+    4.94
    ],
    [
-    "spinning",
-    3.92,
-    4.16
+    "Just",
+    5.44,
+    5.54
    ],
    [
-    "forever.",
-    4.16,
-    4.54
+    "spinning.",
+    5.54,
+    5.84
    ]
   ]
  },
  "cash": {
   "file": "vo/internet-down/cash.wav",
-  "dur": 5.65,
-  "text": "At the store, every card gets declined. Cash only... and almost nobody carries cash anymore.",
+  "dur": 5.77,
+  "text": "You go to pay for coffee. Declined. Cash only. And be honest, when did you last carry cash?",
   "words": [
    [
-    "At",
+    "You",
     0.0,
     0.12
    ],
    [
-    "the",
+    "go",
     0.12,
     0.22
    ],
    [
-    "store,",
+    "to",
     0.22,
-    0.54
+    0.32
    ],
    [
-    "every",
-    0.66,
-    0.92
+    "pay",
+    0.32,
+    0.5
    ],
    [
-    "card",
-    0.92,
-    1.22
+    "for",
+    0.5,
+    0.7
    ],
    [
-    "gets",
-    1.22,
-    1.46
+    "coffee.",
+    0.7,
+    1.14
    ],
    [
-    "declined.",
-    1.46,
-    2.02
+    "Declined.",
+    1.78,
+    2.18
    ],
    [
     "Cash",
-    2.6,
-    2.64
+    2.82,
+    2.86
    ],
    [
-    "only...",
-    2.64,
-    3.56
+    "only.",
+    2.86,
+    3.18
    ],
    [
-    "and",
-    3.56,
-    3.6
+    "And",
+    3.76,
+    3.84
    ],
    [
-    "almost",
-    3.6,
-    3.86
+    "be",
+    3.84,
+    3.94
    ],
    [
-    "nobody",
-    3.86,
-    4.28
+    "honest,",
+    3.94,
+    4.24
    ],
    [
-    "carries",
-    4.28,
-    4.7
+    "when",
+    4.46,
+    4.52
    ],
    [
-    "cash",
-    4.7,
-    5.06
+    "did",
+    4.52,
+    4.64
    ],
    [
-    "anymore.",
-    5.06,
-    5.36
+    "you",
+    4.64,
+    4.76
+   ],
+   [
+    "last",
+    4.76,
+    4.98
+   ],
+   [
+    "carry",
+    4.98,
+    5.26
+   ],
+   [
+    "cash?",
+    5.26,
+    5.56
    ]
   ]
  },
  "day2": {
   "file": "vo/internet-down/day2.wav",
-  "dur": 9.58,
-  "text": "Day two. Offices send everyone home. Flights are grounded. In 2024, one bad software update cancelled thousands of flights in a single day.",
+  "dur": 10.43,
+  "text": "Day two. Offices give up and send everyone home. Flights? Grounded. And that's not made up. In 2024, one bad update cancelled thousands of flights.",
   "words": [
    [
     "Day",
@@ -351,119 +321,129 @@ export default {
    [
     "two.",
     0.16,
-    0.46
+    0.56
    ],
    [
     "Offices",
-    0.74,
-    1.08
+    1.18,
+    1.46
+   ],
+   [
+    "give",
+    1.46,
+    1.64
+   ],
+   [
+    "up",
+    1.64,
+    1.82
+   ],
+   [
+    "and",
+    1.82,
+    1.94
    ],
    [
     "send",
-    1.08,
-    1.4
+    1.94,
+    2.12
    ],
    [
     "everyone",
-    1.4,
-    1.84
+    2.12,
+    2.36
    ],
    [
     "home.",
-    1.84,
-    2.22
+    2.36,
+    2.68
    ],
    [
-    "Flights",
-    2.82,
-    2.96
+    "Flights?",
+    3.28,
+    3.48
    ],
    [
-    "are",
-    2.96,
-    3.18
+    "Grounded.",
+    4.1,
+    4.52
    ],
    [
-    "grounded.",
-    3.18,
-    3.58
+    "And",
+    5.04,
+    5.14
+   ],
+   [
+    "that's",
+    5.14,
+    5.4
+   ],
+   [
+    "not",
+    5.4,
+    5.54
+   ],
+   [
+    "made",
+    5.54,
+    5.78
+   ],
+   [
+    "up.",
+    5.78,
+    6.02
    ],
    [
     "In",
-    4.24,
-    4.28
+    6.42,
+    6.52
    ],
    [
     "2024,",
-    4.28,
-    5.2
+    6.52,
+    7.52
    ],
    [
     "one",
-    5.78,
-    5.88
+    8.0,
+    8.14
    ],
    [
     "bad",
-    5.88,
-    6.16
-   ],
-   [
-    "software",
-    6.16,
-    6.68
+    8.14,
+    8.36
    ],
    [
     "update",
-    6.68,
-    7.06
+    8.36,
+    8.76
    ],
    [
     "cancelled",
-    7.06,
-    7.54
+    8.76,
+    9.18
    ],
    [
     "thousands",
-    7.54,
-    8.06
+    9.18,
+    9.64
    ],
    [
     "of",
-    8.06,
-    8.3
+    9.64,
+    9.92
    ],
    [
-    "flights",
-    8.3,
-    8.56
-   ],
-   [
-    "in",
-    8.56,
-    8.8
-   ],
-   [
-    "a",
-    8.8,
-    8.9
-   ],
-   [
-    "single",
-    8.9,
-    9.14
-   ],
-   [
-    "day.",
-    9.14,
-    9.46
+    "flights.",
+    9.92,
+    10.14
    ]
   ]
  },
  "day3": {
   "file": "vo/internet-down/day3.wav",
-  "dur": 4.94,
-  "text": "Day three. Delivery trucks run on apps. Shelves start emptying, and fresh food goes first.",
+  "dur": 3.81,
+  "text": "Day three. The shelves start emptying. Because the trucks run on apps.",
   "words": [
    [
     "Day",
@@ -473,634 +453,574 @@ export default {
    [
     "three.",
     0.16,
-    0.5
+    0.54
    ],
    [
-    "Delivery",
-    0.72,
-    0.88
+    "The",
+    1.22,
+    1.22
    ],
    [
-    "trucks",
-    0.88,
-    1.24
-   ],
-   [
-    "run",
-    1.24,
-    1.48
-   ],
-   [
-    "on",
-    1.48,
-    1.64
-   ],
-   [
-    "apps.",
-    1.64,
-    1.96
-   ],
-   [
-    "Shelves",
-    2.58,
-    2.76
+    "shelves",
+    1.22,
+    1.46
    ],
    [
     "start",
-    2.76,
-    3.02
+    1.46,
+    1.76
    ],
    [
-    "emptying,",
-    3.02,
-    3.48
+    "emptying.",
+    1.76,
+    2.24
    ],
    [
-    "and",
-    3.48,
-    3.68
+    "Because",
+    2.5,
+    2.62
    ],
    [
-    "fresh",
-    3.68,
-    3.92
+    "the",
+    2.62,
+    2.78
    ],
    [
-    "food",
-    3.92,
-    4.22
+    "trucks",
+    2.78,
+    2.98
    ],
    [
-    "goes",
-    4.22,
-    4.48
+    "run",
+    2.98,
+    3.22
    ],
    [
-    "first.",
-    4.48,
-    4.78
+    "on",
+    3.22,
+    3.38
+   ],
+   [
+    "apps.",
+    3.38,
+    3.62
    ]
   ]
  },
  "twist": {
   "file": "vo/internet-down/twist.wav",
-  "dur": 9.92,
-  "text": "But here's what surprises everyone. Your GPS still works... it's satellites, not the internet. Radio still works. Even a plain phone call might still get through.",
+  "dur": 8.71,
+  "text": "But here's the crazy part. Your GPS still works. That's satellites, not the internet. Radio? Works. A normal phone call? Might actually go through.",
   "words": [
    [
     "But",
     0.0,
-    0.12
+    0.14
    ],
    [
     "here's",
-    0.12,
-    0.44
-   ],
-   [
-    "what",
-    0.44,
-    0.58
-   ],
-   [
-    "surprises",
-    0.58,
-    1.14
-   ],
-   [
-    "everyone.",
-    1.14,
-    1.7
-   ],
-   [
-    "Your",
-    2.1,
-    2.12
-   ],
-   [
-    "GPS",
-    2.12,
-    2.6
-   ],
-   [
-    "still",
-    2.6,
-    3.08
-   ],
-   [
-    "works...",
-    3.08,
-    3.48
-   ],
-   [
-    "it's",
-    4.04,
-    4.22
-   ],
-   [
-    "satellites,",
-    4.22,
-    4.64
-   ],
-   [
-    "not",
-    4.94,
-    4.98
+    0.14,
+    0.34
    ],
    [
     "the",
-    4.98,
-    5.2
+    0.34,
+    0.48
    ],
    [
-    "internet.",
-    5.2,
-    5.48
+    "crazy",
+    0.48,
+    0.7
    ],
    [
-    "Radio",
-    6.1,
-    6.26
+    "part.",
+    0.7,
+    1.18
+   ],
+   [
+    "Your",
+    1.62,
+    1.7
+   ],
+   [
+    "GPS",
+    1.7,
+    2.1
    ],
    [
     "still",
-    6.26,
-    6.66
+    2.1,
+    2.52
    ],
    [
     "works.",
-    6.66,
-    7.02
+    2.52,
+    2.9
    ],
    [
-    "Even",
-    7.46,
-    7.62
+    "That's",
+    3.18,
+    3.38
    ],
    [
-    "a",
-    7.62,
-    7.78
+    "satellites,",
+    3.38,
+    3.84
    ],
    [
-    "plain",
-    7.78,
-    8.02
+    "not",
+    4.04,
+    4.14
+   ],
+   [
+    "the",
+    4.14,
+    4.3
+   ],
+   [
+    "internet.",
+    4.3,
+    4.6
+   ],
+   [
+    "Radio?",
+    5.0,
+    5.14
+   ],
+   [
+    "Works.",
+    5.96,
+    6.02
+   ],
+   [
+    "A",
+    6.18,
+    6.22
+   ],
+   [
+    "normal",
+    6.22,
+    6.38
    ],
    [
     "phone",
-    8.02,
-    8.38
+    6.38,
+    6.7
    ],
    [
-    "call",
-    8.38,
-    8.7
+    "call?",
+    6.7,
+    7.12
    ],
    [
-    "might",
-    8.7,
-    8.94
+    "Might",
+    7.48,
+    7.72
    ],
    [
-    "still",
-    8.94,
-    9.26
+    "actually",
+    7.72,
+    8.04
    ],
    [
-    "get",
-    9.26,
-    9.44
+    "go",
+    8.04,
+    8.26
    ],
    [
     "through.",
-    9.44,
-    9.76
+    8.26,
+    8.54
    ]
   ]
  },
  "day5": {
   "file": "vo/internet-down/day5.wav",
-  "dur": 4.16,
-  "text": "By day five, people do something strange. They knock on their neighbors' doors.",
+  "dur": 5.09,
+  "text": "Day five. People do something wild. They knock on their neighbors' doors. And talk.",
   "words": [
    [
-    "By",
+    "Day",
     0.0,
     0.16
    ],
    [
-    "day",
+    "five.",
     0.16,
-    0.34
+    0.54
    ],
    [
-    "five,",
-    0.34,
-    0.74
-   ],
-   [
-    "people",
-    0.94,
-    1.08
+    "People",
+    1.06,
+    1.22
    ],
    [
     "do",
-    1.08,
-    1.3
+    1.22,
+    1.44
    ],
    [
     "something",
-    1.3,
-    1.58
+    1.44,
+    1.72
    ],
    [
-    "strange.",
-    1.58,
+    "wild.",
+    1.72,
     2.1
    ],
    [
     "They",
-    2.6,
-    2.68
+    2.72,
+    2.76
    ],
    [
     "knock",
-    2.68,
-    2.9
+    2.76,
+    2.96
    ],
    [
     "on",
-    2.9,
-    3.1
+    2.96,
+    3.14
    ],
    [
     "their",
-    3.1,
-    3.22
+    3.14,
+    3.24
    ],
    [
     "neighbors'",
-    3.22,
-    3.5
+    3.24,
+    3.48
    ],
    [
     "doors.",
-    3.64,
+    3.62,
     3.88
+   ],
+   [
+    "And",
+    4.54,
+    4.66
+   ],
+   [
+    "talk.",
+    4.66,
+    4.86
    ]
   ]
  },
  "cost": {
   "file": "vo/internet-down/cost.wav",
-  "dur": 4.05,
-  "text": "Every single day offline costs the world about forty-three billion dollars.",
+  "dur": 4.16,
+  "text": "Meanwhile, every single day costs the world around forty-three billion dollars.",
   "words": [
    [
-    "Every",
+    "Meanwhile,",
     0.0,
-    0.24
+    0.36
+   ],
+   [
+    "every",
+    0.66,
+    0.9
    ],
    [
     "single",
-    0.24,
-    0.5
+    0.9,
+    1.24
    ],
    [
     "day",
-    0.5,
-    0.76
-   ],
-   [
-    "offline",
-    0.76,
-    1.26
+    1.24,
+    1.48
    ],
    [
     "costs",
-    1.26,
-    1.64
+    1.48,
+    1.76
    ],
    [
     "the",
-    1.64,
-    1.86
+    1.76,
+    1.98
    ],
    [
     "world",
-    1.86,
-    2.04
+    1.98,
+    2.22
    ],
    [
-    "about",
-    2.04,
-    2.36
+    "around",
+    2.22,
+    2.52
    ],
    [
     "forty-three",
-    2.36,
-    3.06
+    2.52,
+    3.22
    ],
    [
     "billion",
-    3.06,
-    3.38
+    3.22,
+    3.5
    ],
    [
     "dollars.",
-    3.38,
-    3.84
+    3.5,
+    3.96
    ]
   ]
  },
  "real": {
   "file": "vo/internet-down/real.wav",
-  "dur": 9.85,
-  "text": "So could this really happen? Almost impossible. The internet has no off switch. It's hundreds of cables under the ocean... cut one, and the data simply finds another way.",
+  "dur": 9.31,
+  "text": "So could this really happen? Honestly? Almost impossible. The internet is hundreds of cables under the ocean. Cut one, and the data just goes around it.",
   "words": [
    [
     "So",
     0.0,
-    0.18
+    0.16
    ],
    [
     "could",
-    0.18,
-    0.34
+    0.16,
+    0.28
    ],
    [
     "this",
-    0.34,
-    0.54
+    0.28,
+    0.44
    ],
    [
     "really",
-    0.54,
-    0.86
+    0.44,
+    0.68
    ],
    [
     "happen?",
-    0.86,
-    1.24
+    0.68,
+    1.08
+   ],
+   [
+    "Honestly?",
+    2.04,
+    2.04
    ],
    [
     "Almost",
-    1.58,
-    1.8
+    2.68,
+    2.96
    ],
    [
     "impossible.",
-    1.8,
-    2.46
+    2.96,
+    3.6
    ],
    [
     "The",
-    3.0,
-    3.1
+    4.06,
+    4.14
    ],
    [
     "internet",
-    3.1,
-    3.4
+    4.14,
+    4.44
    ],
    [
-    "has",
-    3.4,
-    3.7
-   ],
-   [
-    "no",
-    3.7,
-    3.96
-   ],
-   [
-    "off",
-    3.96,
-    4.2
-   ],
-   [
-    "switch.",
-    4.2,
-    4.54
-   ],
-   [
-    "It's",
-    5.02,
-    5.18
+    "is",
+    4.44,
+    4.74
    ],
    [
     "hundreds",
-    5.18,
-    5.46
+    4.74,
+    5.02
    ],
    [
     "of",
-    5.46,
-    5.74
+    5.02,
+    5.36
    ],
    [
     "cables",
-    5.74,
-    6.08
+    5.36,
+    5.66
    ],
    [
     "under",
-    6.08,
-    6.36
+    5.66,
+    5.92
    ],
    [
     "the",
-    6.36,
-    6.52
+    5.92,
+    6.08
    ],
    [
-    "ocean...",
-    6.52,
-    7.34
+    "ocean.",
+    6.08,
+    6.42
    ],
    [
-    "cut",
-    7.34,
-    7.42
+    "Cut",
+    6.86,
+    6.94
    ],
    [
     "one,",
-    7.42,
-    7.72
+    6.94,
+    7.24
    ],
    [
     "and",
-    7.94,
-    7.96
+    7.62,
+    7.88
    ],
    [
     "the",
-    7.96,
-    8.06
+    7.88,
+    7.96
    ],
    [
     "data",
-    8.06,
-    8.3
+    7.96,
+    8.18
    ],
    [
-    "simply",
-    8.3,
-    8.62
+    "just",
+    8.18,
+    8.44
    ],
    [
-    "finds",
-    8.62,
-    9.12
+    "goes",
+    8.44,
+    8.74
    ],
    [
-    "another",
-    9.12,
-    9.44
+    "around",
+    8.74,
+    9.06
    ],
    [
-    "way.",
-    9.44,
-    9.74
+    "it.",
+    9.06,
+    9.28
    ]
   ]
  },
  "day7": {
   "file": "vo/internet-down/day7.wav",
-  "dur": 5.28,
-  "text": "On day seven, it all comes back... and every notification from the whole week arrives at once.",
+  "dur": 4.87,
+  "text": "And day seven? It all comes back. Every. Single. Notification. At once.",
   "words": [
    [
-    "On",
+    "And",
     0.0,
-    0.2
+    0.14
    ],
    [
     "day",
-    0.2,
-    0.34
+    0.14,
+    0.28
    ],
    [
-    "seven,",
-    0.34,
-    0.76
+    "seven?",
+    0.28,
+    0.68
    ],
    [
-    "it",
-    0.94,
-    1.0
+    "It",
+    1.28,
+    1.32
    ],
    [
     "all",
-    1.0,
-    1.2
+    1.32,
+    1.44
    ],
    [
     "comes",
-    1.2,
-    1.46
+    1.44,
+    1.62
    ],
    [
-    "back...",
-    1.46,
-    2.26
+    "back.",
+    1.62,
+    1.94
    ],
    [
-    "and",
-    2.26,
-    2.32
+    "Every.",
+    2.56,
+    2.68
    ],
    [
-    "every",
-    2.32,
-    2.6
+    "Single.",
+    2.9,
+    2.96
    ],
    [
-    "notification",
-    2.6,
-    3.2
+    "Notification.",
+    3.3,
+    3.4
    ],
    [
-    "from",
-    3.2,
-    3.6
-   ],
-   [
-    "the",
-    3.6,
-    3.72
-   ],
-   [
-    "whole",
-    3.72,
-    3.94
-   ],
-   [
-    "week",
-    3.94,
-    4.2
-   ],
-   [
-    "arrives",
-    4.2,
-    4.6
-   ],
-   [
-    "at",
-    4.6,
-    4.8
+    "At",
+    4.28,
+    4.42
    ],
    [
     "once.",
-    4.8,
-    5.06
+    4.42,
+    4.64
    ]
   ]
  },
  "cta": {
   "file": "vo/internet-down/cta.wav",
-  "dur": 2.07,
-  "text": "Be honest. How long would you last offline?",
+  "dur": 2.14,
+  "text": "So be honest... how long would you last?",
   "words": [
    [
-    "Be",
+    "So",
     0.0,
-    0.14
+    0.16
    ],
    [
-    "honest.",
-    0.14,
-    0.4
+    "be",
+    0.16,
+    0.28
    ],
    [
-    "How",
-    0.68,
-    0.76
+    "honest...",
+    0.28,
+    1.24
+   ],
+   [
+    "how",
+    1.24,
+    1.32
    ],
    [
     "long",
-    0.76,
-    0.96
+    1.32,
+    1.52
    ],
    [
     "would",
-    0.96,
-    1.12
+    1.52,
+    1.66
    ],
    [
     "you",
-    1.12,
-    1.22
+    1.66,
+    1.76
    ],
    [
-    "last",
-    1.22,
-    1.46
-   ],
-   [
-    "offline?",
-    1.46,
-    1.9
+    "last?",
+    1.76,
+    1.98
    ]
   ]
  }

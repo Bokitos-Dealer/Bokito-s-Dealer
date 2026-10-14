@@ -1,20 +1,21 @@
 {
   "id": "internet-down",
   "voice": { "am_puck": 0.6, "am_michael": 0.4 },
-  "speed": 1.08,
-  "pause": 0.3,
+  "speed": 1.12,
+  "pause": 0.34,
+  "beat": 0.42,
   "lines": {
-    "hook": { "say": "What if the entire internet went down... for a whole week?", "speed": 1.06 },
-    "goal": "Five and a half billion people, offline at once. Let's count the days, and see what still works on day seven.",
-    "day1": "Day one. You wake up, and nothing loads. Messages stuck. Your bank app, spinning forever.",
-    "cash": "At the store, every card gets declined. Cash only... and almost nobody carries cash anymore.",
-    "day2": "Day two. Offices send everyone home. Flights are grounded. In 2024, one bad software update cancelled thousands of flights in a single day.",
-    "day3": "Day three. Delivery trucks run on apps. Shelves start emptying, and fresh food goes first.",
-    "twist": "But here's what surprises everyone. Your GPS still works... it's satellites, not the internet. Radio still works. Even a plain phone call might still get through.",
-    "day5": "By day five, people do something strange. They knock on their neighbors' doors.",
-    "cost": "Every single day offline costs the world about forty-three billion dollars.",
-    "real": "So could this really happen? Almost impossible. The internet has no off switch. It's hundreds of cables under the ocean... cut one, and the data simply finds another way.",
-    "day7": "On day seven, it all comes back... and every notification from the whole week arrives at once.",
-    "cta": { "say": "Be honest. How long would you last offline?", "speed": 1.04 }
+    "hook": "What if the internet just... died? | Everywhere. | For a whole week.",
+    "goal": "And trust me, day seven is the wildest part.",
+    "day1": "Day one. | You wake up, grab your phone... | nothing. No messages. No maps. Your bank app? | Just spinning.",
+    "cash": "You go to pay for coffee. | Declined. | Cash only. | And be honest, when did you last carry cash?",
+    "day2": "Day two. | Offices give up and send everyone home. Flights? | Grounded. | And that's not made up. In 2024, one bad update cancelled thousands of flights.",
+    "day3": "Day three. | The shelves start emptying. Because the trucks run on apps.",
+    "twist": "But here's the crazy part. | Your GPS still works. That's satellites, not the internet. Radio? | Works. A normal phone call? | Might actually go through.",
+    "day5": "Day five. | People do something wild. | They knock on their neighbors' doors. | And talk.",
+    "cost": "Meanwhile, every single day costs the world around forty-three billion dollars.",
+    "real": "So could this really happen? | Honestly? | Almost impossible. The internet is hundreds of cables under the ocean. Cut one, | and the data just goes around it.",
+    "day7": "And day seven? | It all comes back. | Every. Single. Notification. | At once.",
+    "cta": "So be honest... | how long would you last?"
   }
 }

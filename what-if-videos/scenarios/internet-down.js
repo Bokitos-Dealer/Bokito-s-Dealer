@@ -25,16 +25,16 @@ const DBG = (() => { try { const q = typeof location !== 'undefined' && new URLS
 
 // ------------------------------------------------------------------ the story, timed by the narration
 const ORDER = ['hook', 'goal', 'day1', 'cash', 'day2', 'day3', 'twist', 'day5', 'cost', 'real', 'day7', 'cta'];
-const GAP = { hook: 0.35, cost: 0.3, real: 0.45, day7: 0.4, cta: 0.4 };
+const GAP = { hook: 0.12, goal: 0.3, cost: 0.3, real: 0.4, day7: 0.4, cta: 0.35 };   // the hook starts at once
 const SAY = {};
-{ let t = 0; for (const k of ORDER) { SAY[k] = t + (GAP[k] ?? 0.2); t = SAY[k] + VO[k].dur; } }
+{ let t = 0; for (const k of ORDER) { SAY[k] = t + (GAP[k] ?? 0.28); t = SAY[k] + VO[k].dur; } }
 const wordT = (key, word, nth = 0) => { let n = 0; for (const [w, s] of VO[key].words) if (w.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(word.replace(/'/g, '')) && n++ === nth) return SAY[key] + s; throw new Error(`no "${word}" in ${key}`); };
 const endOf = (k) => SAY[k] + VO[k].dur;
 const T_END_TALK = endOf('cta');
-const FADE = [T_END_TALK + 0.5, T_END_TALK + 1.3], DURATION = FADE[1] + 0.3;
+const FADE = [T_END_TALK + 0.35, T_END_TALK + 0.9], DURATION = FADE[1] + 0.3;
 
-const T_DOWN = wordT('hook', 'down');
-const T_OFFLINE = wordT('goal', 'offline');
+const T_DOWN = wordT('hook', 'died');
+const T_OFFLINE = wordT('hook', 'everywhere');
 const T_DECLINE = wordT('cash', 'declined');
 const T_CASHONLY = wordT('cash', 'cash');
 const T_HOME = wordT('day2', 'offices');
@@ -42,9 +42,9 @@ const T_FLIGHTS = wordT('day2', 'flights');
 const T_2024 = wordT('day2', 'in');
 const T_SHELVES = wordT('day3', 'shelves');
 const T_GPS = wordT('twist', 'your');
-const T_SKY = wordT('twist', "it's");
+const T_SKY = wordT('twist', 'thats');
 const T_RADIO = wordT('twist', 'radio');
-const T_CALL = wordT('twist', 'even');
+const T_CALL = wordT('twist', 'normal');
 const T_CUT = wordT('real', 'cut');
 const T_BACK = wordT('day7', 'it');
 const T_NOTIF = wordT('day7', 'every');
@@ -58,15 +58,14 @@ function daysAt(t) {
 }
 
 // ------------------------------------------------------------------ captions
-const NUMS = [['forty-three billion dollars', '$43 billion (€40 billion)'], ['five and a half billion', '5.5 billion'], ['2024', '2024']];
-const KEYWORDS = /^(internet|week|offline|seven|nothing|spinning|declined|cash|home|grounded|thousands|apps|empty|emptying|fresh|surprises|gps|satellites|radio|call|neighbors|strange|impossible|switch|ocean|cut|another|back|notification|honest|last)$/i;
+const NUMS = [['forty-three billion dollars', '$43B (€40B)'], ['2024', '2024']];
+const KEYWORDS = /^(died|everywhere|week|wildest|nothing|spinning|declined|cash|home|grounded|thousands|apps|emptying|crazy|gps|satellites|radio|works|call|wild|neighbors|talk|impossible|cables|ocean|cut|around|back|notification|once|last)$/i;
 function buildCaptions() {
   const out = [];
   for (const key of ORDER) {
     const at = SAY[key];
     let ws = [];
     for (const [w, s, e] of VO[key].words) { if (ws.length && /^[-']/.test(w)) { const p = ws[ws.length - 1]; p[0] += w; p[2] = e; } else ws.push([w, s, e, false]); }
-    if (key === 'hook') ws = ws.filter((w) => w[1] >= VO.hook.words.find((x) => x[0] === 'for')[1] - 0.01);   // the title card says the first half
     for (const [sayd, show] of NUMS) {
       const k = sayd.split(' ');
       for (let i = 0; i + k.length <= ws.length; i++) {
@@ -80,7 +79,7 @@ function buildCaptions() {
     const clauses = [[]];
     ws.forEach((w, i) => { clauses[clauses.length - 1].push(w); if (/[,.?!…:]$/.test(w[0]) && i < ws.length - 1) clauses.push([]); });
     const chunks = [];
-    for (const c of clauses) { if (!c.length) continue; const n = Math.ceil(c.length / 4), per = Math.ceil(c.length / n); for (let i = 0; i < c.length; i += per) chunks.push(c.slice(i, i + per)); }
+    for (const c of clauses) { if (!c.length) continue; const n = Math.ceil(c.length / 3), per = Math.ceil(c.length / n); for (let i = 0; i < c.length; i += per) chunks.push(c.slice(i, i + per)); }
     chunks.forEach((c, i) => {
       const next = chunks[i + 1];
       out.push([at + c[0][1] - 0.04, at + (next ? Math.min(next[0][1], c[c.length - 1][2] + 0.45) : c[c.length - 1][2] + 0.35), c.map((x) => x[0]).join(' '), c.map((x) => [x[0].replace(/\.\.\.$/, '…'), at + x[1], x[3]])]);
@@ -106,10 +105,11 @@ const SHOTS = [
   { t0: -1, keys: [                                                      // over his shoulder at the phone, then out of the flat and up over the city
     k(0.0, [15.394, 4.731, 32.867], [15.344, 4.451, 33.277], 40),       // straight down the screen (hand at 15.34, 4.33, 33.2), low in frame under the title
     k(T_DOWN + 0.4, [15.39, 4.652, 32.885], [15.344, 4.404, 33.244], 35),
-    k(SAY.goal - 0.1, [15.45, 5.3, 33.05], [15.3, 4.3, 33.2], 42),      // up over his head, then out of the flat
-    k(SAY.goal + 1.2, [15, 6.0, 26.5], [15, 4.5, 34], 44),
-    k(SAY.goal + 3.4, [30, 34, 18], [2, 10, 22], 46),                   // over the avenue: flats, store, the tower's dead screens
-    k(SAY.day1, [34, 48, 10], [0, 14, 16], 44),
+    k(SAY.goal - 0.05, [15.388, 4.64, 32.91], [15.344, 4.402, 33.243], 33),
+  ] },
+  { t0: SAY.goal - 0.05, keys: [                                         // cut wide: over the avenue, the tower's dead screens
+    k(SAY.goal - 0.05, [30, 30, 20], [2, 10, 22], 48),
+    k(SAY.day1, [34, 46, 10], [0, 14, 16], 44),
   ] },
   { t0: SAY.day1, keys: [                                                // along the flats: everyone staring at a phone that won't load
     k(SAY.day1, [9, 4.6, 21], [9, 4.2, 34], 40),
@@ -145,9 +145,9 @@ const SHOTS = [
     k(T_SKY - 0.25, [5.39, 1.44, 10.92], [5.356, 1.193, 10.562], 35),
   ] },
   { t0: T_SKY - 0.25, keys: [                                            // low in front of her, up to the open sky over the avenue (the tower is behind the camera)
-    k(T_SKY - 0.25, [5.2, 0.9, 9.0], [5.6, 24, 60], 48),
-    k(T_SKY + 0.9, [5.15, 0.85, 8.9], [5.8, 36, 60], 50),
-    k(T_RADIO - 0.05, [5.1, 0.8, 8.8], [6, 42, 60], 52),
+    k(T_SKY - 0.25, [4.0, 0.9, 9.0], [4.4, 24, 60], 48),                // she's just out of frame: only the open sky and the satellite
+    k(T_SKY + 0.9, [3.95, 0.85, 8.9], [4.6, 34, 60], 50),
+    k(T_RADIO - 0.05, [3.9, 0.8, 8.8], [4.8, 40, 60], 52),
   ] },
   { t0: T_RADIO - 0.05, keys: [                                          // the radio circle
     k(T_RADIO - 0.05, [-4, 2.2, 15.6], [-4, 0.5, 10.6], 40),
@@ -181,7 +181,25 @@ const SHOTS = [
     k(DURATION, [30, 60, -40], [5, 10, 30], 44),
   ] },
 ];
-const shotIdx = (t) => { let i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1].t0) i++; return i; };
+const shotOf = (t) => { let i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1].t0) i++; return i; };
+const W_ = (k, w, n = 0) => wordT(k, w, n);
+const PUNCH = [                                                         // jump zooms on the words that land
+  [W_('hook', 'everywhere'), 0.8], [W_('hook', 'for'), 0.66],
+  [W_('day1', 'nothing'), 0.78], [W_('day1', 'your'), 1], [W_('day1', 'just'), 0.72],
+  [T_DECLINE, 0.62], [W_('cash', 'and'), 0.82],
+  [W_('day2', 'offices'), 0.8], [W_('day2', 'grounded'), 0.72], [W_('day2', 'thousands'), 0.86],
+  [W_('day3', 'because'), 0.8], [W_('twist', 'crazy'), 0.78],
+  [W_('twist', 'works', 1), 0.74], [W_('twist', 'might'), 0.8],
+  [W_('day5', 'they'), 0.8], [W_('day5', 'and'), 0.66],
+  [W_('cost', 'forty'), 0.78], [W_('real', 'honestly'), 0.86], [W_('real', 'almost'), 0.76], [W_('real', 'hundreds'), 1],
+  [W_('day7', 'every'), 0.82], [W_('day7', 'single'), 0.7], [W_('day7', 'notification'), 0.58], [W_('day7', 'at'), 1],
+  [W_('cta', 'how'), 0.8],
+].sort((a, b) => a[0] - b[0]);
+const CUTS = [...SHOTS.map((s) => s.t0), ...PUNCH.map((p) => p[0])].sort((a, b) => a - b);
+const shotIdx = (t) => { let i = 0; while (i < CUTS.length - 1 && t >= CUTS[i + 1]) i++; return i; };
+const punchAt = (t) => { const s0 = SHOTS[shotOf(t)].t0; let f = 1; for (const [t0, k] of PUNCH) if (t >= t0 && t0 >= s0) f = k; return f; };
+// a white flash on the big cuts (each new day, the twist, the globe, the comeback)
+const FLASHES = [SAY.day1, SAY.day2, SAY.day3, SAY.twist, SAY.day5, SAY.real, T_BACK];
 function crAt(keys, t, f) {
   const n = keys.length;
   if (t <= keys[0].t) return f(keys[0]);
@@ -195,17 +213,18 @@ function crAt(keys, t, f) {
     return (2 * u3 - 3 * u2 + 1) * B[j] + (u3 - 2 * u2 + u) * m1 + (-2 * u3 + 3 * u2) * C[j] + (u3 - u2) * m2;
   });
 }
-const SHAKES = [[T_DOWN, 0.3], [T_DECLINE, 0.25], [T_CUT, 0.45], [T_NOTIF, 0.4]];
+const SHAKES = [[T_DOWN, 0.55], [T_DECLINE, 0.4], [W_('day2', 'grounded'), 0.3], [W_('cost', 'forty'), 0.3], [T_CUT, 0.55], [T_NOTIF, 0.5], [W_('day7', 'single'), 0.35], [W_('day7', 'notification'), 0.45]];
 const trauma = (t) => SHAKES.reduce((s, [t0, a]) => s + (t >= t0 ? a * Math.max(0, 1 - (t - t0) / 0.8) : 0), 0);
 function camAt(t) {
-  const S = SHOTS[shotIdx(t)];
+  const S = SHOTS[shotOf(t)];
   const v = crAt(S.keys, t, (q) => [...q.p, ...q.l, q.fov]);
   const pos = V(v[0], v[1], v[2]), look = V(v[3], v[4], v[5]);
   const tr = Math.min(1, trauma(t)), sh = tr * tr;
   const amp = Math.min(0.08, pos.distanceTo(look) * 0.002 + 0.004);
   pos.add(V(fbm1(t * 0.35 + 3.1) * amp, fbm1(t * 0.3 + 7.7) * amp * 0.8, fbm1(t * 0.33 + 1.9) * amp));
   const rot = { x: fbm1(t * 0.4 + 5.5) * 0.003 + fbm1(t * 18 + 1.1) * 0.03 * sh, y: fbm1(t * 0.37 + 4.4) * 0.003 + fbm1(t * 17 + 2.2) * 0.03 * sh, z: fbm1(t * 0.3 + 2.2) * 0.004 + fbm1(t * 16 + 3.3) * 0.025 * sh };
-  return { pos, look, fov: v[6] - 3 * sh, rot, shot: shotIdx(t), stage: !!S.stage };
+  const fov = 2 * Math.atan(Math.tan((v[6] - 3 * sh) * DEG / 2) * punchAt(t)) / DEG;
+  return { pos, look, fov, rot, shot: shotIdx(t), stage: !!S.stage };
 }
 function poseCamera(cam, c) {
   cam.fov = c.fov; cam.aspect = W / H; cam.position.copy(c.pos); cam.lookAt(c.look);
@@ -386,6 +405,9 @@ function buildAudio() {
   const fx = (type, o) => A.push(Object.assign({ type, fx: true }, o));
   const keysEvery = (f, step = 0.05) => { const ks = []; for (let t = 0; t <= DURATION; t += step) ks.push([+t.toFixed(2), +f(t).toFixed(3)]); return ks; };
   for (const key of ORDER) A.push(S_(VO[key].file, SAY[key], { level: 1.35, free: true, verb: 0.025, fin: 0.005, fout: 0.03 }));
+  // a whoosh into every new shot, a soft click on every jump zoom
+  SHOTS.slice(1).forEach((sh, i) => { if (!sh.stage) fx('sample', { file: 'sfx/2604.wav', t: sh.t0 - 0.14, level: 0.15 + 0.05 * hash(i, 11), pan: -0.3 + 0.6 * hash(i, 12) }); });
+  PUNCH.forEach(([t0], i) => fx('sample', { file: 'sfx/1490.wav', t: t0 - 0.01, level: 0.07, pan: -0.2 + 0.4 * hash(i, 13) }));
   const talking = (t) => { let q = 0; for (const key of ORDER) { const at = SAY[key]; q = Math.max(q, smooth(at - 0.12, at, t) * (1 - smooth(at + VO[key].dur, at + VO[key].dur + 0.35, t))); } return q; };
   A.push({ type: 'fxduck', keys: keysEvery((t) => 1 - 0.5 * talking(t), 0.04) });
   // music: tension for the first three days, then something warmer once people find each other
@@ -439,16 +461,24 @@ const ICON = `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><g f
 const subAt = (t, list) => { let s = list[0][1], at = -9; for (const [t0, txt] of list) if (t >= t0) { s = txt; at = t0; } return { sub: s, age: t - at }; };
 const fmtB = (n) => (n >= 100 ? `${Math.round(n)}` : n.toFixed(0));
 
+// ------------------------------------------------------------------ bold short-form captions (two or three words, heavy outline, keywords in yellow)
+const OUTLINE = [[6, 0], [-6, 0], [0, 6], [0, -6], [4.5, 4.5], [-4.5, 4.5], [4.5, -4.5], [-4.5, -4.5]].map(([x, y]) => `${x}px ${y}px 0 #000`).join(', ');
+const CAPTION_CSS = `#title { display: none !important; }
+@font-face { font-family: 'MontB'; font-weight: 900; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2) format('woff2'); }
+#caption { top: 1150px; left: 30px; right: 30px; }
+#caption::before { display: none; }
+#caption span { font-family: 'MontB', sans-serif; font-style: normal; font-weight: 900; font-size: 98px; line-height: 1.04; letter-spacing: -1px; text-transform: uppercase; color: #fff; text-shadow: ${OUTLINE}, 0 12px 26px rgba(0,0,0,0.55); }
+#caption .cw { color: #ffffff; }
+#caption .cw.hl { color: #ffd84a; font-style: normal; }
+`;
+
 // ------------------------------------------------------------------ the scenario
 export default {
   id: 'internet-down',
   title: 'What if the internet went down for a week?',
-  titleWords: [['What', 0], ['if', 0], ['the', 0], ['entire', 0], ['internet', 1], ['went', 0], ['down?', 1]],
-  titleIcon: ICON, titleAnimAt: 0.05,
-  css: '#goal .fill { background: linear-gradient(90deg, #ff6b6b, #ffb347); } #goal .dot { box-shadow: 0 0 16px rgba(255,120,90,0.95), 0 0 0 4px #ff6b6b; } #goal .tick.on { background: #ff8a6b; box-shadow: 0 0 10px rgba(255,120,90,0.9), 0 0 0 2px rgba(0,0,0,0.25); }',
+  css: CAPTION_CSS + '#goal .fill { background: linear-gradient(90deg, #ff6b6b, #ffb347); } #goal .dot { box-shadow: 0 0 16px rgba(255,120,90,0.95), 0 0 0 4px #ff6b6b; } #goal .tick.on { background: #ff8a6b; box-shadow: 0 0 10px rgba(255,120,90,0.9), 0 0 0 2px rgba(0,0,0,0.25); }',
   endFact: '',
   duration: DURATION,
-  titleIn: [-1, -0.5], titleOut: [wordT('hook', 'for') - 0.25, wordT('hook', 'for') + 0.05],
   fadeOut: FADE, endAt: 1e9,
   captions: CAPTIONS,
   captionFade: 0.08,
@@ -487,16 +517,16 @@ export default {
     const call = (t0, t1, p, text, side, big = false) => {
       const a = smooth(t0, t0 + 0.3, t) * (1 - smooth(t1 - 0.3, t1, t)); if (a <= 0.001) return;
       const s = toScreen(c, p); if (!s.ok || (!big && s.y < 470)) return;
-      out.push({ x: s.x, y: s.y, text, alpha: a, big, side: big ? side : s.x < W * 0.4 ? 'right' : s.x > W * 0.6 ? 'left' : side });
+      out.push({ x: s.x, y: s.y, text, alpha: a, big, side: big ? side : s.x < W * 0.45 ? 'right' : s.x > W * 0.6 ? 'left' : side });
     };
     call(wordT('day1', 'messages') - 0.1, SAY.cash - 0.1, V(ROOMS[1].x + 0.4, ROOMS[1].y + 2.0, 33.0), 'MESSAGES: NOT SENT', 'right');
     call(wordT('day1', 'your') - 0.1, SAY.cash - 0.1, V(ROOMS[2].x - 0.8, ROOMS[2].y + 2.0, 33.6), 'BANK APP: LOADING…', 'left');
     call(T_FLIGHTS + 0.2, SAY.day3 - 0.1, V(BILL.x - 4, BILL.y - BILL.h / 2 - 0.2, BILL.z - 0.05), 'EVERY FLIGHT GROUNDED', 'right');
-    call(T_SKY + 0.6, T_RADIO - 0.1, satPos(t), 'GPS SATELLITE · 20,200 KM', 'left');
+    call(T_SKY + 0.6, T_RADIO - 0.1, satPos(t), 'GPS SATELLITE · 20,200 KM', 'right');
     call(T_RADIO + 0.2, T_CALL - 0.1, V(LAWN_C.x, 0.9, LAWN_C.z), 'BATTERY RADIO', 'right');
     call(T_CALL + 0.4, SAY.day5 - 0.1, V(CALLER.x, 2.05, CALLER.z), 'CALL CONNECTED ✓', 'left');
     call(SAY.real + 1.2, T_CUT - 0.3, V(0, GR + 0.6, 0).applyAxisAngle(V(1, 0, 0), -0.5), '≈ 600 UNDERSEA CABLES', 'right', false);
-    call(wordT('real', 'its') + 0.1, T_CUT - 0.2, ll2v(30, -45, GR + 0.3).applyAxisAngle(V(0, 1, 0), globeRot(t)), '99% OF DATA BETWEEN CONTINENTS', 'left');
+    call(wordT('real', 'hundreds') + 0.1, T_CUT - 0.2, ll2v(30, -45, GR + 0.3).applyAxisAngle(V(0, 1, 0), globeRot(t)), '99% OF DATA BETWEEN CONTINENTS', 'left');
     call(T_CUT + 0.15, SAY.day7, cutMid(t), 'CUT', 'right', true);
     return out;
   },
@@ -508,8 +538,8 @@ export default {
     renderer.toneMappingExposure = 1.0;
     ctx.grain = 0; ctx.vignette = 0; ctx.handheld = 0;
     ctx.grade = { brightness: 1.0, contrast: 1.0, saturate: 1.0, sepia: 0 };
-    ctx.post = { layered: true, bloom: { strength: 0.5, radius: 0.5, threshold: 1.15 }, dof: { focus: 10, aperture: 0.004, maxBlur: 0.012, farBlur: 0.25 },
-      grade: { contrast: 1.1, saturation: 1.08, lift: [0.0, 0.006, 0.018], gain: [1.03, 1.0, 0.97], split: 0.12, vignette: 0.3, grain: 0.035, ca: 0.0014 } };
+    ctx.post = { layered: true, bloom: { strength: 0.62, radius: 0.55, threshold: 1.1 }, dof: { focus: 10, aperture: 0.004, maxBlur: 0.012, farBlur: 0.25 },
+      grade: { contrast: 1.17, saturation: 1.16, lift: [0.0, 0.008, 0.024], gain: [1.05, 1.0, 0.95], split: 0.16, vignette: 0.34, grain: 0.03, ca: 0.0014 } };
     if (this.css && typeof document !== 'undefined') { const s = document.createElement('style'); s.textContent = this.css; document.head.appendChild(s); }
     const st = this.st = {}; window.__st = st;
     const IU = st.IU = makeIU();
@@ -665,6 +695,7 @@ export default {
     ctx.motionBlur = { samples: fast || trauma(t) > 0.2 ? 4 : 2, shutter: 0.5, reuseDepth: true };
     if (DBG?.mb) ctx.motionBlur.samples = DBG.mb;
     ctx.renderer.shadowMap.autoUpdate = false; ctx.renderer.shadowMap.needsUpdate = true;
+    ctx.flashColor = '#ffffff'; ctx.flash = FLASHES.reduce((m, t0) => Math.max(m, t >= t0 ? 0.75 * Math.exp(-(t - t0) / 0.06) : 0), 0);
   },
 
   pose(ctx, t) {
@@ -685,7 +716,7 @@ export default {
     poseCamera(cam, c);
     ctx.view = { scene: st.scene, camera: cam };
     const look = c.look;
-    ctx.dof = OV?.pos ? { focus: 10, aperture: 0, farBlur: 0 } : { focus: c.pos.distanceTo(look), aperture: 0.004, farBlur: 0.22 };
+    ctx.dof = OV?.pos ? { focus: 10, aperture: 0, farBlur: 0 } : { focus: c.pos.distanceTo(look), aperture: 0.003, farBlur: 0.18 };
 
     // ---- light
     const L = todAt(t);
