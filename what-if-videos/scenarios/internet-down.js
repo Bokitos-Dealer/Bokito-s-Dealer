@@ -25,7 +25,7 @@ const DBG = (() => { try { const q = typeof location !== 'undefined' && new URLS
 
 // ------------------------------------------------------------------ the story, timed by the narration
 const ORDER = ['hook', 'goal', 'day1', 'cash', 'day2', 'day3', 'twist', 'day5', 'cost', 'real', 'day7', 'cta'];
-const GAP = { hook: 0.12, goal: 0.25, cost: 0.25, real: 0.35, day7: 0.35, cta: 0.3 };   // the hook starts at once
+const GAP = { hook: 0.12, goal: 0.25, day1: 1.05, cost: 0.25, real: 0.35, day7: 0.35, cta: 0.3 };   // a real stop before day one, filled by the DAY 1 slam   // the hook starts at once
 const SAY = {};
 { let t = 0; for (const k of ORDER) { SAY[k] = t + (GAP[k] ?? 0.2); t = SAY[k] + VO[k].dur; } }
 const wordT = (key, word, nth = 0) => { let n = 0; for (const [w, s] of VO[key].words) if (w.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(word.replace(/'/g, '')) && n++ === nth) return SAY[key] + s; throw new Error(`no "${word}" in ${key}`); };
@@ -85,6 +85,7 @@ function buildCaptions() {
       out.push([at + c[0][1] - 0.04, at + (next ? Math.min(next[0][1], c[c.length - 1][2] + 0.45) : c[c.length - 1][2] + 0.35), c.map((x) => x[0]).join(' '), c.map((x) => [x[0].replace(/\.\.\.$/, '…'), at + x[1], x[3]])]);
     });
   }
+  for (let i = out.length - 1; i >= 0; i--) if (/^(day (one|two|three|five)\.?)$/i.test(out[i][2].trim())) out.splice(i, 1);
   out.sort((x, y) => x[0] - y[0]);
   for (let i = 0; i < out.length - 1; i++) out[i][1] = Math.min(out[i][1], out[i + 1][0] - 0.01);
   return out;
@@ -198,6 +199,9 @@ const PUNCH = [                                                         // jump 
 const CUTS = [...SHOTS.map((s) => s.t0), ...PUNCH.map((p) => p[0])].sort((a, b) => a - b);
 const shotIdx = (t) => { let i = 0; while (i < CUTS.length - 1 && t >= CUTS[i + 1]) i++; return i; };
 const punchAt = (t) => { const s0 = SHOTS[shotOf(t)].t0; let f = 1; for (const [t0, k] of PUNCH) if (t >= t0 && t0 >= s0) f = k; return f; };
+// chapter stamps: a big DAY n slams in on each day (day one gets its own beat of silence before the voice)
+const STAMPS = [[SAY.day1 - 0.9, SAY.day1 + 0.6, 'DAY 1'], [SAY.day2 - 0.08, SAY.day2 + 0.85, 'DAY 2'], [SAY.day3 - 0.08, SAY.day3 + 0.85, 'DAY 3'],
+  [SAY.day5 - 0.08, SAY.day5 + 0.85, 'DAY 5'], [W_('day7', 'seven') - 0.12, W_('day7', 'seven') + 0.95, 'DAY 7']];
 // a white flash on the big cuts (each new day, the twist, the globe, the comeback)
 const FLASHES = [SAY.day1, SAY.day2, SAY.day3, SAY.twist, SAY.day5, SAY.real, T_BACK];
 function crAt(keys, t, f) {
@@ -213,7 +217,7 @@ function crAt(keys, t, f) {
     return (2 * u3 - 3 * u2 + 1) * B[j] + (u3 - 2 * u2 + u) * m1 + (-2 * u3 + 3 * u2) * C[j] + (u3 - u2) * m2;
   });
 }
-const SHAKES = [[T_DOWN, 0.55], [T_DECLINE, 0.4], [W_('day2', 'grounded'), 0.3], [W_('cost', 'forty'), 0.3], [T_CUT, 0.55], [T_NOTIF, 0.5], [W_('day7', 'single'), 0.35], [W_('day7', 'notification'), 0.45]];
+const SHAKES = [[SAY.day1 - 0.9, 0.45], [T_DOWN, 0.55], [T_DECLINE, 0.4], [W_('day2', 'grounded'), 0.3], [W_('cost', 'forty'), 0.3], [T_CUT, 0.55], [T_NOTIF, 0.5], [W_('day7', 'single'), 0.35], [W_('day7', 'notification'), 0.45]];
 const trauma = (t) => SHAKES.reduce((s, [t0, a]) => s + (t >= t0 ? a * Math.max(0, 1 - (t - t0) / 0.8) : 0), 0);
 function camAt(t) {
   const S = SHOTS[shotOf(t)];
@@ -408,6 +412,11 @@ function buildAudio() {
   // a whoosh into every new shot, a soft click on every jump zoom
   SHOTS.slice(1).forEach((sh, i) => { if (!sh.stage && Math.abs(sh.t0 - SAY.cta) > 0.3) fx('sample', { file: 'sfx/2604.wav', t: sh.t0 - 0.14, level: 0.15 + 0.05 * hash(i, 11), pan: -0.3 + 0.6 * hash(i, 12) }); });
   PUNCH.forEach(([t0], i) => fx('sample', { file: 'sfx/1490.wav', t: t0 - 0.01, level: 0.07, pan: -0.2 + 0.4 * hash(i, 13) }));
+  STAMPS.forEach(([a], i) => {                                           // a whoosh in and a low hit on each stamp, bigger on day one
+    fx('sample', { file: 'sfx/2604.wav', t: a - 0.22, level: i ? 0.14 : 0.3 });
+    A.push({ type: 'subdrop', t: a + 0.04, dur: i ? 0.6 : 0.95, level: i ? 0.22 : 0.42, free: true });
+    if (!i) A.push(S_('sfx/2896.wav', a + 0.04, { level: 0.3, free: true, dur: 0.8, fout: 0.35 }));
+  });
   const talking = (t) => { let q = 0; for (const key of ORDER) { const at = SAY[key]; q = Math.max(q, smooth(at - 0.3, at - 0.05, t) * (1 - smooth(at + VO[key].dur, at + VO[key].dur + 0.35, t))); } return q; };
   A.push({ type: 'fxduck', keys: keysEvery((t) => 1 - 0.5 * talking(t), 0.04) });
   // music: tension for the first three days, then something warmer once people find each other
@@ -470,6 +479,10 @@ const CAPTION_CSS = `#title { display: none !important; }
 #caption span { font-family: 'MontB', sans-serif; font-style: normal; font-weight: 900; font-size: 98px; line-height: 1.04; letter-spacing: -1px; text-transform: uppercase; color: #fff; text-shadow: ${OUTLINE}, 0 12px 26px rgba(0,0,0,0.55); }
 #caption .cw { color: #ffffff; }
 #caption .cw.hl { color: #ffd84a; font-style: normal; }
+#daystamp { position: absolute; left: 0; right: 0; top: 520px; text-align: center; opacity: 0; pointer-events: none; transform-origin: 50% 50%; }
+#daystamp b { display: block; font-family: 'MontB', sans-serif; font-weight: 900; font-size: 250px; line-height: 1; letter-spacing: -6px; color: #fff;
+  text-shadow: ${OUTLINE}, 0 0 40px rgba(255,90,70,0.85), 0 0 110px rgba(255,60,40,0.55), 0 16px 40px rgba(0,0,0,0.6); }
+#daystamp i { display: block; margin: 18px auto 0; height: 16px; border-radius: 8px; background: linear-gradient(90deg, #ff6b6b, #ffb347); box-shadow: 0 0 22px rgba(255,110,80,0.9), 0 0 0 4px #000; }
 `;
 
 // ------------------------------------------------------------------ the scenario
@@ -542,6 +555,7 @@ export default {
       grade: { contrast: 1.17, saturation: 1.16, lift: [0.0, 0.008, 0.024], gain: [1.05, 1.0, 0.95], split: 0.16, vignette: 0.34, grain: 0.03, ca: 0.0014 } };
     if (this.css && typeof document !== 'undefined') { const s = document.createElement('style'); s.textContent = this.css; document.head.appendChild(s); }
     const st = this.st = {}; window.__st = st;
+    if (typeof document !== 'undefined' && document.getElementById('ui')) { const d = document.createElement('div'); d.id = 'daystamp'; d.innerHTML = '<b></b><i></i>'; document.getElementById('ui').appendChild(d); st.stamp = d; }
     const IU = st.IU = makeIU();
     IU.uFlipCol.value.setRGB(0.9, 0.35, 0.35);                            // a dead screen glows a dull red
     const envScene = new THREE.Scene();
@@ -695,6 +709,18 @@ export default {
     ctx.motionBlur = { samples: fast || trauma(t) > 0.2 ? 4 : 2, shutter: 0.5, reuseDepth: true };
     if (DBG?.mb) ctx.motionBlur.samples = DBG.mb;
     ctx.renderer.shadowMap.autoUpdate = false; ctx.renderer.shadowMap.needsUpdate = true;
+    const st = this.st;
+    if (st.stamp) {
+      const S_ = STAMPS.find(([a, b]) => t >= a && t < b);
+      if (!S_) st.stamp.style.opacity = '0';
+      else {
+        const [a, b, txt] = S_, u = clamp((t - a) / 0.2), back = u <= 0 ? 0 : 1 + 2.70158 * Math.pow(u - 1, 3) + 1.70158 * Math.pow(u - 1, 2), out = clamp((t - (b - 0.18)) / 0.18);
+        if (st.stamp.firstChild.textContent !== txt) st.stamp.firstChild.textContent = txt;
+        st.stamp.style.opacity = (clamp(u * 3) * (1 - out)).toFixed(3);
+        st.stamp.style.transform = `scale(${((1.9 - 0.9 * back) * (1 + 0.035 * (t - a)) * (1 + 0.25 * out)).toFixed(4)})`;
+        st.stamp.lastChild.style.width = `${(clamp((t - a - 0.12) / 0.3) * 520).toFixed(0)}px`;
+      }
+    }
     ctx.flashColor = '#ffffff'; ctx.flash = FLASHES.reduce((m, t0) => Math.max(m, t >= t0 ? 0.75 * Math.exp(-(t - t0) / 0.06) : 0), 0);
   },
 
