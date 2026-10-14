@@ -440,7 +440,7 @@ function buildAudio() {
   for (let i = 0; i < 12; i++) fx('sample', { file: 'sfx/2364.wav', t: T_SHELVES + i * 0.17, level: 0.08 + 0.04 * hash(i, 2), pan: -0.5 + hash(i, 3) });
   // the twist: evening, a satellite, radio static and a voice, a phone ringing through
   A.push(S_('sfx/1789.wav', SAY.twist, { dur: SAY.day5 - SAY.twist, level: 0.22, fin: 1.0, fout: 0.8 }));
-  fx('sparkle', { t: T_SKY, dur: 1.6, count: 9, f: [1600, 4200], level: 0.14, seed: 8 });
+  fx('sparkle', { t: W_('twist', 'satellites') + 0.55, dur: 1.4, count: 9, f: [1600, 4200], level: 0.12, seed: 8 });   // after the word, not on it
   A.push(S_('sfx/2563.wav', T_RADIO - 0.05, { dur: T_CALL - T_RADIO + 0.4, level: 0.35, fin: 0.05, fout: 0.3 }));
   for (let i = 0; i < 2; i++) fx('chime', { t: T_CALL + 0.2 + i * 0.55, level: 0.06, freq: 880 });
   // day five: kids playing
