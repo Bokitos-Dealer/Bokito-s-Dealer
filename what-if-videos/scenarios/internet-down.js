@@ -406,9 +406,9 @@ function buildAudio() {
   const keysEvery = (f, step = 0.05) => { const ks = []; for (let t = 0; t <= DURATION; t += step) ks.push([+t.toFixed(2), +f(t).toFixed(3)]); return ks; };
   for (const key of ORDER) A.push(S_(VO[key].file, SAY[key], { level: 1.35, free: true, verb: 0.025, fin: 0.005, fout: 0.03 }));
   // a whoosh into every new shot, a soft click on every jump zoom
-  SHOTS.slice(1).forEach((sh, i) => { if (!sh.stage) fx('sample', { file: 'sfx/2604.wav', t: sh.t0 - 0.14, level: 0.15 + 0.05 * hash(i, 11), pan: -0.3 + 0.6 * hash(i, 12) }); });
+  SHOTS.slice(1).forEach((sh, i) => { if (!sh.stage && Math.abs(sh.t0 - SAY.cta) > 0.3) fx('sample', { file: 'sfx/2604.wav', t: sh.t0 - 0.14, level: 0.15 + 0.05 * hash(i, 11), pan: -0.3 + 0.6 * hash(i, 12) }); });
   PUNCH.forEach(([t0], i) => fx('sample', { file: 'sfx/1490.wav', t: t0 - 0.01, level: 0.07, pan: -0.2 + 0.4 * hash(i, 13) }));
-  const talking = (t) => { let q = 0; for (const key of ORDER) { const at = SAY[key]; q = Math.max(q, smooth(at - 0.12, at, t) * (1 - smooth(at + VO[key].dur, at + VO[key].dur + 0.35, t))); } return q; };
+  const talking = (t) => { let q = 0; for (const key of ORDER) { const at = SAY[key]; q = Math.max(q, smooth(at - 0.3, at - 0.05, t) * (1 - smooth(at + VO[key].dur, at + VO[key].dur + 0.35, t))); } return q; };
   A.push({ type: 'fxduck', keys: keysEvery((t) => 1 - 0.5 * talking(t), 0.04) });
   // music: tension for the first three days, then something warmer once people find each other
   A.push(S_('music/464.mp3', 0, { offset: 4, level: 0.48, fin: 0.3, fout: 1.2, dur: SAY.twist + 0.6, keys: keysEvery((t) => 1 - 0.7 * talking(t)) }));
@@ -440,15 +440,15 @@ function buildAudio() {
   fx('count', { t0: SAY.cost + 0.3, t1: SAY.real - 0.4, from: 22, to: 36, level: 0.08, seed: 9 });
   // the cable cut
   fx('sample', { file: 'sfx/2604.wav', t: SAY.real - 0.1, level: 0.3 });
-  A.push(S_('sfx/1022.wav', T_CUT, { level: 0.45, free: true }));
-  A.push({ type: 'subdrop', t: T_CUT, dur: 1.2, level: 0.4, free: true });
+  const T_CUTHIT = W_('real', 'one') + 0.22;                             // after "cut one," so the hit never masks the words
+  A.push(S_('sfx/1022.wav', T_CUTHIT, { level: 0.4, free: true }));
+  A.push({ type: 'subdrop', t: T_CUTHIT, dur: 1.2, level: 0.4, free: true });
   fx('sparkle', { t: T_CUT + 0.5, dur: 1.4, count: 12, f: [1800, 5200], level: 0.14, seed: 10 });
   // day seven: a riser, then every notification at once
   fx('riser', { t0: T_BACK - 0.6, t1: T_NOTIF, level: 0.18, curve: 2.4 });
-  for (let i = 0; i < 34; i++) { const t = T_NOTIF + Math.pow(i / 34, 1.4) * 1.9; fx('chirp', { t, level: 0.09 + 0.05 * hash(i, 4), seed: 100 + i, f: [1700 + 600 * hash(i, 5), 2300 + 600 * hash(i, 6)], pan: -0.8 + 1.6 * hash(i, 7) }); }
-  for (let i = 0; i < 14; i++) fx('sample', { file: 'sfx/1124.wav', t: T_NOTIF + i * 0.11, level: 0.12, pan: -0.6 + hash(i, 8) * 1.2 });
-  A.push(S_('sfx/2896.wav', T_NOTIF, { level: 0.4, free: true }));
-  fx('sample', { file: 'sfx/2604.wav', t: SAY.cta + 0.2, level: 0.3 });
+  for (let i = 0; i < 34; i++) { const t = T_NOTIF + Math.pow(i / 34, 1.4) * 1.9; if (t > SAY.cta - 0.7) continue; fx('chirp', { t, level: 0.09 + 0.05 * hash(i, 4), seed: 100 + i, f: [1700 + 600 * hash(i, 5), 2300 + 600 * hash(i, 6)], pan: -0.8 + 1.6 * hash(i, 7) }); }
+  for (let i = 0; i < 14; i++) { const t = T_NOTIF + i * 0.11; if (t < SAY.cta - 0.7) fx('sample', { file: 'sfx/1124.wav', t, level: 0.12, dur: 0.35, fout: 0.12, pan: -0.6 + hash(i, 8) * 1.2 }); }   // short, and clear of the last line
+  A.push(S_('sfx/2896.wav', T_NOTIF, { level: 0.4, free: true, dur: SAY.cta - T_NOTIF - 0.25, fout: 0.6 }));   // the boom rings out before the last line
   return A;
 }
 
