@@ -26,10 +26,10 @@ No pull requests. Never put model names in commits.
 The owner's feedback on v1: too slow, the voice rushed with no natural stops, graphics flat, retention weak. Every
 episode now follows `scenarios/internet-down.js` v2:
 
-- **Voice:** Kokoro `{am_puck 0.6, am_michael 0.4}` (the owner picked it over Chatterbox), `speed 1.12`, `pause 0.34`,
-  `beat 0.42`. Write `|` in a line for a deliberate human pause: after every section opener ("Day one. | You wake
-  up…"), before and after punchlines ("Declined. | Cash only. |"), after rhetorical questions ("Flights? | Grounded.").
-  The voice must never sound rushed; the pace comes from the editing, not from talking faster.
+- **Voice:** Kokoro `{am_puck 0.6, am_michael 0.4}` (the owner picked it over Chatterbox), `speed 1.16`, `pause 0.26`,
+  `beat 0.3`. Write `|` for a short human stop **only after a section opener** ("Day one. | You wake up…", "But here's
+  the crazy part. | …"). The owner found stops in the middle of sentences too much: never put `|` mid-sentence.
+  Gaps between lines 0.2 s (`GAP`). It should feel quick but not rushed.
 - **Script:** conversational, like a person telling a friend: contractions, "honestly?", "trust me", "be honest",
   short sentences, staccato on the payoff ("Every. | Single. | Notification."). Open a loop in line 2 ("trust me,
   day seven is the wildest part"). 65–72 s total (over a minute qualifies for TikTok Creator Rewards).
