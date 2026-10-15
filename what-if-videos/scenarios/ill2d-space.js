@@ -28,16 +28,15 @@ export function stadium(x, y, s = 1) {
     <rect x="-140" y="-48" width="280" height="36" fill="none" stroke="#fff" stroke-width="4"/><line x1="0" y1="-48" x2="0" y2="-12" stroke="#fff" stroke-width="4"/>
     ${[-260, 260].map((lx) => `<rect x="${lx - 6}" y="-200" width="12" height="160" fill="#5b6378"/><rect x="${lx - 30}" y="-210" width="60" height="26" rx="4" fill="#fff8d6"/>`).join('')}</g>`;
 }
-// orbit diagram: Earth at the centre-left, the asteroid's path curving in; `miss` bends the path away from Earth
-export function trajectory(x, y, s = 1, t = 0, { p = 0, miss = 0, ex = -200, ey = 160 } = {}) {
-  const P = (k) => { const a = lerp(-2.4, -0.15, k); return [ex + Math.cos(a) * 640 * (1 + 0.15 * miss * k * k), ey + Math.sin(a) * 640 * (1 - 0.12 * miss * k * k)]; };
+// path diagram: the asteroid curving in from the top-left towards Earth (bottom-right); `miss` bends it past
+export function trajectory(x, y, s = 1, t = 0, { p = 0, miss = 0 } = {}) {
+  const E = [300, 260], A0 = [-420, -480], M = [-380, 300], end = [E[0] + 40 * miss, E[1] - 330 * miss];
+  const P = (k) => [(1 - k) ** 2 * A0[0] + 2 * (1 - k) * k * M[0] + k * k * end[0], (1 - k) ** 2 * A0[1] + 2 * (1 - k) * k * M[1] + k * k * end[1]];
   let d = ''; for (let i = 0; i <= 40; i++) { const [px, py] = P(i / 40); d += (i ? ' L ' : 'M ') + `${px} ${py}`; }
   const [ax, ay] = P(clamp(p));
-  const [hx, hy] = P(1);
-  return `<g transform="${T(x, y, s)}"><circle cx="${ex}" cy="${ey}" r="640" fill="none" stroke="#2a3a6a" stroke-width="3" stroke-dasharray="10 12"/>
-    <path d="${d}" fill="none" stroke="${miss > 0.5 ? C.green : C.red}" stroke-width="8" stroke-dasharray="20 14" opacity="0.8"/>${earth(ex + 600, ey - 20, 90, t)}
-    ${miss < 0.5 ? `<circle cx="${hx}" cy="${hy}" r="${40 + 10 * Math.sin(t * 6)}" fill="none" stroke="${C.red}" stroke-width="8"/>` : ''}
-    <g transform="translate(${ax} ${ay}) scale(0.35)">${asteroid(0, 0, 1, t)}</g></g>`;
+  return `<g transform="${T(x, y, s)}"><path d="${d}" fill="none" stroke="${miss > 0.5 ? C.green : C.red}" stroke-width="8" stroke-dasharray="20 14" opacity="0.85"/>${earth(E[0], E[1], 120, t)}
+    ${miss < 0.5 ? `<circle cx="${E[0] - 60}" cy="${E[1] - 40}" r="${46 + 10 * Math.sin(t * 6)}" fill="none" stroke="${C.red}" stroke-width="8"/>` : `${outlined(E[0], E[1] - 420, 50, C.green, 'MISS ✓', 6)}`}
+    <g transform="translate(${ax} ${ay}) scale(0.4)">${asteroid(0, 0, 1, t)}</g></g>`;
 }
 export function crackedWindow(x, y, s = 1, crack = 0, t = 0) {
   const lines = [[0, 0, -120, -90], [0, 0, 110, -120], [0, 0, 140, 60], [0, 0, -90, 130], [0, 0, 20, 160], [-60, -45, -130, -10], [55, -60, 120, -40]];

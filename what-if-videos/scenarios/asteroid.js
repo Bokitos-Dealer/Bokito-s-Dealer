@@ -56,8 +56,8 @@ at(SAY.found - 0.95, (t, u) => `${sky(t)}${Sp.observatory(540, 1260, 1.2, t)}${I
 at(W('found', 'telescopes'), (t, u) => `${Sp.space(t)}<circle cx="540" cy="860" r="380" fill="#000" stroke="#c3c9d6" stroke-width="26" filter="url(#drop)"/><clipPath id="eye"><circle cx="540" cy="860" r="370"/></clipPath>
   <g clip-path="url(#eye)">${G.stars(t, 40, 9, 1, 1300)}${Sp.asteroid(540 + 80 * Math.sin(u), 860, 0.6, t)}<circle cx="${540 + 80 * Math.sin(u)}" cy="860" r="${110 + 10 * Math.sin(t * 6)}" fill="none" stroke="${C.red}" stroke-width="8"/></g>
   <line x1="540" y1="490" x2="540" y2="1230" stroke="#fff" stroke-width="2" opacity="0.4"/><line x1="170" y1="860" x2="910" y2="860" stroke="#fff" stroke-width="2" opacity="0.4"/>`);
-at(W('found', 'astronomers'), (t, u) => `${night('#7fe8ff')}${Sp.trajectory(540, 860, 0.85, t, { p: clamp(u / 2.5) })}${I.person(860, 1420, 0.6, { shirt: '#f6f7fb', pose: 'talk', t })}`);
-at(W('found', 'impact'), (t, u) => `${Sp.space(t, '#ff3b3b')}<g transform="translate(540 860) scale(${ease.back(u / 0.35)})">${G.outlined(0, -60, 110, '#fff', 'IMPACT IN', 10)}${G.outlined(0, 120, 200, C.red, '10 YEARS', 14)}</g>`);
+at(W('found', 'astronomers'), (t, u) => `${night('#7fe8ff')}${Sp.trajectory(540, 860, 1, t, { p: clamp(u / 2.5) })}${I.person(180, 1360, 0.6, { shirt: '#f6f7fb', pose: 'talk', t })}`);
+at(W('found', 'impact'), (t, u) => `${Sp.space(t, '#ff3b3b')}<g transform="translate(540 860) scale(${ease.back(u / 0.35)})">${G.outlined(0, -60, 110, '#fff', 'IMPACT IN', 10)}${G.outlined(0, 120, 170, C.red, '10 YEARS', 13)}</g>`);
 // ---------- size
 at(W('size', 'the'), (t, u) => { const tm = W('size', 'mostly') - W('size', 'the');
   return u < tm - 0.2 ? `${I.bg('#7cc7ff', '#ffd9a8')}${I.cityline(1250, t, 0, '#5b6b9a', 8)}<rect y="1250" width="1080" height="670" fill="#8a93a8"/>
@@ -83,7 +83,7 @@ at(SAY.twist - 0.1, (t, u) => `${I.bg('#120a2e', '#3a1a6b', '#c77dff', 820)}${G.
   <g transform="translate(540 820) rotate(${u * 40})" opacity="0.5">${[0, 1, 2, 3, 4, 5].map((i) => `<path d="M 0 0 L ${Math.cos(i) * 600} ${Math.sin(i) * 600}" stroke="#c77dff" stroke-width="40" opacity="0.3"/>`).join('')}</g>${I.stamp('THE TWIST', u, 860)}`);
 at(W('twist', 'you'), (t, u) => `${Sp.space(t, '#ff5e5b')}${Sp.asteroid(540, 860, 2.2, t)}<g transform="translate(540 860) scale(${1 + 0.1 * Math.sin(t * 10)})"><text y="40" font-size="200" text-anchor="middle">💥</text></g>${I.xmark(830, 520, 0.85, u - 0.5)}`);
 at(W('twist', 'if'), (t, u) => `${Sp.space(t, C.green)}${Sp.nudge(540, 900, 1.05, t, u / 1.3)}`);
-at(W('twist', 'because'), (t, u) => `${night(C.green)}${Sp.trajectory(540, 860, 0.85, t, { p: clamp(u / 2.4), miss: 1 })}${u > 1.6 ? I.check(840, 480, 0.8, u - 1.6) : ''}`);
+at(W('twist', 'because'), (t, u) => `${night(C.green)}${Sp.trajectory(540, 860, 1, t, { p: clamp(u / 2.4), miss: 1 })}${u > 1.6 ? I.check(840, 480, 0.8, u - 1.6) : ''}`);
 // ---------- could it happen?
 at(SAY.real, (t, u) => `${Sp.space(t, '#2f7bff')}${Sp.earth(540, 980, 300, t)}<text x="540" y="${560 + 10 * Math.sin(t * 4)}" font-family="MontB" font-weight="900" font-size="300" fill="${C.yellow}" text-anchor="middle" stroke="#000" stroke-width="12" paint-order="stroke" transform="rotate(${6 * Math.sin(t * 3)} 540 460)">?</text>`);
 at(W('real', 'big'), (t, u) => `${night(C.green)}${A.pie(540, 860, 0.9, 0.04)}${G.outlined(540, 1260, 90, C.yellow, 'VERY RARE', 9)}`);
