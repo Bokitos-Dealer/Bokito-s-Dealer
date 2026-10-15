@@ -57,8 +57,8 @@ at(SAY.day1 - 0.95, (t, u) => `${room(t)}${I.phone({ x: 700, y: 1000, s: 0.36, r
 at(W('day1', 'every'), (t, u) => `${tense()}${[...Array(6)].map((_, i) => { const x = 220 + (i % 3) * 320, y = 640 + Math.floor(i / 3) * 520, k = ease.back((u - i * 0.07) / 0.3);
   return `<g transform="translate(${x + I.wobble(t, 40, 5, i)} ${y}) scale(${0.62 * k})">${I.phone({ x: 0, y: 0, s: 1, rot: (i % 2 ? 4 : -4), id: 'al' + i, screen: K.screenAlert(t, 1) })}</g>`; }).join('')}`);
 at(W('day1', 'people'), (t, u) => { const left = 1 - ease.inOut(u / 2.2) * 0.85;
-  return `${store()}${I.shelves(540, 760, 0.8, t, left, left)}${[0, 1, 2, 3, 4].map((i) => I.person(160 + i * 190 + 20 * Math.sin(t * 2 + i), 1460, 0.55, { shirt: [C.coral, C.teal, C.yellow, '#c77dff', C.blue][i], pose: 'walk', t, seed: i, flip: i % 2 ? -1 : 1 })).join('')}
-  ${G.outlined(300, 1130, 50, C.blue, 'WATER', 7)}${G.outlined(780, 1130, 50, C.green, 'BATTERIES', 7)}`; });
+  return `${store()}${I.shelves(540, 700, 0.8, t, left, left)}${[0, 1, 2, 3, 4].map((i) => I.person(160 + i * 190 + 20 * Math.sin(t * 2 + i), 1330, 0.5, { shirt: [C.coral, C.teal, C.yellow, '#c77dff', C.blue][i], pose: 'walk', t, seed: i, flip: i % 2 ? -1 : 1 })).join('')}
+  ${G.outlined(300, 1050, 50, C.blue, 'WATER', 7)}${G.outlined(780, 1050, 50, C.green, 'BATTERIES', 7)}`; });
 at(W('day1', 'everyone'), (t, u) => `${I.bg('#1d1b45', '#2a2148', '#2f7bff', 760)}<rect y="1180" width="1080" height="740" fill="#1a1530"/>${K.tv(540, 640, 1, K.newsScreen(t), 'tvmain')}
   ${[[330, C.teal, 0], [540, C.coral, 1], [740, C.yellow, 2]].map(([x, col, i]) => I.person(x, 1330, 0.95, { shirt: col, face: 'panic', t, seed: i })).join('')}${I.couch(540, 1300, 1.25)}
   <rect width="1080" height="1920" fill="#2f7bff" opacity="${0.06 + 0.04 * Math.sin(t * 9)}"/>`);
