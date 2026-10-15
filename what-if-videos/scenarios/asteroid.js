@@ -62,7 +62,7 @@ at(W('found', 'impact'), (t, u) => `${Sp.space(t, '#ff3b3b')}<g transform="trans
 at(W('size', 'the'), (t, u) => { const tm = W('size', 'mostly') - W('size', 'the');
   return u < tm - 0.2 ? `${I.bg('#7cc7ff', '#ffd9a8')}${I.cityline(1250, t, 0, '#5b6b9a', 8)}<rect y="1250" width="1080" height="670" fill="#8a93a8"/>
     <line x1="${900 - 900 * clamp(u / 2)}" y1="${380 + 500 * clamp(u / 2)}" x2="${1100 - 900 * clamp(u / 2)}" y2="${300 + 500 * clamp(u / 2)}" stroke="#fff" stroke-width="20" stroke-linecap="round"/>
-    <circle cx="${900 - 900 * clamp(u / 2)}" cy="${380 + 500 * clamp(u / 2)}" r="34" fill="#fff8d6" filter="url(#glow)"/>${G.outlined(540, 520, 76, '#fff', 'RUSSIA, 2013', 8)}${G.outlined(540, 1400, 60, C.yellow, 'UNDER 20 M (65 FT)', 7)}`
+    <circle cx="${900 - 900 * clamp(u / 2)}" cy="${380 + 500 * clamp(u / 2)}" r="34" fill="#fff8d6" filter="url(#glow)"/>${G.outlined(540, 520, 76, '#fff', 'RUSSIA, 2013', 8)}${G.outlined(540, 640, 60, C.yellow, 'UNDER 20 M (65 FT)', 7)}`
     : `${I.bg('#2a3352', '#4a5a88', '#ffd27a', 820)}${Sp.crackedWindow(540, 860, 1.4, (u - tm + 0.2) / 0.5, t)}${G.outlined(540, 1300, 70, C.yellow, 'BROKEN GLASS', 8)}`; });
 at(W('size', 'the', 1), (t, u) => { const k = ease.inOut((u - 0.6) / 1.2);
   return `${I.bg('#7cc7ff', '#d6efff')}<rect y="1300" width="1080" height="620" fill="#8bc77b"/>
