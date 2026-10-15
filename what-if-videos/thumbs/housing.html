@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cover: What if you could never afford a home?</title>
+<style>
+  @font-face { font-family: 'Mont'; font-weight: 900; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'MontB'; font-weight: 900; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'InterW'; font-weight: 800; src: url(/node_modules/@fontsource/inter/files/inter-latin-800-normal.woff2) format('woff2'); }
+  html, body { margin: 0; background: #000; }
+  .cover { position: relative; width: 1080px; height: 1920px; overflow: hidden; color: #fff; font-family: 'Mont', sans-serif; background: #7cc7ff; }
+  .art { position: absolute; inset: 0; overflow: hidden; }
+  .art svg { display: block; }
+  .art svg { display: block; width: 1080px; height: 1920px; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,10,28,0.92) 0%, rgba(8,10,28,0.6) 40%, rgba(8,10,28,0) 62%, rgba(8,10,28,0) 85%, rgba(8,10,28,0.6) 100%); }
+  .title { position: absolute; left: 30px; right: 30px; top: 150px; text-align: center; }
+  .l1 { font-weight: 900; font-size: 124px; line-height: 0.98; letter-spacing: -2px; text-shadow: 0 6px 24px rgba(0,0,0,0.9), 0 0 6px #000; }
+  .l2 { font-weight: 900; font-size: 186px; line-height: 0.95; letter-spacing: -3px; margin-top: 16px; white-space: nowrap; color: #ffd84a;
+    text-shadow: 0 0 40px rgba(255,200,60,0.7), 0 10px 30px rgba(0,0,0,0.9), 0 0 6px #000; }
+  .tag { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'InterW'; font-weight: 800; font-size: 40px; letter-spacing: 0.16em; color: #fff;
+    text-shadow: 0 0 18px rgba(0,0,0,0.95), 0 2px 6px rgba(0,0,0,0.9); }
+</style>
+</head>
+<body>
+<div class="cover" id="cover">
+  <div class="art" id="art"></div>
+  <div class="shade"></div>
+  <div class="title"><div class="l1">WHAT IF YOU<br>COULD NEVER</div><div class="l2">AFFORD<br>A HOME?</div></div>
+</div>
+<script type="module">
+  // cover art: a house behind a price tag that keeps rising
+  const I = await import('/scenarios/ill2d.js'), B = await import('/scenarios/ill2d-bees.js');
+  const art = `${I.bg('#2a1f5c', '#4b3a8c', '#ff5e5b', 1300)}<rect y="1640" width="1080" height="280" fill="#3a2a5c"/>${I.house(540, 1650, 2.2, '#ffb27a', '#c0392b')}
+    <g transform="translate(560 1080) rotate(-8)">${B.tag(0, 0, 2.0, 'HOUSE', 999999, 999999, 1, '$').replace('999999.00', '999,999')}</g>${I.vignette()}`;
+  document.getElementById('art').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">${I.DEFS}${art}</svg>`;
+  document.fonts.ready.then(() => document.body.dataset.ready = '1');
+</script>
+</body>
+</html>
