@@ -2,7 +2,7 @@
   "id": "internet-down-2d",
   "engine": "chatterbox",
   "ref": "/home/user/tts/ref/voice.wav",
-  "tempo": 1.08,
+  "tempo": 1.12,
   "exaggeration": 0.5,
   "cfg": 0.5,
   "temperature": 0.7,

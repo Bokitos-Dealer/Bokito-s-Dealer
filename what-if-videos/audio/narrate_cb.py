@@ -22,6 +22,26 @@ GEN = '/home/user/tts/cb.py'
 norm = lambda s: re.sub(r'[^a-z0-9 ]', '', s.lower().replace('-', ' ')).split()
 
 
+def squeeze(a, sr, maxgap=0.38, keep=0.3):
+    """Shorten every pause longer than maxgap seconds to `keep` seconds (natural rhythm, no dead air)."""
+    hop = int(0.01 * sr); n = len(a) // hop
+    db = 20 * np.log10(np.sqrt(np.mean(a[:n * hop].reshape(n, hop) ** 2, axis=1)) + 1e-9)
+    quiet = db < (db.max() - 38)
+    out, i, last = [], 0, 0
+    while i < n:
+        if quiet[i]:
+            j = i
+            while j < n and quiet[j]: j += 1
+            if (j - i) * 0.01 > maxgap:
+                cut0, cut1 = (i + int(keep / 2 / 0.01)) * hop, (j - int(keep / 2 / 0.01)) * hop
+                out.append(a[last:cut0]); last = cut1
+            i = j
+        else:
+            i += 1
+    out.append(a[last:])
+    return np.concatenate(out)
+
+
 def main():
     spec = json.load(open(sys.argv[1]))
     vid = spec['id']
@@ -43,7 +63,7 @@ def main():
             tmp = os.path.join(raw, f'{key}-{attempt}-fast.wav')
             subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', wav, '-af', f"atempo={spec.get('tempo', 1.08)}", '-ar', '24000', '-ac', '1', tmp], check=True)
             a, sr = sf.read(tmp)
-            audio = level(trim(np.asarray(a, dtype=np.float64), sr))
+            audio = level(squeeze(trim(np.asarray(a, dtype=np.float64), sr), sr, spec.get('maxgap', 0.38), spec.get('gap', 0.3)))
             a16 = resample_poly(audio, 2, 3).astype(np.float32)
             segs, _ = stt.transcribe(a16, word_timestamps=True)
             words = [[w.word.strip(), round(w.start, 3), round(w.end, 3)] for s in segs for w in s.words]

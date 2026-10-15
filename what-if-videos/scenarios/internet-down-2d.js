@@ -27,7 +27,7 @@ const endOf = (k) => SAY[k] + VO[k].dur;
 const FADE = [endOf('cta') + 0.6, endOf('cta') + 1.2], DURATION = FADE[1] + 0.2;
 
 // ------------------------------------------------------------------ captions: two or three words, bold, keywords in yellow
-const NUMS = [['forty-three billion dollars', '$43B (€40B)'], ['2024', '2024'], ['ten seconds', '10 SECONDS'], ['seven days', '7 DAYS']];
+const NUMS = [['forty-three billion dollars', '$43B (€40B)'], ['43 billion dollars', '$43B (€40B)'], ['43 billion', '$43B (€40B)'], ['2024', '2024'], ['ten seconds', '10 SECONDS'], ['seven days', '7 DAYS']];
 const KEYWORDS = /^(died|entire|wifi|phone|everywhere|week|panic|seconds|days|nothing|messages|maps|spinning|coffee|declined|cash|offices|home|grounded|thousands|flights|shelves|fresh|crazy|gps|satellites|radio|works|call|wild|knock|talk|billion|impossible|cables|ocean|cut|around|back|notification|once|last|comments)$/i;
 function buildCaptions() {
   const out = [];
@@ -123,11 +123,10 @@ at(W('intro', 'heres'), (t, u) => {
 });
 // ---------- the shared feeling
 at(W('relate', 'you'), (t, u) => { const lvl = Math.max(0, 3 - Math.floor(u * 1.6)), panic = u > 1.5;
-  return `${I.bg('#2b2260', '#463a8c', '#ffd84a', 760)}${I.couch(540, 1100, 1.15)}
-  ${I.person(540, 1110, 1.25, { shirt: C.teal, pose: panic ? 'panic' : 'stand', face: panic ? 'panic' : 'neutral', t })}
-  <rect x="180" y="1080" width="720" height="140" rx="40" fill="#6a5ad0"/>
-  <g transform="translate(540 470)">${I.wifi(0, 0, 1.6, lvl ? '#fff' : C.red, !lvl, lvl)}</g>
-  <g transform="translate(540 620)"><rect x="-200" y="-18" width="400" height="36" rx="18" fill="#000" opacity="0.35"/><rect x="-200" y="-18" width="${400 * ((u * 0.7) % 1)}" height="36" rx="18" fill="${C.yellow}"/></g>`; });
+  return `${I.bg('#2b2260', '#463a8c', '#ffd84a', 760)}
+  ${I.person(540, 1278, 1.3, { shirt: C.teal, pose: panic ? 'panic' : 'stand', face: panic ? 'panic' : 'neutral', t })}${I.couch(540, 1160, 1.2)}
+  <g transform="translate(540 420)">${I.wifi(0, 0, 1.6, lvl ? '#fff' : C.red, !lvl, lvl)}</g>
+  <g transform="translate(540 560)"><rect x="-200" y="-18" width="400" height="36" rx="18" fill="#000" opacity="0.35"/><rect x="-200" y="-18" width="${400 * ((u * 0.7) % 1)}" height="36" rx="18" fill="${C.yellow}"/></g>`; });
 at(W('relate', 'yeah'), (t, u) => `${I.bg('#3a1430', '#7a2a4a', '#ff5e5b', 820)}${I.person(540, 1500, 2.1, { shirt: C.teal, pose: 'panic', face: 'panic', t })}
   <text x="540" y="560" font-family="MontB" font-weight="900" font-size="150" fill="#fff" text-anchor="middle" stroke="#000" stroke-width="10" paint-order="stroke">0:${String(Math.max(0, 10 - Math.floor(u * 6))).padStart(2, '0')}</text>`);
 at(W('relate', 'now'), (t, u) => { const k = ease.back((u - 0.35) / 0.3);
@@ -155,7 +154,7 @@ at(W('cash', 'and'), (t, u) => `${night('#ffd84a', 820)}${I.wallet(540, 860, 1.0
 // ---------- day two
 at(SAY.day2 - 0.15, (t, u) => `${I.bg('#2a2a5c', '#e07a5f')}${I.cityline(1260, t, 0.3, '#232a55', 7)}<rect y="1260" width="1080" height="660" fill="#141a38"/>${I.officeBuilding(540, 1260, 0.95, t, 0.3)}${I.stamp('DAY 2', u, 560)}`);
 at(W('day2', 'offices'), (t, u) => `${I.bg('#2a2a5c', '#e07a5f')}<rect y="1260" width="1080" height="660" fill="#141a38"/>${I.officeBuilding(540, 1260, 0.95, t, clamp(u / 2))}
-  ${[0, 1, 2].map((i) => { const p = clamp((u - i * 0.3) / 2.2); return p > 0 ? I.person(540 + (i % 2 ? 1 : -1) * p * 520, 1300, 0.55, { shirt: [C.coral, C.teal, C.yellow][i], pose: 'walk', t, seed: i, flip: i % 2 ? 1 : -1 }) : ''; }).join('')}`);
+  ${[0, 1, 2].map((i) => { const p = clamp((u - i * 0.3) / 2.2); return p > 0 ? I.person(540 + (i % 2 ? 1 : -1) * (120 + p * 420), 1360, 0.8, { shirt: [C.coral, C.teal, C.yellow][i], pose: 'walk', t, seed: i, flip: i % 2 ? 1 : -1 }) : ''; }).join('')}`);
 at(W('day2', 'flights'), (t, u) => `${night('#ff5e5b', 800)}${I.board(540, 820, 1.05, t, u)}`);
 at(W('day2', 'grounded'), (t, u) => `${I.bg('#7cc7ff', '#d6efff')}<rect y="1050" width="1080" height="870" fill="#5c6478"/>${[0, 1, 2, 3].map((i) => `<rect x="${i * 300 + 40}" y="1180" width="160" height="16" rx="8" fill="#fff"/>`).join('')}
   ${I.plane(540, 980, 1.35, 0)}<g transform="translate(540 600) rotate(-8) scale(${ease.back((u - 0.15) / 0.3)})" opacity="${clamp((u - 0.15) * 6)}">
@@ -202,7 +201,7 @@ at(W('day5', 'like'), (t, u) => `${street(t)}${I.house(260, 1140, 1, '#ffb27a', 
 at(SAY.cost, (t, u) => `${night('#34c759', 820)}${I.globe(540, 860, 300, t, { dark: 1, spin: t * 0.1 })}
   ${[...Array(10)].map((_, i) => { const p = (u * 0.8 + i / 10) % 1, a = i * 0.63; return I.cash(540 + Math.cos(a) * (200 + p * 360), 860 + Math.sin(a) * (200 + p * 360) - p * 200, 0.5, i * 37 + t * 60); }).join('')}`);
 at(W('cost', 'forty'), (t, u) => { const v = Math.round(ease.out(u / 1.1) * 43);
-  return `${night('#34c759', 820)}${[...Array(12)].map((_, i) => I.cash(540 + (i % 3 - 1) * 60, 1180 - i * 26 * clamp(u * 2), 1, (i % 2 ? 4 : -4))).join('')}
+  return `${night('#34c759', 820)}${[...Array(12)].map((_, i) => I.cash(540 + (i % 3 - 1) * 60, 1300 - i * 22 * clamp(u * 2), 1, (i % 2 ? 4 : -4))).join('')}
   <text x="540" y="760" font-family="MontB" font-weight="900" font-size="230" fill="#7dffa6" text-anchor="middle" stroke="#000" stroke-width="12" paint-order="stroke">$${v}B</text>
   <text x="540" y="860" font-family="MontB" font-weight="900" font-size="64" fill="#fff" text-anchor="middle" opacity="${clamp((u - 0.6) * 4)}">(€40B) EVERY DAY</text>`; });
 // ---------- could it happen?
