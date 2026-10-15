@@ -72,10 +72,10 @@ export function spreadTree(x, y, s = 1, u = 0, t = 0) {
     for (let i = 0; i < n; i++) {
       const px = (i - (n - 1) / 2) * w, py = ys[r];
       if (r) { const parent = Math.floor(i / 3), pn = rows[r - 1], pw = r - 1 === 2 ? 100 : r - 1 === 1 ? 260 : 260, ppx = (parent - (pn - 1) / 2) * pw; g += `<line x1="${ppx}" y1="${ys[r - 1] + 30}" x2="${px}" y2="${py - 30}" stroke="${VIR}" stroke-width="${r === 3 ? 2 : 4}" opacity="${0.6 * show}"/>`; }
-      const sc = r === 3 ? 0.4 : r === 2 ? 0.6 : 1;
+      const sc = r === 3 ? 0.6 : r === 2 ? 1.1 : 1.8;
       g += `<g transform="translate(${px} ${py}) scale(${sc * ease.back(show)})"><circle cy="-18" r="18" fill="${r ? VIR : C.red}"/><rect x="-22" y="2" width="44" height="34" rx="16" fill="${r ? VIR : C.red}"/></g>`;
     }
-    g += outlined(430, ys[r] + 16, 54, C.yellow, String(n), 7).replace('text-anchor="middle"', 'text-anchor="end"');
+    g += outlined(-470, ys[r] + 24, 72, C.yellow, String(n), 8).replace('text-anchor="middle"', 'text-anchor="start"');
   });
   return `<g transform="${T(x, y, s)}">${g}</g>`;
 }

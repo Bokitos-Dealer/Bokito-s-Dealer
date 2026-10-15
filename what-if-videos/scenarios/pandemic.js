@@ -77,7 +77,7 @@ at(W('week1', 'and'), (t, u) => `${lab()}${I.person(540, 900, 0.8, { shirt: C.re
 at(SAY.math, (t, u) => `${lab()}${G.outlined(540, 860, 360, '#fff', '3', 16)}${G.outlined(540, 1200, 90, C.yellow, 'SMALL?', 9)}`);
 at(W('math', 'three'), (t, u) => `${lab()}${P.spreadTree(540, 900, 1.05, u, t)}`);
 at(W('math', 'after'), (t, u) => { const v = Math.round(Math.pow(3, Math.min(10, ease.out(u / 1.6) * 10)));
-  return `${lab()}${A.crowdGrid(540, 1000, 1, Math.floor(ease.out(u / 1.6) * 120))}${G.outlined(540, 560, 170, C.yellow, v.toLocaleString('en-US'), 13)}${G.outlined(540, 660, 56, '#fff', 'AFTER 10 ROUNDS', 7)}`; });
+  return `${lab()}${A.crowdGrid(540, 1060, 0.75, Math.floor(ease.out(u / 1.6) * 120))}${G.outlined(540, 560, 170, C.yellow, v.toLocaleString('en-US'), 13)}${G.outlined(540, 660, 56, '#fff', 'AFTER 10 ROUNDS', 7)}`; });
 // ---------- week three
 at(SAY.week3 - 0.15, (t, u) => `${night()}${G.hospital(540, 1300, 0.95, t, 0.8)}${I.stamp('WEEK 3', u, 520)}`);
 at(W('week3', 'hospitals'), (t, u) => `${I.bg('#e8f0ff', '#c9d6f0')}<rect y="1200" width="1080" height="720" fill="#b8c4dc"/>${[...Array(6)].map((_, i) => P.bed(260 + (i % 2) * 520, 640 + Math.floor(i / 2) * 260, 1.05, u > i * 0.2 ? 1 : 0, t)).join('')}
