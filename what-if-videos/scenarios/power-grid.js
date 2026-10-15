@@ -29,7 +29,7 @@ const FADE = [endOf('cta') + 0.6, endOf('cta') + 1.2], DURATION = FADE[1] + 0.2;
 
 // ------------------------------------------------------------------ captions: two or three words, bold, keywords in yellow
 const NUMS = [['ten percent', '10%'], ['10 percent', '10%'], ['10%', '10%'], ['thirty days', '30 DAYS'], ['30 days', '30 DAYS'], ['four days', '4 DAYS'], ['4 days', '4 DAYS'],
-  ['fifty million', '50 MILLION'], ['50 million', '50 MILLION'], ['2003', '2003'], ['2025', '2025'], ['day thirty', 'DAY 30'], ['day 30', 'DAY 30']];
+  ['fifty million', '50 MILLION'], ['50 million', '50 MILLION'], ['2003', '2003'], ['2025', '2025'], ['day thirty', 'DAY 30'], ['day 30', 'DAY 30'], ['oh', 'OOOOH']];
 const KEYWORDS = /^(power|month|storm|street|entire|grid|flicker|never|fun|candles|stars|phone|towers|hours|fridge|bad|cards|gas|electricity|water|pumps|hospitals|generators|fuel|dark|quiet|share|crazy|hardest|switch|engineers|piece|transformers|years|already|america|spain|portugal|lights|neighborhood|miss|comments)$/i;
 function buildCaptions() {
   const out = [];
@@ -85,7 +85,7 @@ function daysAt(t) {
 const S = [];
 const at = (t0, draw) => S.push([t0, draw]);
 const night = (glow, gy) => I.bg('#0e1530', '#1d2a55', glow, gy);
-const darkCity = (t, on = 0, glow = null) => `${I.bg('#060a1c', '#141d40', glow, 900)}${G.stars(t, 70, 3)}${G.moon(820, 520, 64)}${I.cityline(1300, t, on, '#141b3a', 11)}<rect y="1300" width="1080" height="620" fill="#0b1026"/>`;
+const darkCity = (t, on = 0, glow = null) => `${I.bg('#060a1c', '#141d40', glow, 900)}${G.stars(t, 70, 3)}${G.moon(860, 800, 56)}${I.cityline(1300, t, on, '#141b3a', 11)}<rect y="1300" width="1080" height="620" fill="#0b1026"/>`;
 const litCity = (t) => `${I.bg('#0b1533', '#25356b', '#ffd27a', 1000)}${G.stars(t, 35, 5)}${G.moon(820, 520, 64)}${I.cityline(1300, t, 1, '#1b2550', 3)}<rect y="1300" width="1080" height="620" fill="#141d40"/>`;
 const pylons = (t, on = 1) => `${G.pylon(150, 1340, 0.75, { on })}${G.pylon(930, 1340, 0.75, { on })}${G.pylonWires(150, 930, 1340, 0.75, t, on)}`;
 const living = (t, on) => `${I.bg('#2b2260', '#463a8c', on ? '#ffd27a' : null, 760)}
@@ -103,7 +103,7 @@ const ROLE = [[330, C.teal], [540, C.coral], [750, C.yellow]];
 
 // ---------- the hook
 at(0, (t, u) => `${litCity(t)}${pylons(t, 1)}`);
-at(W('hook', 'power'), (t, u) => `${I.bg('#3a2a5c', '#6b4a7a', '#ffd27a', 800)}<line x1="540" y1="0" x2="540" y2="600" stroke="#1a1d27" stroke-width="10"/>
+at(W('hook', 'the'), (t, u) => `${I.bg('#3a2a5c', '#6b4a7a', '#ffd27a', 800)}<line x1="540" y1="0" x2="540" y2="600" stroke="#1a1d27" stroke-width="10"/>
   <g transform="rotate(${4 * Math.sin(t * 2)} 540 0)">${G.bulb(540, 790, 1.5, 1, t)}</g>`);
 at(W('hook', 'went'), (t, u) => { const on = u < 0.12 ? 1 : u < 0.45 ? (hash(Math.floor(u * 30), 4) > 0.45 ? 1 : 0) : 0;
   return `${on ? I.bg('#3a2a5c', '#6b4a7a', '#ffd27a', 800) : I.bg('#07091a', '#141a33')}<line x1="540" y1="0" x2="540" y2="600" stroke="#1a1d27" stroke-width="10"/>
@@ -217,7 +217,7 @@ at(W('real', 'in'), (t, u) => { const k = ease.out(u / 0.6);
     art: `<rect x="-300" y="60" width="300" height="140" fill="#0b1026"/>${[0, 1, 2, 3, 4].map((i) => `<rect x="${-290 + i * 58}" y="${80 - (i % 3) * 30}" width="46" height="${120 + (i % 3) * 30}" fill="#232c48"/>`).join('')}` })}`; });
 at(W('real', 'people'), (t, u) => `${night('#2f7bff', 860)}${G.mapNA(540, 860, 1.5, t, ease.out(u / 0.8))}
   <g opacity="${clamp((u - 0.3) * 4)}">${G.outlined(540, 470, 100, C.yellow, '50 MILLION', 10)}</g>`);
-at(W('real', 'and'), (t, u) => `${night('#ff9a52', 860)}${G.mapIberia(540, 880, 1.6, t, ease.inOut((u - 0.5) / 1.2))}
+at(W('real', 'and'), (t, u) => `${night('#ff9a52', 860)}${G.mapIberia(540, 880, 1.6, t, ease.inOut((u - 0.5) / 1.2))}${G.outlined(330, 860, 40, '#fff', 'PORTUGAL', 6)}${G.outlined(600, 900, 64, '#fff', 'SPAIN', 7)}
   ${G.outlined(540, 470, 64, '#fff', 'APRIL 28, 2025', 8)}`);
 at(W('real', 'almost'), (t, u) => { const p = 0.9 * ease.out(u / 1.1), a = p * 2 * Math.PI, x1 = Math.sin(a) * 250, y1 = -Math.cos(a) * 250;
   return `${night('#ff9a52', 860)}<g transform="translate(540 840)"><circle r="290" fill="#fff" filter="url(#drop)"/><circle r="250" fill="#eef1f8"/>
