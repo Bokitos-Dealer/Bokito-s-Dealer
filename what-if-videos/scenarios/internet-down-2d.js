@@ -290,7 +290,7 @@ function buildAudio() {
   // day three: things vanishing off the shelves
   for (let i = 0; i < 14; i++) fx('pop', { t: W('day3', 'shelves') + i * 0.12, f: 400 + hash(i, 1) * 500, level: 0.1, pan: -0.5 + hash(i, 2) });
   // the twist
-  fx('sample', { file: 'sfx/546.wav', t: SAY.twist - 0.1, level: 0.4 });
+  fx('sample', { file: 'sfx/2915.wav', t: SAY.twist - 0.1, level: 0.35, dur: 1.6, fout: 0.4 });
   fx('chime', { t: W('twist', 'works') + 0.2, level: 0.08, freq: 880 });
   fx('sparkle', { t: W('twist', 'satellites') + 0.5, dur: 1.2, count: 8, f: [1600, 4200], level: 0.12, seed: 8 });
   A.push(S_('sfx/2563.wav', W('twist', 'old') + 0.1, { dur: 1.3, level: 0.25, fin: 0.05, fout: 0.3, fx: true }));
