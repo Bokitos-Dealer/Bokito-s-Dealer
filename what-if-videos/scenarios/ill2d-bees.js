@@ -21,8 +21,8 @@ export function flower(x, y, s = 1, t = 0, col = '#ff7eb6', pollen = 1) {
 }
 export function picnic(t) {
   return `${I.bg('#7cc7ff', '#d6efff')}<circle cx="880" cy="520" r="80" fill="#fff3b0"/><rect y="1050" width="1080" height="870" fill="#8bc77b"/>
-    <path d="M 160 1260 L 920 1260 L 1020 1440 L 60 1440 Z" fill="#ff5e5b"/>${[0, 1, 2, 3, 4, 5].map((i) => `<path d="M ${160 + i * 152} 1260 L ${60 + i * 192} 1440" stroke="#fff" stroke-width="18"/>`).join('')}
-    <rect x="460" y="1200" width="160" height="90" rx="14" fill="#c98f4a"/><circle cx="380" cy="1290" r="40" fill="${C.red}"/><circle cx="720" cy="1300" r="34" fill="#7bd389"/>`;
+    <path d="M 200 1180 L 880 1180 L 960 1330 L 120 1330 Z" fill="#ff5e5b"/>${[0, 1, 2, 3, 4, 5].map((i) => `<path d="M ${200 + i * 136} 1180 L ${120 + i * 168} 1330" stroke="#fff" stroke-width="16"/>`).join('')}
+    <rect x="470" y="1220" width="140" height="80" rx="14" fill="#c98f4a"/><circle cx="380" cy="1280" r="34" fill="${C.red}"/><circle cx="720" cy="1285" r="30" fill="#7bd389"/>`;
 }
 // a produce shelf with crates; `left` 0..1 how much is left of the pollinator crops
 export function produce(x, y, s = 1, t = 0, left = 1) {

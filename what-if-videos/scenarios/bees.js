@@ -35,7 +35,9 @@ at(W('hook', 'suddenly'), (t, u) => { const f = 1 - ease.inOut(u / 0.8);
   ${u > 0.8 ? `<g transform="translate(540 560) scale(${ease.back((u - 0.8) / 0.3)})">${G.outlined(0, 0, 100, '#fff', 'GONE.', 10)}</g>` : ''}`; });
 // ---------- what the video is about
 at(W('intro', 'no'), (t, u) => `${meadow(t)}${B.bee(540, 860, 2.4, t)}${[...Array(3)].map((_, i) => `<path d="M ${760 + i * 30} ${760 + i * 60} q 30 -20 60 0" stroke="#2a1d10" stroke-width="8" fill="none" opacity="${0.5 + 0.5 * Math.sin(t * 20 + i)}"/>`).join('')}${G.outlined(540, 520, 90, '#fff', 'BZZZZ', 9)}${I.xmark(830, 560, 0.8, u - 0.5)}`);
-at(W('intro', 'no', 1), (t, u) => `${meadow(t)}<g transform="translate(540 860) scale(3)"><path d="M -40 0 L 40 0 L 0 120 Z" fill="#2a1d10"/></g>${G.outlined(540, 520, 90, '#fff', 'OUCH!', 9)}${I.xmark(830, 560, 0.8, u - 0.4)}`);
+at(W('intro', 'no', 1), (t, u) => `${meadow(t)}<rect x="-40" y="900" width="760" height="170" rx="80" fill="${C.skin}" filter="url(#drop)"/><rect x="-40" y="1010" width="760" height="60" rx="30" fill="${C.skinS}" opacity="0.5"/>
+  <circle cx="560" cy="940" r="${46 + 8 * Math.sin(t * 6)}" fill="#ff7a7a" opacity="0.85"/><circle cx="560" cy="940" r="10" fill="#c0392b"/>${B.bee(640, 760, 0.9, t, { rot: 30 })}
+  ${G.outlined(540, 560, 100, '#fff', 'OUCH!', 10)}${I.xmark(860, 560, 0.8, u - 0.4)}`);
 at(W('intro', 'sounds'), (t, u) => `${meadow(t, '#ffd84a')}${I.person(540, 1360, 1.5, { shirt: C.teal, pose: 'cheer', face: 'happy', t })}${I.bubbleSay(800, 560, 1, u - 0.2, 'Nice…?')}`);
 at(W('intro', 'heres'), (t, u) => {
   const pts = [[250, 520], [780, 640], [300, 800], [780, 940], [280, 1100]], labels = ['DAY 1', 'MONTH 1', 'PRICES', 'THE TWIST', 'THE FIX'], kinds = ['bee', 'cart', 'tag', 'q', 'flower'];
@@ -44,7 +46,7 @@ at(W('intro', 'heres'), (t, u) => {
   return `${night('#ffd84a')}<path d="${path}" fill="none" stroke="#fff" stroke-width="10" stroke-dasharray="4 26" stroke-linecap="round" opacity="0.5"/>
   ${pts.map(([x, y], i) => u >= i * 0.25 ? `${ic(kinds[i], x, y, ease.back((u - i * 0.25) / 0.3))}<text x="${x + (x < 540 ? 90 : -90)}" y="${y + 14}" font-family="MontB" font-weight="900" font-size="42" fill="#fff" text-anchor="${x < 540 ? 'start' : 'end'}" opacity="${clamp((u - i * 0.25) * 4)}">${labels[i]}</text>` : '').join('')}`; });
 // ---------- the picnic
-at(W('relate', 'you'), (t, u) => `${B.picnic(t)}${[[300, C.coral], [540, C.teal], [780, C.yellow]].map(([x, col], i) => I.person(x + I.wobble(t, 12, u > 0.8 ? 10 : 0, i), 1300, 0.9, { shirt: col, pose: u > 0.8 ? 'panic' : 'stand', face: u > 0.8 ? 'panic' : 'happy', t, seed: i })).join('')}
+at(W('relate', 'you'), (t, u) => `${B.picnic(t)}${[[300, C.coral], [540, C.teal], [780, C.yellow]].map(([x, col], i) => I.person(x + I.wobble(t, 12, u > 0.8 ? 10 : 0, i), 1220, 0.8, { shirt: col, pose: u > 0.8 ? 'panic' : 'stand', face: u > 0.8 ? 'panic' : 'happy', t, seed: i })).join('')}
   ${B.bee(540 + 200 * Math.sin(t * 3), 700 + 80 * Math.cos(t * 4), 0.8, t)}${u > 0.8 ? G.outlined(540, 520, 90, '#fff', 'AAAH!', 9) : ''}`);
 at(W('relate', 'weirdly'), (t, u) => `${meadow(t, HONEY)}${B.bee(540, 860, 2.2, t)}${A.heart(820, 600, 1.4, C.coral)}${A.heart(260, 640, 1, '#ff8fa3')}`);
 // ---------- day one
@@ -61,7 +63,7 @@ at(W('day1', 'thats'), (t, u) => { const k = ease.out(u / 1.2);
     return `<circle cx="${fx}" cy="${fy}" r="${lerp(12, 44, k)}" fill="${k > 0.5 ? C.red : '#fff'}"/>${k > 0.5 ? `<rect x="${fx - 3}" y="${fy - 54}" width="6" height="16" fill="#5a3a26"/>` : ''}`; }).join('')}`; });
 // ---------- month one: the supermarket
 at(SAY.store - 0.15, (t, u) => `${store()}${B.produce(540, 860, 0.95, t, 1)}${I.stamp('MONTH 1', u, 520)}`);
-at(W('store', 'you'), (t, u) => `${store()}${B.produce(540, 820, 0.9, t, 1)}${I.person(lerp(-100, 300, ease.out(u / 1.2)), 1450, 0.85, { shirt: C.coral, pose: u < 1.2 ? 'walk' : 'stand', t })}`);
+at(W('store', 'you'), (t, u) => `${store()}${B.produce(540, 820, 0.9, t, 1)}${I.person(lerp(-100, 300, ease.out(u / 1.2)), 1330, 0.6, { shirt: C.coral, pose: u < 1.2 ? 'walk' : 'stand', t })}`);
 at(W('store', 'apples'), (t, u) => `${store()}${B.produce(540, 820, 0.9, t, 1 - ease.inOut(u / 2.4))}`);
 at(W('store', 'more'), (t, u) => { const p = 0.75 * ease.out(u / 1.2);
   return `${night(HONEY)}${A.pie(540, 860, 1, p, HONEY)}${G.outlined(540, 900, 150, '#fff', `${Math.round(p * 100)}%`, 12)}${G.outlined(540, 470, 64, C.yellow, 'OF MAIN FOOD CROPS', 8)}${G.outlined(540, 1270, 60, '#fff', 'GET HELP FROM BEES', 7)}`; });

@@ -23,7 +23,7 @@ export function ratioBars(x, y, s = 1, n = 3, u = 1, year = '1990s') {
     const k = clamp(shown - i), h = 130 * Math.min(1, n - i);
     bars += `<g opacity="${clamp(k * 3)}"><rect x="-150" y="${-i * 140 - h}" width="300" height="${h}" rx="14" fill="${C.green}"/>${k >= 1 && n - i >= 1 ? txt(0, -i * 140 - 46, 34, '#fff', `1 YEAR OF PAY`) : ''}</g>`;
   }
-  return `<g transform="${T(x, y, s)}">${bars}<g transform="translate(330 ${-n * 70})">${I.house(0, n * 70, 1.1 + 0.25 * (n - 3), '#ffb27a', '#c0392b')}</g>
+  return `<g transform="${T(x, y, s)}">${bars}<g transform="translate(400 0)">${I.house(0, 0, 1.0, '#ffb27a', '#c0392b')}</g>
     ${outlined(0, 100, 64, '#fff', year, 7)}${outlined(0, -n * 140 - 70, 110, C.yellow, `${Math.min(n, Math.round(shown * 10) / 10).toFixed(shown % 1 ? 1 : 0)}×`, 10)}</g>`;
 }
 export function rentPie(x, y, s = 1, p = 0) {

@@ -31,7 +31,7 @@ at(W('hook', 'never'), (t, u) => `${street(t)}${I.house(540, 1140, 1.6, '#ffb27a
   <rect x="${540 - 300}" y="760" width="600" height="440" fill="none" stroke="${C.red}" stroke-width="14" stroke-dasharray="30 20" opacity="${clamp((u - 0.3) * 3)}"/>`);
 at(W('hook', 'no'), (t, u) => `${I.bg('#2a1f5c', '#4b3a8c', '#ffd84a', 820)}${I.person(540, 1360, 1.4, { shirt: C.coral, pose: 'walk', face: 'panic', t })}${A.stopwatch(820, 560, 0.6, u * 4, 'WORK, WORK…')}`);
 // ---------- what the video is about
-at(W('intro', 'not'), (t, u) => `${I.bg('#2b2260', '#463a8c')}${I.couch(540, 1180, 1.3)}${I.person(540, 1250, 1, { shirt: C.teal, t })}${G.outlined(540, 560, 90, '#fff', 'LAZY?', 9)}${I.xmark(800, 560, 0.85, u - 0.4)}`);
+at(W('intro', 'not'), (t, u) => `${I.bg('#2b2260', '#463a8c')}${I.person(540, 1250, 1, { shirt: C.teal, t })}${I.couch(540, 1180, 1.3)}${G.outlined(540, 560, 90, '#fff', 'LAZY?', 9)}${I.xmark(800, 560, 0.85, u - 0.4)}`);
 at(W('intro', 'because', 1), (t, u) => `${I.bg('#0b1a2a', '#14365a', '#7fe8ff', 820)}${A.chalkboard(540, 820, 0.95, `${G.txt(0, -100, 80, '#f6f3ea', 'PRICE ÷ PAY')}${G.txt(0, 60, 120, C.red, '= ???')}`)}`);
 at(W('intro', 'heres'), (t, u) => {
   const pts = [[250, 520], [780, 640], [300, 800], [780, 940], [280, 1100]], labels = ['THEN', 'NOW', 'RENT', 'THE TWIST', 'THE FIX'], kinds = ['door', 'cart', 'bell', 'bulb', 'people'];
@@ -56,7 +56,7 @@ at(SAY.rent, (t, u) => `${street(t)}${I.house(540, 1140, 1.4, '#c9cfdc', '#5b637
 at(W('rent', 'rent', 1), (t, u) => `${I.bg('#2a1f5c', '#4b3a8c', '#ff5e5b', 820)}${H.rentPie(540, 860, 1.05, ease.out(u / 1.2) / 3)}${G.outlined(540, 1270, 70, '#fff', '1/3 OR MORE', 8)}`);
 at(W('rent', 'which'), (t, u) => `${I.bg('#2a1f5c', '#4b3a8c', '#ffd84a', 820)}${K.piggy(540, 900, 1, 0.15 + 0.05 * Math.sin(t * 2), t)}${G.outlined(540, 520, 80, '#fff', 'DEPOSIT FUND', 8)}${G.outlined(540, 1270, 70, C.red, 'SO SLOW…', 8)}`);
 // ---------- back with the parents
-at(SAY.parents, (t, u) => `${H.childRoom(t)}${I.person(700, 1320, 1.1, { shirt: C.teal, pose: 'stand', t })}${G.outlined(700, 560, 70, '#7a2a4a', 'AGE 31', 8)}`);
+at(SAY.parents, (t, u) => `${H.childRoom(t)}${I.person(700, 1320, 1.1, { shirt: C.teal, pose: 'stand', t })}${G.outlined(700, 760, 70, '#7a2a4a', 'AGE 31', 8)}`);
 at(W('parents', 'not'), (t, u) => `${H.childRoom(t)}${I.person(340, 1320, 1, { shirt: '#c77dff', pose: 'talk', t, hair: '#9aa3b8' })}${I.person(760, 1320, 1.05, { shirt: C.teal, pose: 'stand', face: 'panic', t, flip: -1 })}${I.bubbleSay(340, 640, 0.9, u - 0.3, 'Dinner!')}`);
 // ---------- the twist
 at(SAY.twist - 0.1, (t, u) => `${I.bg('#120a2e', '#3a1a6b', '#c77dff', 820)}${G.stars(t, 40, 12)}
