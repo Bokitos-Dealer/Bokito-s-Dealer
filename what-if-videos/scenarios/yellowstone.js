@@ -19,7 +19,7 @@ const { SAY, W, FADE, DURATION } = X.timeline(VO, ORDER, GAP);
 
 const NUMS = [['week one', 'WEEK 1'], ['week 1', 'WEEK 1'], ['twenty kilometers', '20 KM (12 MILES)'], ['20 kilometers', '20 KM (12 MILES)'], ['week two', 'WEEK 2'], ['week 2', 'WEEK 2'],
   ['a few centimeters', 'A FEW CM (~1 IN)'], ['one in seven hundred thirty thousand', '1 IN 730,000'], ['1 in 730,000', '1 IN 730,000'],
-  ['six hundred thirty thousand years', '630,000 YEARS'], ['630,000 years', '630,000 YEARS'], ['1815', '1815']];
+  ['six hundred thirty thousand years', '630,000 YEARS'], ['630,000 years', '630,000 YEARS'], ['1815', '1815'], ['eighteen fifteen', '1815']];
 const KEYWORDS = /^(yellowstone|today|supervolcano|park|soda|rock|wyoming|earthquakes|swell|alarm|blows|ash|sky|evacuated|america|roofs|roads|planes|farms|sunlight|colder|crops|crazy|overdue|chance|indonesia|summer|steam|lava|movies|visit|comments)$/i;
 
 // ------------------------------------------------------------------ backgrounds
@@ -149,9 +149,9 @@ function buildAudio() {
   fx('creak', { t0: W('signs', 'ground') + 0.1, t1: W('signs', 'ground') + 1.4, level: 0.14 });
   L.push(S_('sfx/1651.wav', W('signs', 'scientists') + 0.6, { dur: SAY.blast - W('signs', 'scientists') - 0.4, level: 0.14, fin: 0.3, fout: 0.3, fx: true }));
   // it blows
-  fx('sample', { file: 'sfx/1703.wav', t: SAY.blast - 0.05, level: 0.4, dur: 2.0, fout: 0.6 });
+  fx('sample', { file: 'sfx/1703.wav', t: SAY.blast - 0.05, level: 0.28, dur: 1.4, fout: 0.6 });
   sub(SAY.blast, 0.45, 1.4);
-  fx('rumble', { t0: W('blast', 'column'), t1: W('blast', 'everyone'), level: 0.28, grit: 1 });
+  fx('rumble', { t0: W('blast', 'column') + 0.9, t1: W('blast', 'everyone'), level: 0.2, grit: 1 });
   L.push(S_('sfx/1644.wav', W('blast', 'everyone'), { dur: SAY.ash - W('blast', 'everyone') - 0.2, level: 0.12, fin: 0.3, fout: 0.4, fx: true }));
   // week two: ash
   L.push(S_('sfx/1153.wav', SAY.ash - 0.4, { dur: SAY.summer - SAY.ash + 0.4, level: 0.18, fin: 0.4, fout: 0.5, fx: true }));
