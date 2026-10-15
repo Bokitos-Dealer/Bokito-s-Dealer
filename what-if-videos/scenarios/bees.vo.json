@@ -1,0 +1,12 @@
+{"id": "bees", "engine": "chatterbox", "ref": "/home/user/tts/ref/voice.wav", "tempo": 1.12, "exaggeration": 0.5, "cfg": 0.5, "temperature": 0.7,
+ "lines": {
+  "hook": "What if every bee on Earth... suddenly disappeared?",
+  "intro": "No more buzzing, no more stings. Sounds nice, right? Here's what would actually happen, step by step.",
+  "relate": "You know when a bee crashes your picnic and everyone starts screaming? Weirdly, you'd miss that bee.",
+  "day1": "Day one. Nobody really notices. But bees don't just make honey. They carry pollen from flower to flower, and that's how lots of plants make fruit.",
+  "store": "Month one. You walk into the supermarket. Apples, almonds, blueberries and cherries start vanishing from the shelves. More than three quarters of our main food crops get help from pollinators like bees.",
+  "prices": "Then prices shoot up. Coffee and avocados get expensive, and cows eat plants that need bees too, so even milk costs more.",
+  "twist": "But here's the crazy part. We wouldn't starve. Wheat, rice and corn are pollinated by the wind. Our food would just get more boring, and a lot more expensive.",
+  "real": "So could this really happen? In parts of China, farmers have pollinated apple and pear trees by hand, with tiny brushes. And worldwide, pollinators add up to five hundred seventy seven billion dollars of food every year.",
+  "end": "The good news? Bees are tough, and they're getting help. Planting flowers and using fewer pesticides really makes a difference.",
+  "cta": "So be honest... which food would you miss the most? Tell me in the comments."}}
