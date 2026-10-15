@@ -1,0 +1,13 @@
+{"id": "ai-smarter", "engine": "chatterbox", "ref": "/home/user/tts/ref/voice.wav", "tempo": 1.12, "exaggeration": 0.5, "cfg": 0.5, "temperature": 0.7,
+ "lines": {
+  "hook": "What if tomorrow, AI became smarter than every human on Earth?",
+  "intro": "Not a movie robot. A program that beats us at every single task. Here's what would actually change, step by step.",
+  "relate": "You know when you ask a chatbot something, and it answers in two seconds, better than you could? Now imagine that... for everything.",
+  "week1": "Week one. Your phone becomes the smartest person you know. It plans your day, fixes your code, and explains your taxes.",
+  "work": "Then work changes. Jobs built on screens and paperwork get done in minutes. Some people panic. Others get way more done.",
+  "month3": "Month three. Scientists use it to test thousands of ideas a day. New medicines and new materials, faster than ever.",
+  "twist": "But here's the crazy part. The hard question isn't how smart it is. It's who controls it, and whether it wants what we want. Researchers call this the alignment problem.",
+  "real": "So could this really happen? In a survey of almost three thousand AI researchers, the average guess was a fifty percent chance that machines beat us at every task by 2047.",
+  "history": "And we've already seen previews. In 1997, a computer beat the world chess champion. In 2016, an AI beat one of the best Go players with a move no human expected.",
+  "year1": "One year in, life looks... strangely normal. People still hang out, play sports, and fall in love. Being human still matters.",
+  "cta": "So be honest... would you trust a super smart AI? Tell me in the comments."}}
