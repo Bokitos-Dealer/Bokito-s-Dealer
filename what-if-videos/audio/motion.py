@@ -443,3 +443,64 @@ def c_subdrop(m, c):
 CUES = dict(flip=c_flip, sweep=c_sweep, count=c_count, rustle=c_rustle, snap=c_snap, slide=c_slide, creak=c_creak,
             spring=c_spring, sparkle=c_sparkle, impact=c_impact, flyby=c_flyby, rush=c_rush, glide=c_glide,
             breath=c_breath, clank=c_clank, chirp=c_chirp, jet=c_jet, subdrop=c_subdrop)
+
+# ---------------------------------------------------------------- everyday UI and household sounds (illustrated episodes)
+def c_knock(m, c):
+    """Knuckles on a wooden door: n dull knocks (a low body thump plus a short wooden click), `gap` apart."""
+    r = rng_of(c)
+    for i in range(int(c.get('n', 3))):
+        n = sec(0.22); tt = np.arange(n) / SR
+        body = np.sin(2 * np.pi * (140 + 25 * r.random()) * tt) * np.exp(-tt / 0.035)
+        click = bp(r.standard_normal(n), 900, 3800) * np.exp(-tt / 0.006) * 0.6
+        y = lp(body + click, 4000)
+        place(m, c['t'] + i * c.get('gap', 0.16), to_stereo(norm(y, 0.9) * (1 - 0.12 * i), c.get('pan', 0.0)), c, verb=0.12)
+
+
+def c_buzz(m, c):
+    """A phone vibrating on a table: `n` buzzes of a rough ~160 Hz motor."""
+    r = rng_of(c)
+    for i in range(int(c.get('n', 2))):
+        d = c.get('dur', 0.32); n = sec(d); tt = np.arange(n) / SR
+        motor = np.sign(np.sin(2 * np.pi * 158 * tt)) * 0.6 + 0.4 * r.standard_normal(n)
+        y = bp(motor, 110, 900) * np.clip(np.minimum(tt / 0.015, (d - tt) / 0.03), 0, 1)
+        place(m, c['t'] + i * (d + 0.18), to_stereo(norm(y, 0.8)), c, verb=0.04)
+
+
+def c_beep(m, c):
+    """A UI/terminal beep: `n` short sine tones at f Hz (two quick low ones read as 'error')."""
+    for i in range(int(c.get('n', 1))):
+        d = c.get('dur', 0.12); n = sec(d); tt = np.arange(n) / SR
+        f = c.get('f', 880) * (c.get('drop', 1.0) ** i)
+        y = (np.sin(2 * np.pi * f * tt) + 0.25 * np.sin(4 * np.pi * f * tt)) * np.clip(np.minimum(tt / 0.004, (d - tt) / 0.012), 0, 1)
+        place(m, c['t'] + i * (d + c.get('gap', 0.06)), to_stereo(norm(y, 0.7), c.get('pan', 0.0)), c, verb=0.06)
+
+
+def c_ding(m, c):
+    """A phone notification: two bright bell partials, a quick upward pair of notes."""
+    f = c.get('f', 1318.5)
+    for i, ff in enumerate([f, f * 1.335]):
+        n = sec(0.9); tt = np.arange(n) / SR
+        y = sum(a * np.sin(2 * np.pi * ff * k * tt) * np.exp(-tt / (0.32 / k)) for k, a in [(1, 1.0), (2.76, 0.3), (5.4, 0.12)])
+        y *= np.clip(tt / 0.002, 0, 1)
+        place(m, c['t'] + i * 0.09, to_stereo(norm(y, 0.6), c.get('pan', 0.0)), c, verb=0.12)
+
+
+def c_kaching(m, c):
+    """Cash register: a drawer clunk, a bell and a jingle of coins."""
+    r = rng_of(c)
+    n = sec(1.2); tt = np.arange(n) / SR
+    clunk = lp(r.standard_normal(n), 600) * np.exp(-tt / 0.04) * 1.2
+    bell = sum(a * np.sin(2 * np.pi * 2093 * k * tt) * np.exp(-tt / (0.5 / k)) for k, a in [(1, 1.0), (2.4, 0.4), (3.9, 0.15)]) * (tt > 0.08)
+    coins = crackle(r, n, np.where(tt < 0.5, 60, 4), 3000, 9000, 0.004) * 1.5
+    place(m, c['t'], to_stereo(norm(clunk + 0.8 * bell + coins, 0.8)), c, verb=0.1)
+
+
+def c_pop(m, c):
+    """A soft UI pop for things appearing on screen (pitch f)."""
+    n = sec(0.12); tt = np.arange(n) / SR
+    f = c.get('f', 600) * (1 + 1.2 * np.exp(-tt / 0.02))
+    y = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt / 0.03)
+    place(m, c['t'], to_stereo(norm(y, 0.7), c.get('pan', 0.0)), c, verb=0.05)
+
+
+CUES.update(knock=c_knock, buzz=c_buzz, beep=c_beep, ding=c_ding, kaching=c_kaching, pop=c_pop)

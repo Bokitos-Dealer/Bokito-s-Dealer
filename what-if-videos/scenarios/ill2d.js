@@ -245,3 +245,277 @@ export function stamp(txt, u, y = 470) {
     <text x="0" y="0" font-family="MontB" font-weight="900" font-size="${size}" fill="#fff" text-anchor="middle" stroke="#000" stroke-width="14" paint-order="stroke" letter-spacing="-4">${txt}</text>
     <rect x="${-260 * clamp((u - 0.1) / 0.3)}" y="40" width="${520 * clamp((u - 0.1) / 0.3)}" height="16" rx="8" fill="${C.coral}"/></g>`;
 }
+
+// ================================================================ more of the world (people, places, machines)
+// a flat person: head r 46, feet at (x, y). pose: stand | walk | wave | talk | panic | cheer
+export function person(x, y, s = 1, { shirt = C.coral, pants = '#2a3550', skin = C.skin, hair = '#3a2418', pose = 'stand', t = 0, face = 'neutral', flip = 1, seed = 0 } = {}) {
+  const ph = t * 7 + seed * 2.1, sw = pose === 'walk' ? Math.sin(ph) * 22 : 0;
+  const armL = pose === 'wave' ? -150 + Math.sin(t * 10 + seed) * 22 : pose === 'cheer' ? -160 + Math.sin(t * 12 + seed) * 10 : pose === 'panic' ? -140 : pose === 'talk' ? 30 + Math.sin(t * 6 + seed) * 18 : 12 + sw;
+  const armR = pose === 'cheer' ? 160 - Math.sin(t * 12 + seed) * 10 : pose === 'panic' ? 140 : -12 - sw;
+  const bob = pose === 'walk' ? Math.abs(Math.cos(ph)) * 6 : pose === 'cheer' ? Math.abs(Math.sin(t * 12 + seed)) * 10 : 0;
+  const limb = (px, py, ang, len, w, col) => `<g transform="translate(${px} ${py}) rotate(${ang})"><rect x="${-w / 2}" y="0" width="${w}" height="${len}" rx="${w / 2}" fill="${col}"/></g>`;
+  const eyes = face === 'panic' ? `<circle cx="-15" cy="-6" r="9" fill="#fff"/><circle cx="15" cy="-6" r="9" fill="#fff"/><circle cx="-15" cy="-6" r="4" fill="#111"/><circle cx="15" cy="-6" r="4" fill="#111"/>`
+    : `<circle cx="-14" cy="-6" r="5" fill="#1a1a22"/><circle cx="14" cy="-6" r="5" fill="#1a1a22"/>`;
+  const mouth = face === 'panic' ? `<ellipse cx="0" cy="20" rx="11" ry="14" fill="#5a1a1a"/>` : face === 'happy' || pose === 'cheer' ? `<path d="M -16 14 Q 0 32 16 14" fill="#5a1a1a"/>`
+    : pose === 'talk' ? `<ellipse cx="0" cy="18" rx="9" ry="${4 + 5 * Math.abs(Math.sin(t * 9 + seed))}" fill="#5a1a1a"/>` : `<path d="M -12 18 Q 0 24 12 18" stroke="#5a1a1a" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  return `<g transform="translate(${x} ${y - bob}) scale(${s * flip} ${s})">
+    ${limb(-22, -150, sw, 150, 34, pants)}${limb(22, -150, -sw, 150, 34, pants)}
+    ${limb(-58, -300, armL, 120, 30, skin)}${limb(58, -300, armR, 120, 30, skin)}
+    <rect x="-62" y="-320" width="124" height="180" rx="44" fill="${shirt}"/>
+    <rect x="-14" y="-340" width="28" height="30" fill="${skin}"/>
+    <g transform="translate(0 -386)"><circle r="50" fill="${skin}"/><path d="M -52 -6 C -50 -60 50 -64 52 -8 C 40 -30 -36 -34 -52 -6 Z" fill="${hair}"/>${eyes}${mouth}
+    ${face === 'panic' ? `<path d="M 48 -30 q 8 14 0 22 q -8 -8 0 -22 Z" fill="#6cc6ff"/>` : ''}</g></g>`;
+}
+export function cityline(y, t = 0, on = 1, col = '#1b2550', seed = 1) {
+  let s = '';
+  for (let i = 0; i < 12; i++) {
+    const w = 70 + (hash(i, seed) * 60) | 0, h = 180 + (hash(i, seed + 1) * 340) | 0, x = i * 92 - 20;
+    s += `<rect x="${x}" y="${y - h}" width="${w}" height="${h}" fill="${col}"/>`;
+    for (let r = 0; r < h / 46 - 1; r++) for (let c2 = 0; c2 < w / 30 - 1; c2++) {
+      const lit = hash(i * 31 + r * 7 + c2, seed + 2) < 0.55 * on;
+      if (lit) s += `<rect x="${x + 10 + c2 * 30}" y="${y - h + 16 + r * 46}" width="16" height="22" rx="3" fill="#ffd27a" opacity="${0.75 + 0.25 * Math.sin(t * 2 + i + r)}"/>`;
+    }
+  }
+  return s;
+}
+// a flat globe with land blobs; `dark` 0..1 switches the city lights off, west to east
+export function globe(x, y, r, t = 0, { dark = 0, lines = 0, spin = 0, cut = -1 } = {}) {
+  const land = [[-0.35, -0.25, 0.32, 0.22], [-0.2, 0.25, 0.18, 0.3], [0.25, -0.2, 0.36, 0.2], [0.3, 0.2, 0.16, 0.16], [0.55, 0.45, 0.14, 0.1], [-0.6, 0.05, 0.12, 0.2]];
+  const dx = ((spin * r) % (2 * r));
+  let blobs = '', lights = '', links = '';
+  land.forEach(([a, b, w, h], i) => {
+    for (const off of [0, -2 * r, 2 * r]) blobs += `<ellipse cx="${a * r + dx + off}" cy="${b * r}" rx="${w * r}" ry="${h * r}" fill="#3fbf7f" opacity="0.95"/>`;
+    for (let k = 0; k < 6; k++) {
+      const lx = a * r + dx + (hash(i, k) - 0.5) * w * r * 1.4, ly = b * r + (hash(k, i) - 0.5) * h * r * 1.4;
+      const off = (lx + r) / (2 * r) < dark;
+      if (Math.abs(lx) < r * 0.95 && !off) lights += `<circle cx="${lx}" cy="${ly}" r="${6 + 3 * Math.sin(t * 4 + k + i)}" fill="#ffe38a" filter="url(#glow)"/>`;
+    }
+  });
+  if (lines) {
+    const pts = [[-0.5, -0.3], [-0.15, 0.3], [0.3, -0.25], [0.35, 0.25], [0.6, 0.45], [-0.6, 0.1]];
+    pts.forEach((p, i) => pts.forEach((q, j) => { if (j <= i || (i + j) % 2) return;
+      const mx = (p[0] + q[0]) / 2 * r, my = (p[1] + q[1]) / 2 * r - 0.25 * r;
+      const isCut = cut >= 0 && i === 0 && j === 2 + cut * 0;
+      links += `<path d="M ${p[0] * r} ${p[1] * r} Q ${mx} ${my} ${q[0] * r} ${q[1] * r}" fill="none" stroke="${isCut ? C.red : '#7fe8ff'}" stroke-width="5" stroke-dasharray="${isCut ? '10 14' : '0'}" opacity="${lines}"/>`;
+      const u = (t * 0.6 + i * 0.13 + j * 0.07) % 1, bx = (1 - u) * (1 - u) * p[0] * r + 2 * (1 - u) * u * mx + u * u * q[0] * r, by = (1 - u) * (1 - u) * p[1] * r + 2 * (1 - u) * u * my + u * u * q[1] * r;
+      if (!isCut) links += `<circle cx="${bx}" cy="${by}" r="8" fill="#fff" opacity="${lines}" filter="url(#glow)"/>`;
+    }));
+  }
+  return `<g transform="translate(${x} ${y})"><clipPath id="gclip"><circle r="${r}"/></clipPath>
+    <circle r="${r * 1.08}" fill="#4aa8ff" opacity="0.18" filter="url(#blur8)"/>
+    <circle r="${r}" fill="#1f5fae"/><g clip-path="url(#gclip)">${blobs}<circle cx="${r * 0.35}" cy="${-r * 0.1}" r="${r}" fill="#000" opacity="${0.15 + 0.45 * dark}"/>${lights}</g>
+    ${links}<circle r="${r}" fill="none" stroke="#9fd2ff" stroke-width="4" opacity="0.5"/></g>`;
+}
+export function router(x, y, s = 1, t = 0, dead = false) {
+  const led = (i) => dead ? (i === 0 ? C.red : '#333') : (Math.floor(t * 8 + i * 1.7) % 3 ? C.green : '#1d6b33');
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+    <rect x="-120" y="-240" width="14" height="150" rx="7" fill="#2a2e3b" transform="rotate(-12 -113 -90)"/><rect x="106" y="-240" width="14" height="150" rx="7" fill="#2a2e3b" transform="rotate(12 113 -90)"/>
+    <g filter="url(#drop)"><rect x="-200" y="-100" width="400" height="130" rx="34" fill="#e9ecf3"/></g>
+    ${[0, 1, 2, 3, 4].map((i) => `<circle cx="${-120 + i * 60}" cy="-36" r="11" fill="${led(i)}"/>`).join('')}
+    ${dead ? '' : wifi(0, -330, 1.3, '#7fe8ff', false, 3)}</g>`;
+}
+export function xmark(x, y, s = 1, u = 1) {
+  const k = ease.back(u / 0.25);
+  return `<g transform="translate(${x} ${y}) scale(${s * k})" opacity="${clamp(u * 6)}"><circle r="110" fill="${C.red}" filter="url(#drop)"/>
+    <path d="M -45 -45 L 45 45 M 45 -45 L -45 45" stroke="#fff" stroke-width="26" stroke-linecap="round"/></g>`;
+}
+export function check(x, y, s = 1, u = 1) {
+  const k = ease.back(u / 0.25);
+  return `<g transform="translate(${x} ${y}) scale(${s * k})" opacity="${clamp(u * 6)}"><circle r="90" fill="${C.green}" filter="url(#drop)"/>
+    <path d="M -40 2 L -10 32 L 44 -28" stroke="#fff" stroke-width="24" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+}
+export function calendar(x, y, s = 1, t = 0, crossed = 0, hi = -1) {
+  let cells = '';
+  for (let i = 0; i < 7; i++) {
+    const cx = -270 + (i % 4) * 180, cy = -60 + Math.floor(i / 4) * 180, on = i < crossed, pop = i === hi ? 1 + 0.12 * Math.sin(t * 8) : 1;
+    cells += `<g transform="translate(${cx + (i >= 4 ? 90 : 0)} ${cy}) scale(${pop})"><rect x="-70" y="-70" width="140" height="140" rx="22" fill="${i === hi ? C.yellow : '#fff'}"/>
+      <text y="22" font-family="MontB" font-weight="900" font-size="64" fill="${C.ink}" text-anchor="middle">${i + 1}</text>
+      ${on ? `<path d="M -50 -50 L 50 50 M 50 -50 L -50 50" stroke="${C.red}" stroke-width="16" stroke-linecap="round"/>` : ''}</g>`;
+  }
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g filter="url(#drop)"><rect x="-380" y="-260" width="760" height="560" rx="44" fill="#eef1f8"/></g>
+    <rect x="-380" y="-260" width="760" height="110" rx="44" fill="${C.coral}"/><rect x="-380" y="-190" width="760" height="40" fill="${C.coral}"/>
+    <text y="-188" font-family="MontB" font-weight="900" font-size="54" fill="#fff" text-anchor="middle">ONE WEEK</text>
+    <rect x="-250" y="-290" width="22" height="70" rx="11" fill="#5b6170"/><rect x="228" y="-290" width="22" height="70" rx="11" fill="#5b6170"/>${cells}</g>`;
+}
+export function icon(kind, x, y, s = 1) {
+  const g = (inner) => `<g transform="translate(${x} ${y}) scale(${s})"><circle r="62" fill="#fff" filter="url(#soft)"/>${inner}</g>`;
+  if (kind === 'phone') return g(`<rect x="-20" y="-36" width="40" height="72" rx="9" fill="${C.ink}"/><rect x="-15" y="-28" width="30" height="52" rx="4" fill="${C.blue}"/>`);
+  if (kind === 'plane') return g(`<path d="M -40 6 L 40 -6 M 0 -40 L 8 0 L 0 40 M -30 -14 L -36 18" stroke="${C.ink}" stroke-width="12" stroke-linecap="round" fill="none"/>`);
+  if (kind === 'cart') return g(`<path d="M -40 -26 L -28 -26 L -16 18 L 30 18 L 38 -12 L -22 -12" stroke="${C.ink}" stroke-width="9" fill="none" stroke-linejoin="round"/><circle cx="-10" cy="32" r="7" fill="${C.ink}"/><circle cx="24" cy="32" r="7" fill="${C.ink}"/>`);
+  if (kind === 'radio') return g(`<rect x="-40" y="-22" width="80" height="50" rx="10" fill="${C.coral}"/><circle cx="-14" cy="3" r="13" fill="#fff"/><path d="M 20 -22 L 34 -46" stroke="${C.ink}" stroke-width="6"/>`);
+  if (kind === 'door') return g(`<rect x="-26" y="-40" width="52" height="80" rx="6" fill="${C.wood}"/><circle cx="14" cy="4" r="5" fill="${C.yellow}"/>`);
+  if (kind === 'bell') return g(`<path d="M -30 18 Q -30 -34 0 -36 Q 30 -34 30 18 Z" fill="${C.yellow}"/><rect x="-36" y="14" width="72" height="10" rx="5" fill="${C.yellow}"/><circle cx="0" cy="32" r="8" fill="${C.yellow}"/>`);
+  return g('');
+}
+export function couch(x, y, s = 1) {
+  return `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-300" y="-150" width="600" height="160" rx="50" fill="#5b4bb8"/>
+    <rect x="-340" y="-60" width="100" height="170" rx="40" fill="#4a3c9e"/><rect x="240" y="-60" width="100" height="170" rx="40" fill="#4a3c9e"/>
+    <rect x="-280" y="-10" width="560" height="110" rx="30" fill="#6a5ad0"/><rect x="-280" y="100" width="20" height="40" fill="#2a2148"/><rect x="260" y="100" width="20" height="40" fill="#2a2148"/></g>`;
+}
+export function officeBuilding(x, y, s = 1, t = 0, out = 0) {
+  let win = '';
+  for (let r = 0; r < 7; r++) for (let c2 = 0; c2 < 5; c2++) { const lit = hash(r * 5 + c2, 3) > out; win += `<rect x="${-200 + c2 * 82}" y="${-760 + r * 92}" width="56" height="64" rx="6" fill="${lit ? '#ffd27a' : '#1e2747'}"/>`; }
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g filter="url(#drop)"><rect x="-240" y="-800" width="480" height="800" rx="20" fill="#3a4a7a"/></g>${win}
+    <rect x="-70" y="-130" width="140" height="130" rx="10" fill="#1a2240"/>
+    <g transform="translate(0 -170) rotate(${4 * Math.sin(t * 3)})"><rect x="-130" y="-34" width="260" height="68" rx="12" fill="${C.red}"/><text y="14" font-family="MontB" font-weight="900" font-size="40" fill="#fff" text-anchor="middle">CLOSED</text></g></g>`;
+}
+export function board(x, y, s = 1, t = 0, u = 0) {
+  const rows = ['LONDON  BA 178', 'TOKYO   JL 005', 'DUBAI   EK 202', 'PARIS   AF 023', 'SYDNEY  QF 012', 'TORONTO AC 761'];
+  let r = '';
+  rows.forEach((row, i) => {
+    const flip = clamp((u - 0.12 * i) / 0.2), cancelled = flip > 0.5, sq = Math.abs(Math.cos(flip * Math.PI));
+    r += `<g transform="translate(0 ${-200 + i * 86})"><rect x="-420" y="-34" width="840" height="68" rx="8" fill="#151a24"/>
+      <text x="-396" y="14" font-family="InterW" font-weight="800" font-size="38" fill="#ffd34d" letter-spacing="2">${row}</text>
+      <g transform="translate(250 0) scale(1 ${Math.max(0.05, sq)})"><rect x="-150" y="-28" width="300" height="56" rx="6" fill="${cancelled ? C.red : '#1f5d34'}"/>
+      <text y="13" font-family="InterW" font-weight="800" font-size="30" fill="#fff" text-anchor="middle">${cancelled ? 'CANCELLED' : 'ON TIME'}</text></g></g>`;
+  });
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g filter="url(#drop)"><rect x="-450" y="-320" width="900" height="640" rx="30" fill="#0a0d14"/></g>
+    <text x="-410" y="-260" font-family="MontB" font-weight="900" font-size="44" fill="#fff">DEPARTURES</text>${r}</g>`;
+}
+export function plane(x, y, s = 1, rot = 0, col = '#f3f5fa') {
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})" filter="url(#soft)">
+    <path d="M -260 0 C -260 -40 200 -46 270 -14 C 300 0 270 14 230 18 L -230 28 C -255 28 -260 20 -260 0 Z" fill="${col}"/>
+    <path d="M -40 0 L 60 -170 L 110 -170 L 60 4 Z" fill="#d9dde8"/><path d="M -40 16 L 40 170 L 90 170 L 50 16 Z" fill="#c9cfdc"/>
+    <path d="M -230 -6 L -260 -110 L -215 -110 L -170 -10 Z" fill="${C.coral}"/>
+    ${[0, 1, 2, 3, 4, 5, 6].map((i) => `<circle cx="${-150 + i * 50}" cy="-12" r="9" fill="#5b8bd9"/>`).join('')}</g>`;
+}
+export function newspaper(x, y, s = 1, rot = 0) {
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><g filter="url(#drop)"><rect x="-340" y="-420" width="680" height="840" rx="12" fill="#f3efe4"/></g>
+    <text y="-330" font-family="Garamond" font-weight="600" font-size="72" fill="#222" text-anchor="middle">THE DAILY NEWS</text>
+    <rect x="-300" y="-305" width="600" height="6" fill="#222"/><text x="-300" y="-260" font-family="InterW" font-weight="700" font-size="24" fill="#555">FRIDAY, JULY 19, 2024</text>
+    <text y="-150" font-family="MontB" font-weight="900" font-size="70" fill="#111" text-anchor="middle">ONE BAD UPDATE</text>
+    <text y="-70" font-family="MontB" font-weight="900" font-size="58" fill="${C.red}" text-anchor="middle">GROUNDS FLIGHTS</text>
+    <rect x="-300" y="-20" width="300" height="220" fill="#c9ccd6"/>${plane(-150, 90, 0.42, -8, '#fff')}
+    ${[0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="30" y="${-10 + i * 32}" width="${270 - (i % 3) * 30}" height="14" rx="7" fill="#bdb6a6"/>`).join('')}
+    ${[0, 1, 2, 3, 4].map((i) => `<rect x="-300" y="${240 + i * 32}" width="${600 - (i % 2) * 80}" height="14" rx="7" fill="#bdb6a6"/>`).join('')}</g>`;
+}
+export function laptopBSOD(x, y, s = 1, t = 0, u = 0) {
+  const p = Math.min(0.99, ease.out(u / 1.2) * 0.47);
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g filter="url(#drop)"><rect x="-380" y="-300" width="760" height="480" rx="28" fill="#2a2e38"/></g>
+    <rect x="-350" y="-272" width="700" height="424" rx="10" fill="#1665c0"/>
+    <text x="-300" y="-150" font-family="InterW" font-weight="600" font-size="120" fill="#fff">:(</text>
+    <text x="-300" y="-50" font-family="InterW" font-weight="700" font-size="34" fill="#fff">Your PC ran into a problem.</text>
+    <text x="-300" y="0" font-family="InterW" font-weight="600" font-size="26" fill="#d6e6ff">Applying update…  ${Math.round(p * 100)}% complete</text>
+    <rect x="-300" y="40" width="600" height="20" rx="10" fill="#0d4a94"/><rect x="-300" y="40" width="${600 * p}" height="20" rx="10" fill="#fff"/>
+    <path d="M -440 180 L 440 180 L 400 230 L -400 230 Z" fill="#3a3f4b"/></g>`;
+}
+export function shelves(x, y, s = 1, t = 0, left = 1, freshLeft = 1) {
+  const cols = ['#ff6b6b', '#ffd84a', '#4cc9f0', '#7bd389', '#c77dff', '#ff9f43'];
+  let items = '';
+  for (let r = 0; r < 4; r++) for (let i = 0; i < 8; i++) {
+    const k = hash(r * 8 + i, 9), fresh = r === 3;
+    if ((fresh ? k > freshLeft : k > left)) continue;
+    const col = fresh ? ['#ff5a4f', '#7ac74f', '#ffa53b', '#ffd84a'][(r + i) % 4] : cols[(r * 3 + i) % cols.length];
+    items += fresh ? `<circle cx="${-340 + i * 96}" cy="${-300 + r * 190}" r="34" fill="${col}"/><circle cx="${-322 + i * 96}" cy="${-312 + r * 190}" r="9" fill="#fff" opacity="0.4"/>`
+      : `<rect x="${-372 + i * 96}" y="${-370 + r * 190}" width="64" height="${100 - (k * 40 | 0)}" rx="10" fill="${col}"/><rect x="${-362 + i * 96}" y="${-350 + r * 190}" width="44" height="18" rx="4" fill="#fff" opacity="0.7"/>`;
+  }
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g filter="url(#drop)"><rect x="-420" y="-460" width="840" height="820" rx="24" fill="#d9dde8"/></g>
+    ${[0, 1, 2, 3].map((r) => `<rect x="-400" y="${-262 + r * 190}" width="800" height="22" rx="6" fill="#9aa3b8"/>`).join('')}${items}
+    <rect x="-400" y="${-262 + 3 * 190 + 30}" width="250" height="56" rx="10" fill="${C.green}"/><text x="-275" y="${-262 + 3 * 190 + 70}" font-family="MontB" font-weight="900" font-size="30" fill="#fff" text-anchor="middle">FRESH</text></g>`;
+}
+export function satellite(x, y, s = 1, t = 0) {
+  return `<g transform="translate(${x} ${y}) rotate(${-20 + 4 * Math.sin(t)}) scale(${s})">
+    <rect x="-300" y="-50" width="200" height="100" rx="8" fill="#2f5fbf"/><rect x="100" y="-50" width="200" height="100" rx="8" fill="#2f5fbf"/>
+    ${[0, 1, 2, 3].map((i) => `<rect x="${-290 + i * 48}" y="-42" width="40" height="84" fill="#4a86f0"/><rect x="${110 + i * 48}" y="-42" width="40" height="84" fill="#4a86f0"/>`).join('')}
+    <rect x="-100" y="-10" width="200" height="20" fill="#9aa3b8"/><rect x="-70" y="-80" width="140" height="160" rx="22" fill="#e9ecf3" filter="url(#soft)"/>
+    <circle cx="0" cy="-110" r="32" fill="#c9ccd6"/><circle cx="0" cy="-110" r="10" fill="${C.red}" opacity="${0.5 + 0.5 * Math.sin(t * 8)}"/></g>`;
+}
+export function radio(x, y, s = 1, t = 0) {
+  const waves = [0, 1, 2].map((i) => { const ph = (t * 1.2 + i / 3) % 1; return `<path d="M ${200 + ph * 160} ${-120 - ph * 60} A ${120 + ph * 200} ${120 + ph * 200} 0 0 1 ${200 + ph * 160} ${120 + ph * 60}" fill="none" stroke="${C.yellow}" stroke-width="12" stroke-linecap="round" opacity="${1 - ph}"/>`; }).join('');
+  const notes = [0, 1].map((i) => { const ph = (t * 0.7 + i * 0.5) % 1; return `<text x="${-160 + i * 120 + ph * 40}" y="${-260 - ph * 200}" font-size="70" fill="#fff" opacity="${1 - ph}" font-family="InterW">♪</text>`; }).join('');
+  return `<g transform="translate(${x} ${y}) scale(${s})">${waves}${notes}
+    <path d="M 140 -150 L 230 -330" stroke="#c9ccd6" stroke-width="12" stroke-linecap="round"/><circle cx="230" cy="-330" r="12" fill="#c9ccd6"/>
+    <g filter="url(#drop)"><rect x="-260" y="-160" width="520" height="320" rx="48" fill="#c0392b"/></g>
+    <rect x="-230" y="-130" width="460" height="260" rx="34" fill="#e74c3c"/>
+    <circle cx="-100" cy="10" r="100" fill="#3a1a14"/>${[0, 1, 2, 3, 4].map((i) => `<rect x="-170" y="${-48 + i * 26}" width="140" height="10" rx="5" fill="#5a2a22"/>`).join('')}
+    <rect x="40" y="-90" width="160" height="70" rx="12" fill="#f8e7c2"/><rect x="${60 + 110 * (0.5 + 0.5 * Math.sin(t * 0.8))}" y="-86" width="6" height="62" fill="${C.red}"/>
+    <circle cx="80" cy="60" r="34" fill="#f8e7c2"/><circle cx="170" cy="60" r="34" fill="#f8e7c2"/></g>`;
+}
+export function screenCall(t, u) {
+  const on = u > 0.9, secs = Math.max(0, Math.floor(u - 0.9));
+  return `<rect x="-176" y="-376" width="352" height="752" fill="${on ? '#0f3d24' : '#14172a'}"/>${statusBar({ offline: true })}
+    <circle cx="0" cy="-160" r="70" fill="#5f6b8a"/><text x="0" y="-136" font-family="InterW" font-weight="800" font-size="64" fill="#fff" text-anchor="middle">M</text>
+    <text x="0" y="-50" font-family="InterW" font-weight="800" font-size="40" fill="#fff" text-anchor="middle">Mom</text>
+    <text x="0" y="-6" font-family="InterW" font-weight="600" font-size="24" fill="${on ? '#9fffb8' : C.grey}" text-anchor="middle">${on ? `Connected · 0:0${secs}` : 'Calling…'}</text>
+    ${on ? '' : [0, 1, 2].map((i) => `<circle cx="0" cy="-160" r="${70 + ((u * 1.2 + i / 3) % 1) * 90}" fill="none" stroke="#fff" stroke-width="4" opacity="${1 - ((u * 1.2 + i / 3) % 1)}"/>`).join('')}
+    <circle cx="-90" cy="250" r="44" fill="${on ? '#2a2e3b' : C.green}"/><circle cx="90" cy="250" r="44" fill="${C.red}"/>
+    <path d="M 70 250 L 110 250" stroke="#fff" stroke-width="10" stroke-linecap="round"/><path d="M -110 240 q 20 30 40 10" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round"/>`;
+}
+export function screenGPS(t, u) {
+  let streets = '';
+  for (let i = -6; i <= 6; i++) streets += `<rect x="${i * 70 - 7}" y="-376" width="14" height="752" fill="#fff"/><rect x="-176" y="${i * 80 - 7}" width="352" height="14" fill="#fff"/>`;
+  const pr = (u * 1.5) % 1;
+  return `<rect x="-176" y="-376" width="352" height="752" fill="#e8eef5"/>${streets}<rect x="-60" y="-180" width="120" height="100" fill="#bfe6c4"/><rect x="40" y="120" width="130" height="90" fill="#bfe6c4"/>
+    <path d="M -100 300 L -100 120 L 0 120 L 0 0" fill="none" stroke="${C.blue}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    ${statusBar({ dark: false, offline: true })}
+    <circle cx="0" cy="0" r="${30 + pr * 60}" fill="${C.blue}" opacity="${0.35 * (1 - pr)}"/><circle cx="0" cy="0" r="24" fill="#fff"/><circle cx="0" cy="0" r="17" fill="${C.blue}"/>
+    <g transform="translate(0 -270)"><rect x="-130" y="-30" width="260" height="60" rx="30" fill="#fff" filter="url(#soft)"/>
+    <circle cx="-100" cy="0" r="14" fill="${C.green}"/><path d="M -107 0 L -101 6 L -92 -6" stroke="#fff" stroke-width="4" fill="none"/>
+    <text x="-78" y="8" font-family="InterW" font-weight="800" font-size="22" fill="${C.ink}">GPS works</text></g>`;
+}
+export function house(x, y, s = 1, col = '#ffb27a', roof = '#c0392b', open = 0) {
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g filter="url(#soft)"><rect x="-150" y="-220" width="300" height="220" fill="${col}"/></g>
+    <path d="M -180 -210 L 0 -360 L 180 -210 Z" fill="${roof}"/><rect x="-110" y="-170" width="70" height="60" rx="6" fill="#ffe7a6"/>
+    <rect x="20" y="-140" width="80" height="140" rx="8" fill="#5a3a26"/><rect x="${20 + 80 * (1 - open)}" y="-140" width="${80 * open}" height="140" fill="#2a1a12"/><circle cx="85" cy="-70" r="6" fill="${C.yellow}"/></g>`;
+}
+export function bubbleSay(x, y, s = 1, u = 1, txt = '', col = '#fff', tcol = C.ink) {
+  const k = ease.back(u / 0.25);
+  return `<g transform="translate(${x} ${y}) scale(${s * k})" opacity="${clamp(u * 6)}"><rect x="-150" y="-70" width="300" height="120" rx="40" fill="${col}" filter="url(#soft)"/>
+    <path d="M -40 48 L -60 100 L 0 48 Z" fill="${col}"/><text y="8" font-family="InterW" font-weight="800" font-size="40" fill="${tcol}" text-anchor="middle">${txt}</text></g>`;
+}
+export function cash(x, y, s = 1, rot = 0) {
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><rect x="-160" y="-70" width="320" height="140" rx="14" fill="#2f9e57" filter="url(#soft)"/>
+    <rect x="-140" y="-50" width="280" height="100" rx="10" fill="none" stroke="#bff0cf" stroke-width="6"/><circle r="38" fill="#bff0cf"/><text y="16" font-family="MontB" font-weight="900" font-size="46" fill="#2f9e57" text-anchor="middle">$</text></g>`;
+}
+export function gauge(x, y, s = 1, v = 0.5, label = '') {
+  const a = -90 + 180 * v, segs = [['#34c759', -90, -30], ['#ffd84a', -30, 30], [C.red, 30, 90]];
+  const arc = (a0, a1, col) => { const p = (a) => [Math.sin(a * Math.PI / 180) * 300, -Math.cos(a * Math.PI / 180) * 300]; const [x0, y0] = p(a0), [x1, y1] = p(a1); return `<path d="M ${x0} ${y0} A 300 300 0 0 1 ${x1} ${y1}" stroke="${col}" stroke-width="70" fill="none"/>`; };
+  return `<g transform="translate(${x} ${y}) scale(${s})">${segs.map(([c2, a0, a1]) => arc(a0, a1, c2)).join('')}
+    <g transform="rotate(${a})"><path d="M -18 0 L 0 -270 L 18 0 Z" fill="#fff"/></g><circle r="34" fill="#fff"/>
+    <text y="120" font-family="MontB" font-weight="900" font-size="56" fill="#fff" text-anchor="middle">${label}</text></g>`;
+}
+export function ocean(t, u, { cut = 0, reroute = 0 } = {}) {
+  // a cross-section: sky, waves, deep water, the seabed with cables and data pulses
+  const wave = (yy, amp, ph, col) => { let d = `M 0 ${yy}`; for (let x = 0; x <= 1080; x += 40) d += ` L ${x} ${yy + Math.sin(x / 90 + t * 2 + ph) * amp}`; return `<path d="${d} L 1080 1920 L 0 1920 Z" fill="${col}"/>`; };
+  const cable = (yy, i) => {
+    const broken = cut && i === 1, gap = broken ? 60 * ease.out(cut) : 0;
+    let s = broken ? `<path d="M 0 ${yy} Q 270 ${yy - 30} ${540 - gap} ${yy}" stroke="#3a3f4b" stroke-width="18" fill="none"/><path d="M ${540 + gap} ${yy} Q 810 ${yy + 30} 1080 ${yy}" stroke="#3a3f4b" stroke-width="18" fill="none"/>
+      <circle cx="${540 - gap}" cy="${yy}" r="${14 + 10 * Math.sin(t * 20)}" fill="${C.yellow}" opacity="0.8" filter="url(#glow)"/>`
+      : `<path d="M 0 ${yy} Q 540 ${yy + (i % 2 ? 40 : -40)} 1080 ${yy}" stroke="#3a3f4b" stroke-width="18" fill="none"/>`;
+    for (let k = 0; k < 5; k++) {
+      const p = (t * 0.5 + k / 5 + i * 0.1) % 1, px = p * 1080;
+      if (broken && Math.abs(px - 540) < 200) continue;
+      s += `<circle cx="${px}" cy="${yy + (i % 2 ? 40 : -40) * 4 * p * (1 - p) * (broken ? 0 : 1)}" r="${broken || !reroute || i === 1 ? 10 : 14}" fill="${reroute && i !== 1 ? C.yellow : '#7fe8ff'}" filter="url(#glow)"/>`;
+    }
+    return s;
+  };
+  const fish = [0, 1, 2].map((i) => { const fx = ((t * 60 + i * 380) % 1300) - 110, fy = 760 + i * 120; return `<g transform="translate(${fx} ${fy})"><ellipse rx="40" ry="20" fill="#ffb347"/><path d="M -36 0 L -64 -18 L -64 18 Z" fill="#ffb347"/><circle cx="20" cy="-5" r="5" fill="#222"/></g>`; }).join('');
+  return `<linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f6fb5"/><stop offset="1" stop-color="#06213f"/></linearGradient>
+    <rect width="1080" height="1920" fill="#7cc7ff"/><rect y="440" width="1080" height="1480" fill="url(#sea)"/>${wave(450, 14, 0, '#2a85d0')}<rect y="470" width="1080" height="1450" fill="url(#sea)"/>
+    ${fish}<path d="M 0 1180 Q 270 1120 540 1170 Q 810 1220 1080 1150 L 1080 1920 L 0 1920 Z" fill="#c9a66b"/>
+    ${[0, 1, 2].map((i) => cable(1150 - i * 70, i)).join('')}`;
+}
+export function notifStorm(t, u) {
+  // banners stacking on the phone screen, faster and faster
+  const n = Math.min(14, Math.floor(Math.pow(u * 4, 1.6)));
+  const apps = [['Messages', C.green, 'Mom: are you okay??'], ['Bank', '#1f5fae', 'Payment failed (3)'], ['Maps', C.coral, 'Route updated'], ['News', C.red, 'INTERNET IS BACK'], ['Mail', C.blue, '418 new emails'], ['Chat', '#8e44ad', '99+ messages']];
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const a = apps[i % apps.length], yy = 300 - (n - 1 - i) * 96;
+    if (yy < -360) continue;
+    s += `<g transform="translate(0 ${yy})"><rect x="-164" y="-42" width="328" height="84" rx="20" fill="#fff" opacity="0.95"/>
+      <rect x="-150" y="-26" width="52" height="52" rx="12" fill="${a[1]}"/><text x="-86" y="-6" font-family="InterW" font-weight="800" font-size="19" fill="${C.ink}">${a[0]}</text>
+      <text x="-86" y="20" font-family="InterW" font-weight="600" font-size="17" fill="#555">${a[2]}</text></g>`;
+  }
+  return `<rect x="-176" y="-376" width="352" height="752" fill="url(#lockWall)"/>${statusBar({})}${s}`;
+}
+export function badge(x, y, s, txt) {
+  return `<g transform="translate(${x} ${y}) scale(${s})"><circle r="56" fill="${C.red}" filter="url(#soft)"/><text y="16" font-family="MontB" font-weight="900" font-size="${txt.length > 3 ? 34 : 44}" fill="#fff" text-anchor="middle">${txt}</text></g>`;
+}
+export function commentBox(x, y, s = 1, t = 0, u = 0) {
+  const opts = ['1 day', '3 days', 'A week', 'Forever'];
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g filter="url(#drop)"><rect x="-400" y="-300" width="800" height="600" rx="50" fill="#fff"/></g>
+    <text y="-200" font-family="MontB" font-weight="900" font-size="58" fill="${C.ink}" text-anchor="middle">HOW LONG WOULD</text><text y="-130" font-family="MontB" font-weight="900" font-size="58" fill="${C.ink}" text-anchor="middle">YOU LAST?</text>
+    ${opts.map((o, i) => { const k = ease.back((u - 0.2 - i * 0.15) / 0.3); return `<g transform="translate(${-180 + (i % 2) * 360} ${-10 + Math.floor(i / 2) * 140}) scale(${k})"><rect x="-160" y="-50" width="320" height="100" rx="50" fill="${[C.coral, C.yellow, C.teal, C.blue][i]}"/>
+      <text y="14" font-family="MontB" font-weight="900" font-size="40" fill="#fff" text-anchor="middle">${o}</text></g>`; }).join('')}</g>`;
+}

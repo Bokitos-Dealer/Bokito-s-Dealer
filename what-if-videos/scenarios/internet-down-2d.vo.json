@@ -1,0 +1,24 @@
+{
+  "id": "internet-down-2d",
+  "engine": "chatterbox",
+  "ref": "/home/user/tts/ref/voice.wav",
+  "tempo": 1.08,
+  "exaggeration": 0.5,
+  "cfg": 0.5,
+  "temperature": 0.7,
+  "lines": {
+    "hook": "What if tomorrow morning, the entire internet just... died?",
+    "intro": "Not your wifi. Not your phone. All of it, everywhere, for a whole week. Here's what would actually happen, day by day.",
+    "relate": "You know that panic when the wifi drops for like ten seconds? Yeah. Now imagine seven days.",
+    "day1": "Day one. You wake up, grab your phone... nothing. No messages. No maps. Your bank app? Just spinning.",
+    "cash": "So you go grab a coffee. Card? Declined. Cash only. And be honest, when's the last time you actually carried cash?",
+    "day2": "Day two. Offices just give up and send everyone home. Flights? Grounded. And this isn't made up. In 2024, one bad software update cancelled thousands of flights in a single day.",
+    "day3": "Day three. The shelves start emptying, and fresh food goes first.",
+    "twist": "But here's the crazy part. Your GPS still works, because that's satellites, not the internet. Old school radio? Works. A normal phone call? Might actually go through.",
+    "day5": "Day five. People do something wild. They knock on their neighbors' doors... and talk. Like, actually talk.",
+    "cost": "Meanwhile, every single day of this costs the world around forty-three billion dollars.",
+    "real": "So could this really happen? Honestly? Almost impossible. The internet is hundreds of cables under the ocean. Cut one, and the data just goes around it.",
+    "day7": "And day seven? It all comes back. Every. Single. Notification. At once.",
+    "cta": "So be honest... how long would you last? Tell me in the comments."
+  }
+}
