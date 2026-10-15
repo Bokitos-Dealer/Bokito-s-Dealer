@@ -1,0 +1,12 @@
+{"id": "asteroid", "engine": "chatterbox", "ref": "/home/user/tts/ref/voice.wav", "tempo": 1.12, "exaggeration": 0.5, "cfg": 0.5, "temperature": 0.7,
+ "lines": {
+  "hook": "What if a giant asteroid was heading straight for Earth?",
+  "intro": "Not a movie with a drilling crew. A real plan, with real science. Here's what would actually happen, step by step.",
+  "relate": "You know when you see a shooting star and make a wish? Most of those are smaller than a grain of sand. This one is as big as a stadium.",
+  "found": "Day one. Telescopes spot it. Astronomers track it for weeks, and the math comes back: impact in ten years.",
+  "size": "And size matters. The rock that exploded over Russia in 2013 was less than twenty meters wide, and it still hurt over a thousand people, mostly from broken glass. The one that wiped out the dinosaurs? About ten kilometers.",
+  "plan": "So what's the plan? We crash a spacecraft into it. And we've already tested this. In 2022, NASA's DART mission hit a small asteroid and changed its orbit by thirty two minutes.",
+  "twist": "But here's the crazy part. You don't need to blow it up. If you find it early, a tiny nudge is enough, because over the years, a small push turns into a huge miss.",
+  "real": "So could this really happen? Big impacts are very rare. NASA says no known large asteroid is a real threat for at least the next hundred years. And a new space telescope is being built to find the ones we haven't seen yet.",
+  "end": "Year ten. The asteroid flies past Earth, a safe distance away. Everyone looks up, and for once, it's just a show.",
+  "cta": "So be honest... would you want to know if one was coming? Tell me in the comments."}}
