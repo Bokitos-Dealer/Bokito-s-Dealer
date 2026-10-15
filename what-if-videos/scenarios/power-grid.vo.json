@@ -1,0 +1,24 @@
+{
+  "id": "power-grid",
+  "engine": "chatterbox",
+  "ref": "/home/user/tts/ref/voice.wav",
+  "tempo": 1.12,
+  "exaggeration": 0.5,
+  "cfg": 0.5,
+  "temperature": 0.7,
+  "lines": {
+    "hook": "What if tonight, the power went out... and didn't come back for a whole month?",
+    "intro": "Not a storm. Not just your street. The entire grid, for thirty days. Here's what would actually happen, step by step.",
+    "relate": "You know when the lights flicker and everyone goes, ooooh? Yeah. Now imagine they never come back.",
+    "day1": "Day one. Honestly? It's kind of fun. Candles, board games, everyone outside looking at the stars.",
+    "phone": "Then your phone hits ten percent. And the cell towers? Many run on batteries that only last a few hours.",
+    "day2": "Day two. Your fridge is warming up and the food starts going bad. Shops can't take cards. And the gas pumps? They need electricity too.",
+    "day3": "Day three. Your water pressure drops, because the pumps that push water to your tap run on power.",
+    "day4": "Day four. Hospitals are running on backup generators, and many only plan for about four days of fuel.",
+    "week2": "By week two, the city is dark and quiet. Neighbors share food, water, and whatever generators they've got.",
+    "twist": "But here's the crazy part. The hardest bit isn't the blackout, it's turning it back on. You can't just flip one switch. Engineers restart the grid piece by piece, and some giant transformers take years to replace.",
+    "real": "So could this really happen? It already has, just shorter. In 2003, fifty million people lost power in North America. And in 2025, Spain and Portugal went dark for almost a whole day.",
+    "day30": "On day thirty, the lights come back, one neighborhood at a time. And honestly? Some people kind of miss the stars.",
+    "cta": "So be honest... how long would you last without power? Tell me in the comments."
+  }
+}
