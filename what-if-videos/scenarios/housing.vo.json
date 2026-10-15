@@ -1,0 +1,13 @@
+{"id": "housing", "engine": "chatterbox", "ref": "/home/user/tts/ref/voice.wav", "tempo": 1.12, "exaggeration": 0.5, "cfg": 0.5, "temperature": 0.7,
+ "lines": {
+  "hook": "What if you could never afford a home... no matter how hard you worked?",
+  "intro": "Not because you're lazy. Because the math stopped working. Here's how it actually plays out, step by step.",
+  "relate": "You know when you scroll house listings just for fun, then see the price and close the app? Yeah. That.",
+  "past": "Back in the 1990s, an average home in the US cost about three times a year's income. Save for a few years, get a mortgage, done.",
+  "now": "Today, it's about five times income. And in cities like London, Sydney or Toronto, it's even worse.",
+  "rent": "So people rent for longer. Rent can eat a third of your paycheck or more, which makes saving for a deposit even harder.",
+  "parents": "Lots of young adults end up living with their parents into their thirties. Not because they want to, but because the numbers don't add up.",
+  "twist": "But here's the crazy part. Some cities fixed this. In Vienna, about half of the people live in city built or subsidized homes with fair rents. And Tokyo lets builders put up new homes fast, so prices stayed calm for decades.",
+  "real": "So could this really happen to you? For millions of people, it already is. Home prices have grown much faster than paychecks.",
+  "end": "The good news? It's not a law of nature. Build more homes, and prices can come back within reach.",
+  "cta": "So be honest... do you think you'll ever own a home? Tell me in the comments."}}
