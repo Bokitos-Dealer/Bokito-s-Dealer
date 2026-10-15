@@ -19,7 +19,25 @@ from narrate import trim, level, script_words  # noqa: E402
 
 VENV = '/home/user/tts/.venv/bin/python'
 GEN = '/home/user/tts/cb.py'
-norm = lambda s: re.sub(r'[^a-z0-9 ]', '', s.lower().replace('-', ' ')).split()
+ONES = 'zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen'.split()
+TENS = 'zero ten twenty thirty forty fifty sixty seventy eighty ninety'.split()
+
+
+def words(n):
+    """Spell an integer the plain way (1918 -> one thousand nine hundred eighteen), so digits and words compare equal."""
+    if n < 20: return ONES[n]
+    if n < 100: return TENS[n // 10] + ('' if n % 10 == 0 else ' ' + ONES[n % 10])
+    for div, name in ((10 ** 9, 'billion'), (10 ** 6, 'million'), (1000, 'thousand'), (100, 'hundred')):
+        if n >= div: return words(n // div) + ' ' + name + ('' if n % div == 0 else ' ' + words(n % div))
+
+
+def norm(s):
+    s = s.lower().replace('-', ' ')
+    s = re.sub(r'(\d)[ ]?,[ ]?(\d{3})', r'\1\2', s)                        # 50 ,000 -> 50000
+    s = re.sub(r'\$(\d+(?:\.\d+)?)', r'\1 dollars', s).replace('%', ' percent')
+    s = re.sub(r'(\d+)\.(\d+)', lambda m: words(int(m.group(1))) + ' point ' + ' '.join(ONES[int(c)] for c in m.group(2)), s)
+    s = re.sub(r'\d+', lambda m: ' ' + words(int(m.group(0))) + ' ', s)
+    return [w for w in re.sub(r'[^a-z ]', '', s).split() if w not in ('and', 'a')]
 
 
 def squeeze(a, sr, maxgap=0.38, keep=0.3):
