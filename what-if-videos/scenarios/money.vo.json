@@ -1,0 +1,12 @@
+{"id": "money", "engine": "chatterbox", "ref": "/home/user/tts/ref/voice.wav", "tempo": 1.12, "exaggeration": 0.5, "cfg": 0.5, "temperature": 0.7,
+ "lines": {
+  "hook": "What if the money in your pocket... suddenly became worthless?",
+  "intro": "Not a stock market dip. Your actual cash, losing value every single day. Here's how it would actually play out, step by step.",
+  "relate": "You know that feeling when your favorite snack quietly gets more expensive? Now imagine that happening every few hours.",
+  "week1": "Week one. A loaf of bread costs three dollars. By the end of the week, it's six. But your paycheck still says the same number.",
+  "rush": "So people get paid and rush to spend it all right away, because tomorrow it buys less. Shops change their prices twice a day.",
+  "barter": "Month two. Cash is basically paper. People start trading instead. Eggs for fuel, haircuts for vegetables.",
+  "twist": "But here's the crazy part. This has already happened. In Germany in 1923, prices doubled about every four days. And in Hungary in 1946, they doubled every fifteen hours.",
+  "real": "So could it really happen again? In 2009, Zimbabwe printed a one hundred trillion dollar note. A few months later, the country gave up on its own money completely.",
+  "end": "The fix? Countries start over with a new currency, and a central bank that isn't allowed to print money just to pay the bills. And slowly, trust comes back.",
+  "cta": "So be honest... what would you trade if money stopped working? Tell me in the comments."}}
