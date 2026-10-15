@@ -84,7 +84,7 @@ at(W('twist', 'our'), (t, u) => {
 // ---------- could it happen?
 at(SAY.real, (t, u) => `${meadow(t)}${B.bee(540, 1000, 1.5, t)}<text x="540" y="${600 + 10 * Math.sin(t * 4)}" font-family="MontB" font-weight="900" font-size="300" fill="${C.yellow}" text-anchor="middle" stroke="#000" stroke-width="12" paint-order="stroke" transform="rotate(${6 * Math.sin(t * 3)} 540 500)">?</text>`);
 at(W('real', 'in'), (t, u) => `${I.bg('#ffe0ea', '#cfeaff')}<rect y="1220" width="1080" height="700" fill="#8bc77b"/>${B.handPollinate(420, 1200, 1.0, t)}${G.outlined(540, 470, 70, C.red, 'CHINA · BY HAND', 8)}`);
-at(W('real', 'and'), (t, u) => { const v = Math.round(577 * ease.out(u / 1.6));
+at(W('real', 'and', 1), (t, u) => { const v = Math.round(577 * ease.out(u / 1.6));
   return `${night('#34c759')}${[...Array(14)].map((_, i) => I.cash(540 + (i % 3 - 1) * 70, 1330 - i * 26 * clamp(u * 1.5), 1, (i % 2 ? 4 : -4))).join('')}
   ${G.outlined(540, 720, 180, '#7dffa6', `$${v}B`, 12)}${G.outlined(540, 820, 60, '#fff', '(€530B) EVERY YEAR', 8)}`; });
 // ---------- the fix
@@ -152,8 +152,8 @@ function buildAudio() {
   // could it happen
   fx('creak', { t0: SAY.real + 0.1, t1: SAY.real + 0.7, level: 0.12 });
   fx('rustle', { t0: W('real', 'in') + 0.3, t1: W('real', 'in') + 1.6, level: 0.12 });
-  fx('kaching', { t: W('real', 'and') + 0.3, level: 0.28 });
-  fx('count', { t0: W('real', 'and') + 0.3, t1: W('real', 'and') + 1.8, from: 22, to: 44, level: 0.07, seed: 8 });
+  fx('kaching', { t: W('real', 'and', 1) + 0.3, level: 0.28 });
+  fx('count', { t0: W('real', 'and', 1) + 0.3, t1: W('real', 'and', 1) + 1.8, from: 22, to: 44, level: 0.07, seed: 8 });
   // the fix
   L.push(S_('sfx/1238.wav', W('end', 'the'), { dur: SAY.cta - W('end', 'the'), level: 0.2, fin: 0.3, fout: 0.4, fx: true }));
   buzz(W('end', 'planting') + 0.4, SAY.cta - 0.2, 0.1);
