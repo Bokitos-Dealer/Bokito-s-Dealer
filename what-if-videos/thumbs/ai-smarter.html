@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cover: What if AI got smarter than us?</title>
+<style>
+  @font-face { font-family: 'Mont'; font-weight: 900; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'MontB'; font-weight: 900; src: url(/node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'InterW'; font-weight: 800; src: url(/node_modules/@fontsource/inter/files/inter-latin-800-normal.woff2) format('woff2'); }
+  html, body { margin: 0; background: #000; }
+  .cover { position: relative; width: 1080px; height: 1920px; overflow: hidden; color: #fff; font-family: 'Mont', sans-serif; background: #0d0b26; }
+  .art { position: absolute; inset: 0; overflow: hidden; }
+  .art svg { display: block; }
+  .art svg { display: block; width: 1080px; height: 1920px; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,10,28,0.92) 0%, rgba(8,10,28,0.6) 40%, rgba(8,10,28,0) 62%, rgba(8,10,28,0) 85%, rgba(8,10,28,0.6) 100%); }
+  .title { position: absolute; left: 30px; right: 30px; top: 150px; text-align: center; }
+  .l1 { font-weight: 900; font-size: 124px; line-height: 0.98; letter-spacing: -2px; text-shadow: 0 6px 24px rgba(0,0,0,0.9), 0 0 6px #000; }
+  .l2 { font-weight: 900; font-size: 186px; line-height: 0.95; letter-spacing: -3px; margin-top: 16px; white-space: nowrap; color: #ffd84a;
+    text-shadow: 0 0 40px rgba(255,200,60,0.7), 0 10px 30px rgba(0,0,0,0.9), 0 0 6px #000; }
+  .tag { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'InterW'; font-weight: 800; font-size: 40px; letter-spacing: 0.16em; color: #fff;
+    text-shadow: 0 0 18px rgba(0,0,0,0.95), 0 2px 6px rgba(0,0,0,0.9); }
+</style>
+</head>
+<body>
+<div class="cover" id="cover">
+  <div class="art" id="art"></div>
+  <div class="shade"></div>
+  <div class="title"><div class="l1">WHAT IF AI<br>GOT SMARTER</div><div class="l2">THAN<br>US?</div></div>
+</div>
+<script type="module">
+  // cover art: a giant glowing AI chip, one small human looking up at it
+  const I = await import('/scenarios/ill2d.js'), G = await import('/scenarios/ill2d-grid.js'), A = await import('/scenarios/ill2d-ai.js');
+  const art = `${I.bg('#0d0b26', '#251a5c', '#8b5cf6', 1150)}${G.stars(1.3, 70, 4, 0.8, 1900)}${A.chip(540, 1150, 1.45, 0.4, 1)}
+    <rect y="1680" width="1080" height="240" fill="#120d30"/>${I.person(540, 1760, 0.75, { shirt: '#ff5e5b', pose: 'stand', face: 'panic' })}${I.vignette()}`;
+  document.getElementById('art').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">${I.DEFS}${art}</svg>`;
+  document.fonts.ready.then(() => document.body.dataset.ready = '1');
+</script>
+</body>
+</html>
