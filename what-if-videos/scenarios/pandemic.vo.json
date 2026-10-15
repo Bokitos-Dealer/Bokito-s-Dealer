@@ -1,0 +1,13 @@
+{"id": "pandemic", "engine": "chatterbox", "ref": "/home/user/tts/ref/voice.wav", "tempo": 1.12, "exaggeration": 0.5, "cfg": 0.5, "temperature": 0.7,
+ "lines": {
+  "hook": "What if a virus worse than COVID hit... tomorrow?",
+  "intro": "Not a zombie movie. A real, fast spreading virus. Here's how it would actually play out, step by step.",
+  "relate": "Remember March 2020? Empty shelves, no toilet paper, and everyone suddenly baking bread? Now imagine something even faster.",
+  "day1": "Day one. One person gets sick in a busy city. It just feels like a bad cold, so they still go to work.",
+  "week1": "By the end of the week, it's on planes. Ten cities, three continents. And every sick person infects about three more.",
+  "math": "That sounds small, but it grows fast. Three becomes nine, nine becomes twenty seven, and after ten rounds, it's over fifty thousand people.",
+  "week3": "Week three. Hospitals fill up. Schools close, people work from home, and masks are back.",
+  "twist": "But here's the crazy part. We're much faster now. In 2020, scientists designed a vaccine just two days after the virus's code was shared. Today, the goal is a new vaccine in one hundred days.",
+  "real": "So could this really happen? It has before. In 1918, the flu infected about five hundred million people. That's a third of the world.",
+  "end": "But back then, there were no vaccines, no internet, and no intensive care units. This time, we'd spot it sooner and fight back faster.",
+  "cta": "So be honest... what would you stock up on first? Tell me in the comments."}}
