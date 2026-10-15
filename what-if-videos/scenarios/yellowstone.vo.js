@@ -918,92 +918,92 @@ export default {
  },
  "real": {
   "file": "vo/yellowstone/real.wav",
-  "dur": 10.64,
-  "text": "So could this really happen? The last one was about six hundred thirty thousand years ago. And when a different volcano erupted in Indonesia in 1815, the next year was called the year without a summer.",
+  "dur": 10.51,
+  "text": "So could this really happen? The last one was about six hundred thirty thousand years ago. And when a different volcano erupted in Indonesia in eighteen fifteen, the next year was called the year without a summer.",
   "words": [
    [
     "So",
     0.0,
-    0.28
+    0.26
    ],
    [
     "could",
-    0.28,
+    0.26,
     0.52
    ],
    [
     "this",
     0.52,
-    0.74
+    0.72
    ],
    [
     "really",
-    0.74,
-    1.04
+    0.72,
+    0.98
    ],
    [
     "happen?",
-    1.04,
-    1.36
+    0.98,
+    1.32
    ],
    [
     "The",
-    1.76,
-    1.94
+    1.66,
+    1.82
    ],
    [
     "last",
-    1.94,
-    2.16
+    1.82,
+    2.06
    ],
    [
     "one",
-    2.16,
-    2.4
+    2.06,
+    2.28
    ],
    [
     "was",
-    2.4,
-    2.58
+    2.28,
+    2.42
    ],
    [
     "about",
-    2.58,
-    2.8
+    2.42,
+    2.66
    ],
    [
     "630",
-    2.8,
-    3.38
+    2.66,
+    3.28
    ],
    [
     ",000",
-    3.38,
-    4.2
+    3.28,
+    4.1
    ],
    [
     "years",
-    4.2,
-    4.4
+    4.1,
+    4.28
    ],
    [
-    "ago,",
-    4.4,
-    4.72
+    "ago.",
+    4.28,
+    4.62
    ],
    [
-    "and",
-    4.96,
+    "And",
+    5.02,
     5.12
    ],
    [
     "when",
     5.12,
-    5.24
+    5.22
    ],
    [
     "a",
-    5.24,
+    5.22,
     5.36
    ],
    [
@@ -1014,82 +1014,82 @@ export default {
    [
     "volcano",
     5.64,
-    6.06
+    6.02
    ],
    [
     "erupted",
-    6.06,
-    6.44
+    6.02,
+    6.4
    ],
    [
     "in",
-    6.44,
-    6.7
+    6.4,
+    6.66
    ],
    [
     "Indonesia",
-    6.7,
-    7.12
+    6.66,
+    7.1
    ],
    [
     "in",
-    7.12,
-    7.4
+    7.1,
+    7.32
    ],
    [
-    "1850,",
-    7.4,
-    7.96
+    "1815,",
+    7.32,
+    8.06
    ],
    [
     "the",
-    8.22,
-    8.4
+    8.46,
+    8.52
    ],
    [
     "next",
-    8.4,
-    8.64
+    8.52,
+    8.8
    ],
    [
     "year",
-    8.64,
-    8.96
+    8.8,
+    9.0
    ],
    [
     "was",
-    8.96,
+    9.0,
     9.16
    ],
    [
     "called",
     9.16,
-    9.44
+    9.4
    ],
    [
     "the",
-    9.44,
-    9.62
+    9.4,
+    9.58
    ],
    [
     "year",
-    9.62,
-    9.86
+    9.58,
+    9.76
    ],
    [
     "without",
-    9.86,
-    10.14
+    9.76,
+    10.02
    ],
    [
     "a",
-    10.14,
-    10.3
+    10.02,
+    10.2
    ],
    [
     "summer.",
-    10.3,
-    10.5
+    10.2,
+    10.38
    ]
   ]
  },
