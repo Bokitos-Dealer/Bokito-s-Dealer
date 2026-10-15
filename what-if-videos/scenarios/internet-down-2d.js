@@ -352,3 +352,5 @@ export default {
   },
 };
 export const _debug = { SAY, DURATION, S, wordT };
+// the illustration at time t, for the cover page (thumbs/internet-down-2d.html)
+export const svgAt = (t) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">${I.DEFS}${frameSVG(t)}</svg>`;
