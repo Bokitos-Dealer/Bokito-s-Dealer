@@ -28,7 +28,7 @@ export function captions(VO, ORDER, SAY, NUMS, KEYWORDS) {
   for (const key of ORDER) {
     const at = SAY[key];
     const ws = [];
-    for (const [w, s, e] of VO[key].words) { if (ws.length && /^([-'%]|[.,]\d)/.test(w)) { const p = ws[ws.length - 1]; p[0] += w; p[2] = e; } else ws.push([w, s, e, false]); }
+    for (const [w, s, e] of VO[key].words) { if (/^[–—-]+$/.test(w)) continue; if (ws.length && /^([-'%]|[.,]\d)/.test(w)) { const p = ws[ws.length - 1]; p[0] += w; p[2] = e; } else ws.push([w, s, e, false]); }
     for (const [sayd, show] of NUMS) {
       const k = sayd.replace(/-/g, ' ').split(' ');
       for (let i = 0; i + k.length <= ws.length; i++) {

@@ -46,7 +46,7 @@ at(W('intro', 'heres'), (t, u) => {
 // ---------- the soda
 at(W('relate', 'you'), (t, u) => { const to = W('relate', 'open') - W('relate', 'you');
   return `${I.bg('#2b2260', '#463a8c', '#ffd84a', 820)}${V.soda(540, 900, 1.5, t, u > to ? clamp((u - to) / 0.4) : 0)}${u > to ? G.outlined(540, 460, 100, '#fff', 'PSSSHHH!', 10) : ''}`; });
-at(W('relate', 'but'), (t, u) => `${V.crossSection(t, { glow: 1 })}${G.outlined(540, 520, 70, '#fff', 'MELTED ROCK', 8)}${G.outlined(540, 1420, 60, C.yellow, 'UNDER WYOMING', 7)}`);
+at(W('relate', 'but'), (t, u) => `${V.crossSection(t, { glow: 1 })}${G.outlined(540, 520, 70, '#fff', 'MELTED ROCK', 8)}${G.outlined(540, 620, 60, C.yellow, 'UNDER WYOMING', 7)}`);
 // ---------- week one: the warning signs
 at(SAY.signs - 0.95, (t, u) => `${V.park(t, { geyser: 0.6 })}${I.stamp('WEEK 1', u, 560)}`);
 at(W('signs', 'small'), (t, u) => `${I.bg('#2a1f5c', '#4b3a8c', '#ff5e5b', 820)}<g transform="translate(${I.wobble(t, 20, 4)} 0)">${V.seismo(540, 860, 1.05, t, 0.6 + 0.4 * Math.sin(t))}</g>`);
@@ -96,7 +96,7 @@ at(SAY.real, (t, u) => `${V.crossSection(t, { glow: 0.4 })}<text x="540" y="${56
 at(W('real', 'the'), (t, u) => `${I.bg('#3a2a1a', '#5a4026', '#ffd27a', 820)}${G.outlined(540, 760, 150, C.yellow, Math.round(ease.out(u / 1.6) * 631000).toLocaleString('en-US'), 13)}${G.outlined(540, 880, 70, '#fff', 'YEARS AGO', 8)}
   ${[0, 1, 2].map((i) => `<g transform="translate(${300 + i * 240} 1250) scale(0.5)">${I.person(0, 0, 1, { shirt: '#7a5a3a', hair: '#2a1a10', t, seed: i })}</g>`).join('')}`);
 at(W('real', 'and'), (t, u) => `${I.bg('#1a0a06', '#3a160c', LAVA, 860)}<path d="M 200 1280 L 540 820 L 880 1280 Z" fill="#5a4a3e"/>${V.column(540, 830, 0.6, t, ease.out(u / 1))}<rect y="1280" width="1080" height="640" fill="#2a3a5a"/>
-  ${G.outlined(540, 1420, 70, '#fff', 'INDONESIA · 1815', 8)}`);
+  ${G.outlined(540, 520, 70, '#fff', 'INDONESIA · 1815', 8)}`);
 at(W('real', 'next'), (t, u) => { const k = ease.out(u / 0.6);
   return `${I.bg('#c9d6f0', '#eef1f8')}${[...Array(40)].map((_, i) => { const p = (t * 0.2 + hash(i, 1)) % 1; return `<circle cx="${hash(i, 2) * 1080}" cy="${300 + p * 1500}" r="6" fill="#fff"/>`; }).join('')}
   ${G.paper(540, 860, lerp(0.2, 1, k), lerp(-540, -4, k), { date: 'JULY, 1816', h1: 'SNOW IN JULY!', h2: 'NO SUMMER',
