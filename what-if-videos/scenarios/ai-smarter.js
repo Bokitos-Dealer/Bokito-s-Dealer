@@ -212,16 +212,16 @@ function buildAudio() {
   // the twist
   fx('sample', { file: 'sfx/2915.wav', t: SAY.twist - 0.1, level: 0.35, dur: 1.6, fout: 0.4 });
   fx('sample', { file: 'sfx/1117.wav', t: W('twist', 'hard') + 1.0, level: 0.3 });
-  fx('pulse', { t0: W('twist', 'who'), t1: W('twist', 'whether'), bpm: [70, 100], level: 0.14 });
-  fx('sample', { file: 'sfx/1461.wav', t: W('twist', 'whether') + 0.05, level: 0.3 });
-  fx('knock', { t: W('twist', 'whether') + 0.95, n: 1, level: 0.3 });
+  fx('pulse', { t0: W('twist', 'who'), t1: W('twist', 'whether') - 0.2, bpm: [70, 100], level: 0.14 });
+  fx('sample', { file: 'sfx/1461.wav', t: W('twist', 'researchers') - 0.45, level: 0.22 });
+  fx('knock', { t: W('twist', 'researchers') - 0.2, n: 1, level: 0.22 });
   fx('chime', { t: W('twist', 'alignment') + 1.0, level: 0.1, freq: 659.25 });
   // could it happen
   fx('creak', { t0: SAY.real + 0.1, t1: SAY.real + 0.7, level: 0.12 });
   fx('sample', { file: 'sfx/2380.wav', t: W('real', 'in') + 0.05, level: 0.3 });
   fx('count', { t0: W('real', 'almost'), t1: W('real', 'almost') + 0.7, from: 26, to: 50, level: 0.07, seed: 8 });
   fx('pop', { t: W('real', 'fifty') + 0.05, f: 660, level: 0.2 });
-  fx('ding', { t: W('real', 'machines') + 0.35, f: 1046.5, level: 0.12 });
+  fx('ding', { t: W('real', 'task') + 0.15, f: 1046.5, level: 0.1 });
   fx('sample', { file: 'sfx/1105.wav', t: W('real', 'by') + 0.02, level: 0.35 });
   // previews: film flicker, a chess king falling, a gasp at move 37
   fx('flicker', { t0: W('history', 'and'), t1: W('history', 'in'), level: 0.12 });
