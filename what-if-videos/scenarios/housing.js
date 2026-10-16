@@ -16,7 +16,7 @@ const ORDER = ['hook', 'intro', 'relate', 'past', 'now', 'rent', 'parents', 'twi
 const GAP = { hook: 0.1, intro: 0.3, relate: 0.35, past: 0.9, now: 0.45, rent: 0.45, parents: 0.4, twist: 0.5, real: 0.4, end: 0.45, cta: 0.35 };
 const { SAY, W, FADE, DURATION } = X.timeline(VO, ORDER, GAP);
 
-const NUMS = [['1990s', '1990s'], ['three times', '3× INCOME'], ['five times', '5× INCOME'], ['a third', '1/3']];
+const NUMS = [['1990s', '1990s'], ['three times', '3×'], ['five times', '5×'], ['a third', '1/3']];
 const KEYWORDS = /^(never|afford|home|worked|lazy|math|listings|price|app|mortgage|done|today|worse|rent|paycheck|deposit|harder|parents|thirties|numbers|crazy|fixed|vienna|half|tokyo|fast|calm|millions|faster|paychecks|nature|build|reach|own|comments)$/i;
 
 // ------------------------------------------------------------------ backgrounds
@@ -49,7 +49,7 @@ at(W('past', 'back'), (t, u) => `${I.bg('#ffd27a', '#ffe9b0', '#ffffff', 900)}${
 at(W('past', 'save'), (t, u) => { const tm = W('past', 'done') - W('past', 'save');
   return `${I.bg('#ffd27a', '#ffe9b0')}${K.piggy(540, 860, 1, clamp(u / 1.4), t)}${u > tm - 0.3 ? `<g transform="translate(540 1260) scale(${ease.back((u - tm + 0.3) / 0.3)})">${H.key(0, 0, 1.2, -10)}</g>${G.outlined(540, 520, 90, C.green, 'DONE ✓', 9)}` : ''}`; });
 // ---------- today
-at(SAY.now, (t, u) => `${I.bg('#2a1f5c', '#4b3a8c', '#ff5e5b', 1000)}${H.ratioBars(380, 1330, 0.92, 5, u / 1.6, 'TODAY')}`);
+at(SAY.now, (t, u) => `${I.bg('#2a1f5c', '#4b3a8c', '#ff5e5b', 1000)}${H.ratioBars(380, 1190, 0.82, 5, u / 1.6, 'TODAY')}`);
 at(W('now', 'and'), (t, u) => `${night(C.red)}${['LONDON', 'SYDNEY', 'TORONTO'].map((c, i) => { const k = ease.back((u - i * 0.3) / 0.3); return `<g transform="translate(540 ${640 + i * 240}) scale(${k})"><rect x="-380" y="-90" width="760" height="180" rx="30" fill="#fff" filter="url(#drop)"/>${G.txt(-80, 26, 76, C.ink, c)}<g transform="translate(260 0)"><path d="M 0 -50 L 40 0 L 15 0 L 15 50 L -15 50 L -15 0 L -40 0 Z" fill="${C.red}"/></g></g>`; }).join('')}`);
 // ---------- rent
 at(SAY.rent, (t, u) => `${street(t)}${I.house(540, 1140, 1.4, '#c9cfdc', '#5b6378')}<g transform="translate(540 620) rotate(${4 * Math.sin(t * 3)})"><rect x="-200" y="-60" width="400" height="120" rx="12" fill="#fff" filter="url(#soft)"/>${G.txt(0, 22, 64, C.blue, 'FOR RENT')}</g>`);
@@ -63,7 +63,7 @@ at(SAY.twist - 0.1, (t, u) => `${I.bg('#120a2e', '#3a1a6b', '#c77dff', 820)}${G.
   <g transform="translate(540 820) rotate(${u * 40})" opacity="0.5">${[0, 1, 2, 3, 4, 5].map((i) => `<path d="M 0 0 L ${Math.cos(i) * 600} ${Math.sin(i) * 600}" stroke="#c77dff" stroke-width="40" opacity="0.3"/>`).join('')}</g>${I.stamp('THE TWIST', u, 860)}`);
 at(W('twist', 'some'), (t, u) => `${night(C.green)}${I.check(540, 820, 1.5, u)}${G.outlined(540, 1130, 84, '#fff', 'SOME CITIES FIXED IT', 9)}`);
 at(W('twist', 'in'), (t, u) => `${I.bg('#7cc7ff', '#d6efff')}<rect y="1240" width="1080" height="680" fill="#8bc77b"/>${H.viennaBlock(540, 1240, 1.0, t)}${G.outlined(540, 470, 80, '#fff', 'VIENNA', 9)}
-  ${u > 1 ? G.outlined(540, 1380, 60, C.yellow, '~HALF IN SOCIAL HOMES', 7) : ''}`);
+  ${u > 1 ? G.outlined(540, 570, 56, C.yellow, '~HALF IN SOCIAL HOMES', 7) : ''}`);
 at(W('twist', 'and'), (t, u) => `${I.bg('#ffd1dc', '#ffe9f0')}<rect y="1250" width="1080" height="670" fill="#9aa3b8"/>${H.crane(160, 1250, 0.9, t)}${H.tokyo(t, ease.out(u / 1.6))}${G.outlined(540, 470, 80, '#fff', 'TOKYO', 9)}`);
 // ---------- could it happen?
 at(SAY.real, (t, u) => `${street(t)}${I.house(540, 1140, 1.3)}<text x="540" y="${600 + 10 * Math.sin(t * 4)}" font-family="MontB" font-weight="900" font-size="300" fill="${C.yellow}" text-anchor="middle" stroke="#000" stroke-width="12" paint-order="stroke" transform="rotate(${6 * Math.sin(t * 3)} 540 500)">?</text>`);
