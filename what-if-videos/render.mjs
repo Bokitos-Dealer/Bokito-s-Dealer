@@ -157,7 +157,9 @@ if (opt('meta')) {
     const nChunks = Math.max(workers, parseInt(opt('chunks', String(workers)), 10));
     const span = (to - from) / nChunks;
     const jobs = [];
-    for (let w = 0; w < nChunks; w++) jobs.push([from + span * w, w === nChunks - 1 ? to : from + span * (w + 1) - 1 / info.fps]);
+    // split on whole frames so no frame falls between two chunks
+    const F0 = Math.round(from * info.fps), F1 = Math.min(info.frames - 1, Math.round(to * info.fps)), N = F1 - F0 + 1;
+    for (let w = 0; w < nChunks; w++) { const a = F0 + Math.floor(w * N / nChunks), b = F0 + Math.floor((w + 1) * N / nChunks) - 1; if (b >= a) jobs.push([a / info.fps, b / info.fps]); }
     const run = ([a, b]) => new Promise((res) => {
       const k = spawn(process.execPath, [fileURLToPath(import.meta.url), id, '--from', a.toFixed(4), '--to', b.toFixed(4), '--scale', scale, '--layer', layer, '--child', ...(opt('resume') ? ['--resume'] : [])], { stdio: 'inherit' });
       k.on('exit', res);
