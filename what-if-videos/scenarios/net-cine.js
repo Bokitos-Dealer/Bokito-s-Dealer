@@ -116,7 +116,7 @@ async function build(ctx) {
 // the camera for each shot as a function of local time u (seconds since the shot started) and absolute t
 const CAM = {
   earth: (u) => ({ scene: S.space, pos: V(lerp(-20, 10, u / 6), lerp(40, 26, u / 6), lerp(360, 270, ease(0, 7, u))), look: V(0, 8, 0), fov: 38 }),
-  earthDark: (u) => ({ scene: S.space, pos: V(lerp(120, 90, u / 5), 40, lerp(250, 215, u / 5)), look: V(0, 0, 0), fov: 40 }),
+  earthDark: (u) => ({ scene: S.space, pos: V(lerp(140, 80, ease(0, 5, u)), lerp(60, 35, u / 5), lerp(250, 205, ease(0, 5, u))), look: V(0, 0, 0), fov: 40 }),
   earthBack: (u) => ({ scene: S.space, pos: V(lerp(-60, -20, u / 4), 30, lerp(300, 245, ease(0, 4, u))), look: V(0, 4, 0), fov: 40 }),
   router: (u) => ({ scene: S.desk, pos: V(-70 + lerp(-16, 8, u / 2.5), lerp(44, 36, u / 2.5), lerp(82, 66, ease(0, 2.5, u))), look: V(-70, 6, 0), fov: 32 }),
   phone: (u) => ({ scene: S.desk, pos: V(lerp(-6, 2, u / 5), lerp(40, 30, ease(0, 5, u)), lerp(22, 15, ease(0, 5, u))), look: V(0, 0, -0.8), fov: 30 }),
@@ -135,11 +135,11 @@ function update(ctx, t) {
   const i = shotAt(t), [key, t0] = SHOTS[i], u = t - t0, next = SHOTS[i + 1]?.[1] ?? 1e9;
   const c = CAM[key](u);
   // fly into the light at the end of a shot and out of it at the start of the next: never a hard cut
-  const out = clamp((t - (next - 0.28)) / 0.28), inn = 1 - clamp(u / 0.32);
+  const out = clamp((t - (next - 0.22)) / 0.22), inn = 1 - clamp(u / 0.26);
   const pos = c.pos.clone().lerp(c.look, 0.45 * Math.pow(out, 2.2));
   const back = c.pos.clone().sub(c.look).multiplyScalar(0.25 * inn * inn); pos.add(back);
   ctx.cam.pos.copy(pos); ctx.cam.look.copy(c.look); ctx.cam.fov = c.fov * (1 + 0.12 * out); ctx.cam.near = key.startsWith('earth') || key === 'sat' ? 1 : key === 'city' ? 1 : 0.05; ctx.cam.far = 8000;
-  ctx.flash = Math.max(Math.pow(out, 2) * 0.75, inn * inn * 0.75); ctx.flashColor = '#ffe6b8';
+  ctx.flash = Math.max(Math.pow(out, 3) * 0.45, Math.pow(inn, 3) * 0.45); ctx.flashColor = '#fff1d6';
   ctx.view = { scene: c.scene, camera: ctx.camera };
   ctx.bloom = { strength: key === 'aisle' ? 0.45 : 1.05, radius: 0.75, threshold: key === 'aisle' ? 0.9 : 0.62 };
   // ---- the worlds

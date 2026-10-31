@@ -69,7 +69,7 @@ export async function buildNightEarth({ R = 100, arcs = true } = {}) {
         // the blackout sweeps round the planet from uLon0; uSweep 0 = all dark, 1 = all lit
         float d = fract(vUv.x - uLon0);
         float on = mix(smoothstep(d - 0.06, d, uSweep * 1.06), 1.0, uOn);
-        float flick = on;
+        float flick = max(on, 0.07);
         vec3 V = normalize(cameraPosition - vW);
         float fr = pow(1.0 - max(dot(vN, V), 0.0), 3.0);
         float sunl = max(dot(vN, uSun), 0.0);
