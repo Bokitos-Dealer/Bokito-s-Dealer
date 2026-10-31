@@ -1,0 +1,13 @@
+{"id": "net-cine", "engine": "chatterbox", "ref": "/home/user/tts/ref/voice.wav", "tempo": 1.15, "exaggeration": 0.62, "cfg": 0.42, "temperature": 0.75, "maxgap": 0.22, "gap": 0.16,
+ "lines": {
+  "hook": "Right now, five and a half billion people are online. In the next second, every single one of them gets cut off.",
+  "intro": "Not just your Wi-Fi. The entire internet, everywhere, for seven days. Let's follow that week, hour by hour.",
+  "h0": "Hour zero. Your phone still shows full bars, but nothing loads. Your messages just spin.",
+  "h2": "Hour two. Card machines can't reach the bank, so your card gets declined, and cash is suddenly king.",
+  "h6": "Hour six. Airports run on networks too. In 2024, one bad software update cancelled about five thousand flights in a single day.",
+  "d2": "Day two. Supermarkets order their stock online, so the trucks stop coming, and the shelves start to empty.",
+  "d4": "Day four. But GPS still works. It comes from satellites twenty thousand kilometers up, not from the internet.",
+  "cost": "Every day offline costs the world around forty three billion dollars.",
+  "twist": "And here's the thing. Killing the whole internet is almost impossible. More than five hundred cables run across the ocean floor, and when one breaks, the data just takes another road.",
+  "d7": "Day seven. The connection comes back, and every phone on Earth lights up at the same time.",
+  "cta": "Could you last seven days? Tell me in the comments."}}
